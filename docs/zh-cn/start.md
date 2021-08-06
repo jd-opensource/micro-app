@@ -119,7 +119,7 @@ export default function AppRoute () {
 
 #### ** Vue **
 ```js
-// mian.js
+// main.js
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './router'
