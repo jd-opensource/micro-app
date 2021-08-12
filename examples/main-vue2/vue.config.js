@@ -21,6 +21,6 @@ module.exports = {
   },
   chainWebpack: config => {
     config.resolve.alias
-      .set("@micro-zoe/micro-app", path.join(__dirname, '../../lib/index.esm.js'))
+    .set("@micro-zoe/micro-app", '@micro-zoe/micro-app/lib/index.esm.js')
   },
 }
