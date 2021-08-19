@@ -63,13 +63,13 @@ export function formatURL (url: string | null): string {
   if (typeof url !== 'string' || !url) return ''
 
   try {
-    const { origin, pathname, search } = new URL(addProtocol(url))
+    const { origin, pathname, search, hash } = new URL(addProtocol(url))
     // If it ends with .html/.node/.php/.net/.etc, don’t need to add /
     if (/\.(\w+)$/.test(pathname)) {
-      return `${origin}${pathname}${search}`
+      return `${origin}${pathname}${search}${hash}`
     }
     const fullPath = `${origin}${pathname}/`.replace(/\/\/$/, '/')
-    return /^https?:\/\//.test(fullPath) ? `${fullPath}${search}` : ''
+    return /^https?:\/\//.test(fullPath) ? `${fullPath}${search}${hash}` : ''
   } catch (e) {
     console.error('[micro-app]', e)
     return ''
