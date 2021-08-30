@@ -114,7 +114,6 @@ const BasicLayout = (props) => {
       menuDataRender={menuDataRender}
       rightContentRender={() => <RightContent />}
       postMenuData={(menuData) => {
-      console.log("LENG ~ BasicLayout ~ menuData", menuData)
         menuDataRef.current = menuData || [];
         return menuData || [];
       }}

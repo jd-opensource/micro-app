@@ -5,7 +5,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-
-export default Vue.extend({})
+import { Component, Vue } from "vue-property-decorator";
+import lodash from "lodash";
+@Component({
+  components: {}
+})
+export default class extends Vue {
+  updated() { }
+  destroyed() { }
+}
 </script>
