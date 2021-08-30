@@ -45,6 +45,13 @@ export default [
                 exact: false,
               },
               {
+                path: '/nuxtjs',
+                name: 'nuxtjs',
+                icon: 'ThunderboltOutlined',
+                component: './nuxtjs/nuxtjs',
+                exact: false,
+              },
+              {
                 path: '/vite',
                 name: 'vite',
                 icon: 'SendOutlined',

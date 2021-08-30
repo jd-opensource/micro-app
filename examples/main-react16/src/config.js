@@ -4,6 +4,7 @@ let config = {
   react17: 'http://localhost:3002/',
   vue2: 'http://localhost:4001/',
   vue3: 'http://localhost:4002/',
+  nuxtjs: 'http://localhost:4003/',
   angular11: 'http://localhost:6001/',
   vite: 'http://localhost:7001/',
 }
@@ -16,6 +17,7 @@ if (isEnvPro) {
     react17: baseUrl,
     vue2: baseUrl,
     vue3: baseUrl,
+    nuxtjs: baseUrl,
     angular11: baseUrl,
     vite: baseUrl,
   }
