@@ -5,22 +5,21 @@ export const version = '__VERSION__'
 
 export const isBrowser = typeof window !== 'undefined'
 
-export const globalThis = (typeof global !== 'undefined')
-  ? global
-  : (
-    (typeof window !== 'undefined')
+export const globalThis =
+  typeof global !== 'undefined'
+    ? global
+    : typeof window !== 'undefined'
       ? window
-      : (
-        (typeof self !== 'undefined') ? self : Function('return this')()
-      )
-  )
+      : typeof self !== 'undefined'
+        ? self
+        : Function('return this')()
 
 /**
  * format error log
  * @param msg message
  */
 export function logError (msg: unknown, ...rest: any[]): void {
-  if (typeof msg === 'string') {
+  if (isString(msg)) {
     console.error(`[micro-app] ${msg}`, ...rest)
   } else {
     console.error('[micro-app]', msg, ...rest)
@@ -32,7 +31,7 @@ export function logError (msg: unknown, ...rest: any[]): void {
  * @param msg message
  */
 export function logWarn (msg: unknown, ...rest: any[]): void {
-  if (typeof msg === 'string') {
+  if (isString(msg)) {
     console.warn(`[micro-app] ${msg}`, ...rest)
   } else {
     console.warn('[micro-app]', msg, ...rest)
@@ -61,7 +60,7 @@ export function addProtocol (url: string): string {
  * @param url address
  */
 export function formatURL (url: string | null): string {
-  if (typeof url !== 'string' || !url) return ''
+  if (!isString(url) || !url) return ''
 
   try {
     const { origin, pathname, search } = new URL(addProtocol(url))
@@ -99,7 +98,7 @@ export function getEffectivePath (url: string): string {
  * @param baseURI base url(app.url)
  */
 export function CompletionPath (path: string, baseURI: string): string {
-  if (/^((((ht|f)tps?)|file):)?\/\//.test(path) || /^(data|blob):/.test(path)) return path
+  if (/^((((ht|f)tps?)|file):)?\/\//.test(path) || /^(data|blob):/.test(path)) { return path }
 
   return new URL(path, getEffectivePath(addProtocol(baseURI))).toString()
 }
@@ -107,10 +106,10 @@ export function CompletionPath (path: string, baseURI: string): string {
 /**
  * Get the folder where the link resource is located,
  * which is used to complete the relative address in the css
- * @param linkpath full link address
+ * @param linkPath full link address
  */
-export function getLinkFileDir (linkpath: string): string {
-  const pathArr = linkpath.split('/')
+export function getLinkFileDir (linkPath: string): string {
+  const pathArr = linkPath.split('/')
   pathArr.pop()
   return addProtocol(pathArr.join('/') + '/')
 }
@@ -118,15 +117,15 @@ export function getLinkFileDir (linkpath: string): string {
 /**
  * promise stream
  * @param promiseList promise list
- * @param successsCb success callback
+ * @param successCb success callback
  * @param errorCb failed callback
  * @param finallyCb finally callback
  */
-export function promiseStream <T> (
+export function promiseStream<T> (
   promiseList: Array<Promise<T> | T>,
-  successsCb: CallableFunction,
+  successCb: CallableFunction,
   errorCb: CallableFunction,
-  finallyCb?: CallableFunction,
+  finallyCb?: CallableFunction
 ): void {
   let finishedNum = 0
 
@@ -135,22 +134,24 @@ export function promiseStream <T> (
   }
 
   promiseList.forEach((p, i) => {
-    if (toString.call(p) === '[object Promise]') {
-      (p as Promise<T>).then((res: T) => {
-        successsCb({
-          data: res,
-          index: i,
+    if (isPromise(p)) {
+      (p as Promise<T>)
+        .then((res: T) => {
+          successCb({
+            data: res,
+            index: i,
+          })
+          isFinished()
         })
-        isFinished()
-      }).catch((err: Error) => {
-        errorCb({
-          error: err,
-          index: i,
+        .catch((err: Error) => {
+          errorCb({
+            error: err,
+            index: i,
+          })
+          isFinished()
         })
-        isFinished()
-      })
     } else {
-      successsCb({
+      successCb({
         data: p,
         index: i,
       })
@@ -178,7 +179,8 @@ export function unique (array: any[]): any[] {
 }
 
 // requestIdleCallback polyfill
-export const requestIdleCallback = globalThis.requestIdleCallback ||
+export const requestIdleCallback =
+  globalThis.requestIdleCallback ||
   function (fn: CallableFunction) {
     const lastTime = Date.now()
     return setTimeout(function () {
@@ -211,7 +213,9 @@ export function removeDomScope (): void {
 
 // is safari browser
 export function isSafari (): boolean {
-  return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+  return (
+    /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+  )
 }
 
 // is function
@@ -219,10 +223,35 @@ export function isFunction (target: unknown): boolean {
   return typeof target === 'function'
 }
 
+// is Array
+export function isArray (target: unknown): boolean {
+  return Array.isArray(target)
+}
+
+// is PlainObject
+export function isPlainObject (target: unknown): boolean {
+  return toString.call(target) === '[object Object]'
+}
+
+// is String
+export function isString (target: unknown): boolean {
+  return (
+    typeof target === 'string' || toString.call(target) === '[object String]'
+  )
+}
+
+// is Promise
+export function isPromise (target: unknown): boolean {
+  return toString.call(target) === '[object Promise]'
+}
+
 /**
  * Create pure elements
  */
-export function pureCreateElement<K extends keyof HTMLElementTagNameMap> (tagName: K, options?: ElementCreationOptions): HTMLElementTagNameMap[K] {
+export function pureCreateElement<K extends keyof HTMLElementTagNameMap> (
+  tagName: K,
+  options?: ElementCreationOptions
+): HTMLElementTagNameMap[K] {
   const element = document.createElement(tagName, options)
   if (element.__MICRO_APP_NAME__) delete element.__MICRO_APP_NAME__
   return element
@@ -233,7 +262,10 @@ export function pureCreateElement<K extends keyof HTMLElementTagNameMap> (tagNam
  * @param origin Cloned element
  * @param target Accept cloned elements
  */
-export function cloneNode <T extends Element, Q extends Element> (origin: T, target: Q): void {
+export function cloneNode<T extends Element, Q extends Element> (
+  origin: T,
+  target: Q
+): void {
   target.innerHTML = ''
   const clonedNode = origin.cloneNode(true)
   const fragment = document.createDocumentFragment()
