@@ -5,15 +5,14 @@ export const version = '__VERSION__'
 
 export const isBrowser = typeof window !== 'undefined'
 
-export const globalThis = (typeof global !== 'undefined')
-  ? global
-  : (
-    (typeof window !== 'undefined')
+export const globalThis =
+  typeof global !== 'undefined'
+    ? global
+    : typeof window !== 'undefined'
       ? window
-      : (
-        (typeof self !== 'undefined') ? self : Function('return this')()
-      )
-  )
+      : typeof self !== 'undefined'
+        ? self
+        : Function('return this')()
 
 /**
  * format error log
@@ -99,7 +98,7 @@ export function getEffectivePath (url: string): string {
  * @param baseURI base url(app.url)
  */
 export function CompletionPath (path: string, baseURI: string): string {
-  if (/^((((ht|f)tps?)|file):)?\/\//.test(path) || /^(data|blob):/.test(path)) return path
+  if (/^((((ht|f)tps?)|file):)?\/\//.test(path) || /^(data|blob):/.test(path)) { return path }
 
   return new URL(path, getEffectivePath(addProtocol(baseURI))).toString()
 }
@@ -122,11 +121,11 @@ export function getLinkFileDir (linkPath: string): string {
  * @param errorCb failed callback
  * @param finallyCb finally callback
  */
-export function promiseStream <T> (
+export function promiseStream<T> (
   promiseList: Array<Promise<T> | T>,
   successCb: CallableFunction,
   errorCb: CallableFunction,
-  finallyCb?: CallableFunction,
+  finallyCb?: CallableFunction
 ): void {
   let finishedNum = 0
 
@@ -136,19 +135,21 @@ export function promiseStream <T> (
 
   promiseList.forEach((p, i) => {
     if (isPromise(p)) {
-      (p as Promise<T>).then((res: T) => {
-        successCb({
-          data: res,
-          index: i,
+      (p as Promise<T>)
+        .then((res: T) => {
+          successCb({
+            data: res,
+            index: i,
+          })
+          isFinished()
         })
-        isFinished()
-      }).catch((err: Error) => {
-        errorCb({
-          error: err,
-          index: i,
+        .catch((err: Error) => {
+          errorCb({
+            error: err,
+            index: i,
+          })
+          isFinished()
         })
-        isFinished()
-      })
     } else {
       successCb({
         data: p,
@@ -178,7 +179,8 @@ export function unique (array: any[]): any[] {
 }
 
 // requestIdleCallback polyfill
-export const requestIdleCallback = globalThis.requestIdleCallback ||
+export const requestIdleCallback =
+  globalThis.requestIdleCallback ||
   function (fn: CallableFunction) {
     const lastTime = Date.now()
     return setTimeout(function () {
@@ -211,7 +213,9 @@ export function removeDomScope (): void {
 
 // is safari browser
 export function isSafari (): boolean {
-  return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+  return (
+    /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+  )
 }
 
 // is function
@@ -220,29 +224,34 @@ export function isFunction (target: unknown): boolean {
 }
 
 // is Array
-export function isArray(target: unknown): boolean {
+export function isArray (target: unknown): boolean {
   return Array.isArray(target)
 }
 
 // is PlainObject
-export function isPlainObject(target: unknown): boolean {
+export function isPlainObject (target: unknown): boolean {
   return toString.call(target) === '[object Object]'
 }
 
 // is String
-export function isString(target: unknown): boolean {
-  return typeof target === 'string' || toString.call(target) === '[object String]'
+export function isString (target: unknown): boolean {
+  return (
+    typeof target === 'string' || toString.call(target) === '[object String]'
+  )
 }
 
 // is Promise
-export function isPromise(target: unknown): boolean{
+export function isPromise (target: unknown): boolean {
   return toString.call(target) === '[object Promise]'
 }
 
 /**
  * Create pure elements
  */
-export function pureCreateElement<K extends keyof HTMLElementTagNameMap> (tagName: K, options?: ElementCreationOptions): HTMLElementTagNameMap[K] {
+export function pureCreateElement<K extends keyof HTMLElementTagNameMap> (
+  tagName: K,
+  options?: ElementCreationOptions
+): HTMLElementTagNameMap[K] {
   const element = document.createElement(tagName, options)
   if (element.__MICRO_APP_NAME__) delete element.__MICRO_APP_NAME__
   return element
@@ -253,7 +262,10 @@ export function pureCreateElement<K extends keyof HTMLElementTagNameMap> (tagNam
  * @param origin Cloned element
  * @param target Accept cloned elements
  */
-export function cloneNode <T extends Element, Q extends Element> (origin: T, target: Q): void {
+export function cloneNode<T extends Element, Q extends Element> (
+  origin: T,
+  target: Q
+): void {
   target.innerHTML = ''
   const clonedNode = origin.cloneNode(true)
   const fragment = document.createDocumentFragment()
