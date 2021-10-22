@@ -1,6 +1,6 @@
 import type { prefetchParamList, prefetchParam, globalAssetsType } from '@micro-app/types'
 import CreateApp, { appInstanceMap } from './create_app'
-import { requestIdleCallback, formatURL, promiseStream, logError, isBrowser } from './libs/utils'
+import { requestIdleCallback, formatURL, promiseStream, logError, isBrowser, isArray, isPlainObject, isString } from './libs/utils'
 import { fetchSource } from './source/fetch'
 import { globalLinks } from './source/links'
 import { globalScripts } from './source/scripts'
@@ -9,12 +9,12 @@ import microApp from './micro_app'
 function filterPreFetchTarget<T extends prefetchParam> (apps: T[]): T[] {
   const validApps: T[] = []
 
-  if (toString.call(apps) === '[object Array]') {
+  if (isArray(apps)) {
     apps.forEach((item) => {
       item.url = formatURL(item.url)
       if (
-        toString.call(item) === '[object Object]' &&
-        (item.name && typeof item.name === 'string') &&
+        isPlainObject(item) &&
+        isString(item.name) &&
         item.url &&
         !appInstanceMap.has(item.name)
       ) {
@@ -69,10 +69,10 @@ export default function preFetch (apps: prefetchParamList): void {
  * @param assets global assets of js, css
  */
 export function getGlobalAssets (assets: globalAssetsType): void {
-  if (toString.call(assets) === '[object Object]') {
+  if (isPlainObject(assets)) {
     requestIdleCallback(() => {
-      if (toString.call(assets.js) === '[object Array]') {
-        const effectiveJs = assets.js!.filter((path) => typeof path === 'string' && path.includes('.js') && !globalScripts.has(path))
+      if (isPlainObject(assets.js)) {
+        const effectiveJs = assets.js!.filter((path) => isString(path) && path.includes('.js') && !globalScripts.has(path))
 
         const fetchJSPromise: Array<Promise<string>> = []
         effectiveJs.forEach((path) => {
@@ -90,8 +90,8 @@ export function getGlobalAssets (assets: globalAssetsType): void {
         })
       }
 
-      if (toString.call(assets.css) === '[object Array]') {
-        const effectiveCss = assets.css!.filter((path) => typeof path === 'string' && path.includes('.css') && !globalLinks.has(path))
+      if (isArray(assets.css)) {
+        const effectiveCss = assets.css!.filter((path) => isString(path) && path.includes('.css') && !globalLinks.has(path))
 
         const fetchCssPromise: Array<Promise<string>> = []
         effectiveCss.forEach((path) => {

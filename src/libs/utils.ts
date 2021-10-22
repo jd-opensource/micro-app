@@ -20,7 +20,7 @@ export const globalThis = (typeof global !== 'undefined')
  * @param msg message
  */
 export function logError (msg: unknown, ...rest: any[]): void {
-  if (typeof msg === 'string') {
+  if (isString(msg)) {
     console.error(`[micro-app] ${msg}`, ...rest)
   } else {
     console.error('[micro-app]', msg, ...rest)
@@ -32,7 +32,7 @@ export function logError (msg: unknown, ...rest: any[]): void {
  * @param msg message
  */
 export function logWarn (msg: unknown, ...rest: any[]): void {
-  if (typeof msg === 'string') {
+  if (isString(msg)) {
     console.warn(`[micro-app] ${msg}`, ...rest)
   } else {
     console.warn('[micro-app]', msg, ...rest)
@@ -61,7 +61,7 @@ export function addProtocol (url: string): string {
  * @param url address
  */
 export function formatURL (url: string | null): string {
-  if (typeof url !== 'string' || !url) return ''
+  if (!isString(url) || !url) return ''
 
   try {
     const { origin, pathname, search } = new URL(addProtocol(url))
@@ -107,10 +107,10 @@ export function CompletionPath (path: string, baseURI: string): string {
 /**
  * Get the folder where the link resource is located,
  * which is used to complete the relative address in the css
- * @param linkpath full link address
+ * @param linkPath full link address
  */
-export function getLinkFileDir (linkpath: string): string {
-  const pathArr = linkpath.split('/')
+export function getLinkFileDir (linkPath: string): string {
+  const pathArr = linkPath.split('/')
   pathArr.pop()
   return addProtocol(pathArr.join('/') + '/')
 }
@@ -118,13 +118,13 @@ export function getLinkFileDir (linkpath: string): string {
 /**
  * promise stream
  * @param promiseList promise list
- * @param successsCb success callback
+ * @param successCb success callback
  * @param errorCb failed callback
  * @param finallyCb finally callback
  */
 export function promiseStream <T> (
   promiseList: Array<Promise<T> | T>,
-  successsCb: CallableFunction,
+  successCb: CallableFunction,
   errorCb: CallableFunction,
   finallyCb?: CallableFunction,
 ): void {
@@ -135,9 +135,9 @@ export function promiseStream <T> (
   }
 
   promiseList.forEach((p, i) => {
-    if (toString.call(p) === '[object Promise]') {
+    if (isPromise(p)) {
       (p as Promise<T>).then((res: T) => {
-        successsCb({
+        successCb({
           data: res,
           index: i,
         })
@@ -150,7 +150,7 @@ export function promiseStream <T> (
         isFinished()
       })
     } else {
-      successsCb({
+      successCb({
         data: p,
         index: i,
       })
@@ -217,6 +217,26 @@ export function isSafari (): boolean {
 // is function
 export function isFunction (target: unknown): boolean {
   return typeof target === 'function'
+}
+
+// is Array
+export function isArray(target: unknown): boolean {
+  return Array.isArray(target)
+}
+
+// is PlainObject
+export function isPlainObject(target: unknown): boolean {
+  return toString.call(target) === '[object Object]'
+}
+
+// is String
+export function isString(target: unknown): boolean {
+  return typeof target === 'string' || toString.call(target) === '[object String]'
+}
+
+// is Promise
+export function isPromise(target: unknown): boolean{
+  return toString.call(target) === '[object Promise]'
 }
 
 /**
