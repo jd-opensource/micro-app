@@ -69,7 +69,7 @@ declare module '@micro-app/types' {
       baseroute?: string,
     ): void // mount app
     dispatchMountedEvent(): void // dispatch mounted event when app run finished
-    unmount(destory: boolean): void // unmount app
+    unmount(destroy: boolean): void // unmount app
     onerror(e: Error): void // app rendering error
     getAppStatus(): string // get app status
   }
@@ -87,7 +87,7 @@ declare module '@micro-app/types' {
     legalAttribute(name: string, val: AttrType): boolean // judge the attribute is legal
     handleAppMount(app: AppInterface): void // mount app
     handleCreate(): void // create app
-    handleUnmount (destory: boolean): void // unmount app
+    handleUnmount (destroy: boolean): void // unmount app
     getDisposeResult (name: string): boolean // Get configuration
   }
 
@@ -150,7 +150,7 @@ declare module '@micro-app/types' {
   type OptionsType = {
     tagName?: string
     shadowDOM?: boolean
-    destory?: boolean
+    destroy?: boolean
     inline?: boolean
     disableScopecss?: boolean
     disableSandbox?: boolean
@@ -166,7 +166,7 @@ declare module '@micro-app/types' {
   interface MicroAppConfigType {
     tagName: string
     shadowDOM?: boolean
-    destory?: boolean
+    destroy?: boolean
     inline?: boolean
     disableScopecss?: boolean
     disableSandbox?: boolean
