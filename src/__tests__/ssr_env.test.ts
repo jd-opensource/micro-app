@@ -1,6 +1,6 @@
 import './common/set_ssr_env'
 import preFetch from '../prefetch'
-import { initGloalEnv } from '../libs/global_env'
+import { initGlobalEnv } from '../libs/global_env'
 import microApp from '../micro_app'
 
 describe('test ssr environment', () => {
@@ -16,7 +16,7 @@ describe('test ssr environment', () => {
   // 在非浏览器环境执行start
   test('run start in non browser environment', () => {
     microApp.start()
-    initGloalEnv()
+    initGlobalEnv()
     expect(console.error).toBeCalledWith('[micro-app] micro-app is not supported in this environment')
   })
 })

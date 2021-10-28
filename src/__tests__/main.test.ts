@@ -16,7 +16,7 @@ describe('main process', () => {
       tagName: 'micro-app',
       // shadowDOM: true,
       // inline: true,
-      // destory: true,
+      // destroy: true,
       // disableScopecss: true,
       // disableSandbox: true,
       // macro: true,
@@ -182,7 +182,7 @@ describe('main process', () => {
     expect(microappElement3.data.count).toBe('count-1')
     microappElement3.setAttribute('name', 'test-app3')
     microappElement3.setAttribute('url', `http://127.0.0.1:${ports.main}/common`)
-    microappElement3.setAttribute('destory', 'true')
+    microappElement3.setAttribute('destroy', 'true')
     microappElement3.setAttribute('shadowDOM', 'true')
     microappElement3.setAttribute('inline', 'true')
     // @ts-ignore

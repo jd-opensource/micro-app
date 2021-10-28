@@ -13,7 +13,7 @@ afterAll(() => {
 test('just define micro-app in pure start', () => {
   microApp.start({
     shadowDOM: false,
-    destory: false,
+    destroy: false,
     inline: true,
     disableScopecss: false,
     disableSandbox: false,

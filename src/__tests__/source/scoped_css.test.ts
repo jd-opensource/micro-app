@@ -160,7 +160,7 @@ describe('source scoped_css', () => {
     const microappElement5 = document.createElement('micro-app')
     microappElement5.setAttribute('name', 'test-app5')
     microappElement5.setAttribute('url', `http://127.0.0.1:${ports.scoped_css}/common/`)
-    microappElement5.setAttribute('destory', 'true')
+    microappElement5.setAttribute('destroy', 'true')
 
     appCon.appendChild(microappElement5)
     appCon.removeChild(microappElement5)
@@ -169,7 +169,7 @@ describe('source scoped_css', () => {
     const microappElement6 = document.createElement('micro-app')
     microappElement6.setAttribute('name', 'test-app6')
     microappElement6.setAttribute('url', `http://127.0.0.1:${ports.scoped_css}/common/`)
-    microappElement6.setAttribute('destory', 'true')
+    microappElement6.setAttribute('destroy', 'true')
 
     appCon.appendChild(microappElement6)
 

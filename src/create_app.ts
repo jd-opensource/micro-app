@@ -179,11 +179,11 @@ export default class CreateApp implements AppInterface {
 
   /**
    * unmount app
-   * @param destory completely destroy, delete cache resources
+   * @param destroy completely destroy, delete cache resources
    */
-  unmount (destory: boolean): void {
+  unmount (destroy: boolean): void {
     if (this.status === appStatus.LOAD_SOURCE_ERROR) {
-      destory = true
+      destroy = true
     }
     this.status = appStatus.UNMOUNT
     dispatchLifecyclesEvent(
@@ -198,7 +198,7 @@ export default class CreateApp implements AppInterface {
     this.sandBox?.stop()
 
     // actions for completely destroy
-    if (destory) {
+    if (destroy) {
       if (!this.useSandbox && this.umdMode) {
         delete window[this.libraryName as any]
       }
