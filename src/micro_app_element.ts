@@ -24,7 +24,7 @@ export const elementInstanceMap = new Map<Element, boolean>()
 export function defineElement (tagName: string): void {
   class MicroAppElement extends HTMLElement implements MicroAppElementType {
 
-    // observe ssr - by awesomedevin
+    // observe ssr attribute - by awesomedevin
     static get observedAttributes (): string[] {
       return ['name', 'url', 'ssr']
     }
@@ -105,7 +105,7 @@ export function defineElement (tagName: string): void {
           this.appName = newVal
           this.handleInitialNameAndUrl()
         } else if(attr === ObservedAttrName.SSR && typeof this.isSsr === null){
-            // by awesomedevin
+            // Gets the tag attribute value - by awesomedevin
             this.isSsr = !!(newVal)
          } else if (!this.isWating) {
           this.isWating = true

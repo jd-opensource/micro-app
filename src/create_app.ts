@@ -57,7 +57,9 @@ export default class CreateApp implements AppInterface {
   baseroute = ''
   source: sourceType
   sandBox: SandBoxInterface | null = null
-  ssr: boolean // by awesomedevin
+
+  // by awesomedevin
+  ssr: boolean 
 
   constructor ({ name, url, container, inline, scopecss, useSandbox, macro, baseroute, ssr }: CreateAppParam) {
     this.container = container ?? null
@@ -73,7 +75,9 @@ export default class CreateApp implements AppInterface {
       links: new Map<string, sourceLinkInfo>(),
       scripts: new Map<string, sourceScriptInfo>(),
     }
-    this.ssr = !!ssr  // by awesomedevin
+    // by awesomedevin
+    this.ssr = !!ssr  
+
     this.loadSourceCode()
     if (this.useSandbox) {
       this.sandBox = new SandBox(name, url, this.macro)
@@ -154,7 +158,7 @@ export default class CreateApp implements AppInterface {
       const child = data.target
       const { origin } = new URL(this.url)
       if(child){
-          // Style tags with data-n-href attributes require special handling
+          // Style tags with data-n-href attributes require special handling - by awesomedevin
           if(child && child instanceof HTMLStyleElement && child.getAttribute('data-n-href')){
               const link = document.createElement('link')
               link.rel = 'stylesheet'

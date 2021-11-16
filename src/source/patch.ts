@@ -232,7 +232,7 @@ export function patchElementPrototypeMethods (): void {
       const app = appInstanceMap.get(this.__MICRO_APP_NAME__)
       globalEnv.rawSetAttribute.call(this, key, CompletionPath(value, app!.url))
 
-      // Added img srcset support - by awesomedevin
+      // Supports the srcset attribute of the IMG tag - by awesomedevin
       if(this instanceof HTMLImageElement){
         globalEnv.rawSetAttribute.call(this, 'srcset', CompletionPath(value, app!.url));
       }

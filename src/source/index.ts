@@ -99,6 +99,8 @@ export default function extractHtml (app: AppInterface): void {
 
   // Support to fetch SSR multi-page projects - by awesomedevin
   const ssrUrl = (`${formatURL(app.url, app.name).replace(/\/$/,'')}${globalThis.location.pathname}`).replace(/(\/| *)$/,'.html')
+
+  // Compatibility with old logic
   const url = app.ssr ? ssrUrl :  app.url
   
   fetchSource(url, app.name, { cache: 'no-cache' }).then((htmlStr: string) => {
