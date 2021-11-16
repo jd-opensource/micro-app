@@ -52,6 +52,7 @@ declare module '@micro-app/types' {
     source: sourceType // sources of css, js, html
     sandBox: SandBoxInterface | null // sanxbox
     umdMode: boolean // is umd mode
+    ssr: boolean
 
     // Load resources
     loadSourceCode (): void
@@ -82,6 +83,7 @@ declare module '@micro-app/types' {
   interface MicroAppElementType {
     appName: AttrType // app name
     appUrl: AttrType // app url
+    isSsr: null | boolean // app ssr - by awesomedevin
 
     // Hooks for element append to documents
     connectedCallback (): void
@@ -90,7 +92,7 @@ declare module '@micro-app/types' {
     disconnectedCallback (): void
 
     // Hooks for element attributes change
-    attributeChangedCallback (a: 'name' | 'url', o: string, n: string): void
+    attributeChangedCallback (a: 'name' | 'url' | 'ssr', o: string, n: string): void
   }
 
   type prefetchParam = {

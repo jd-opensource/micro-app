@@ -23,8 +23,10 @@ export const elementInstanceMap = new Map<Element, boolean>()
  */
 export function defineElement (tagName: string): void {
   class MicroAppElement extends HTMLElement implements MicroAppElementType {
+
+    // observe ssr - by awesomedevin
     static get observedAttributes (): string[] {
-      return ['name', 'url']
+      return ['name', 'url', 'ssr']
     }
 
     constructor () {
@@ -41,6 +43,7 @@ export function defineElement (tagName: string): void {
     appName = ''
     appUrl = ''
     version = version
+    isSsr: boolean | null = null
 
     // 👇 Configuration
     // name: app name
@@ -78,9 +81,14 @@ export function defineElement (tagName: string): void {
     }
 
     attributeChangedCallback (attr: ObservedAttrName, _oldVal: string, newVal: string): void {
+      const attrMap: {[key: string] : 'appName' | 'appUrl' | 'isSsr'  } = {
+        [ObservedAttrName.NAME]: 'appName',
+        [ObservedAttrName.URL]: 'appUrl',
+        [ObservedAttrName.SSR]: 'isSsr',
+      }
       if (
         this.legalAttribute(attr, newVal) &&
-        this[attr === ObservedAttrName.NAME ? 'appName' : 'appUrl'] !== newVal
+        this[attrMap[attr]] !== newVal
       ) {
         if (attr === ObservedAttrName.URL && !this.appUrl) {
           newVal = formatURL(newVal, this.appName)
@@ -96,7 +104,10 @@ export function defineElement (tagName: string): void {
           }
           this.appName = newVal
           this.handleInitialNameAndUrl()
-        } else if (!this.isWating) {
+        } else if(attr === ObservedAttrName.SSR && typeof this.isSsr === null){
+            // by awesomedevin
+            this.isSsr = !!(newVal)
+         } else if (!this.isWating) {
           this.isWating = true
           defer(this.handleAttributeUpdate)
         }
@@ -162,6 +173,7 @@ export function defineElement (tagName: string): void {
       this.isWating = false
       const attrName = this.getAttribute('name')
       const attrUrl = formatURL(this.getAttribute('url'), this.appName)
+      this.isSsr = !!(this.getAttribute('ssr'))
       if (this.legalAttribute('name', attrName) && this.legalAttribute('url', attrUrl)) {
         const existApp = appInstanceMap.get(attrName!)
         if (attrName !== this.appName && existApp) {
@@ -236,6 +248,7 @@ export function defineElement (tagName: string): void {
         useSandbox: !this.getDisposeResult('disableSandbox'),
         macro: this.getDisposeResult('macro'),
         baseroute: this.getBaseRouteCompatible(),
+        ssr: !!this.isSsr
       })
 
       appInstanceMap.set(this.appName!, instance)

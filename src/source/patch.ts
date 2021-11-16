@@ -162,7 +162,7 @@ function getMappingNode (node: Node): Node {
  * @param passiveChild passive node
  * @param rawMethodraw method
  */
-function commonElementHander (
+export function commonElementHander (
   parent: Node,
   newChild: Node,
   passiveChild: Node | null,
@@ -223,7 +223,7 @@ export function patchElementPrototypeMethods (): void {
       }
     } else if (
       (
-        (key === 'src' && /^(img|script)$/i.test(this.tagName)) ||
+        ((key === 'src' || key === 'srcset') && /^(img|script)$/i.test(this.tagName)) ||
         (key === 'href' && /^link$/i.test(this.tagName))
       ) &&
       this.__MICRO_APP_NAME__ &&
@@ -231,6 +231,11 @@ export function patchElementPrototypeMethods (): void {
     ) {
       const app = appInstanceMap.get(this.__MICRO_APP_NAME__)
       globalEnv.rawSetAttribute.call(this, key, CompletionPath(value, app!.url))
+
+      // Added img srcset support - by awesomedevin
+      if(this instanceof HTMLImageElement){
+        globalEnv.rawSetAttribute.call(this, 'srcset', CompletionPath(value, app!.url));
+      }
     } else {
       globalEnv.rawSetAttribute.call(this, key, value)
     }

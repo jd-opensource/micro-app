@@ -7,6 +7,7 @@ import type {
   Func,
 } from '@micro-app/types'
 import extractHtml from './source'
+import { commonElementHander } from './source/patch'
 import { execScripts } from './source/scripts'
 import { appStatus, lifeCycles } from './constants'
 import SandBox from './sandbox'
@@ -17,6 +18,7 @@ import {
   isPromise,
   logError,
   isShadowRoot,
+  CompletionPath,
 } from './libs/utils'
 import dispatchLifecyclesEvent, { dispatchUnmountToMicroApp } from './interact/lifecycles_event'
 import globalEnv from './libs/global_env'
@@ -34,6 +36,7 @@ export interface CreateAppParam {
   inline?: boolean
   baseroute?: string
   container?: HTMLElement | ShadowRoot
+  ssr?: boolean
 }
 
 export default class CreateApp implements AppInterface {
@@ -54,8 +57,9 @@ export default class CreateApp implements AppInterface {
   baseroute = ''
   source: sourceType
   sandBox: SandBoxInterface | null = null
+  ssr: boolean // by awesomedevin
 
-  constructor ({ name, url, container, inline, scopecss, useSandbox, macro, baseroute }: CreateAppParam) {
+  constructor ({ name, url, container, inline, scopecss, useSandbox, macro, baseroute, ssr }: CreateAppParam) {
     this.container = container ?? null
     this.inline = inline ?? false
     this.baseroute = baseroute ?? ''
@@ -69,6 +73,7 @@ export default class CreateApp implements AppInterface {
       links: new Map<string, sourceLinkInfo>(),
       scripts: new Map<string, sourceScriptInfo>(),
     }
+    this.ssr = !!ssr  // by awesomedevin
     this.loadSourceCode()
     if (this.useSandbox) {
       this.sandBox = new SandBox(name, url, this.macro)
@@ -142,6 +147,30 @@ export default class CreateApp implements AppInterface {
     cloneNode(this.source.html as Element, this.container as Element, !this.umdMode)
 
     this.sandBox?.start(this.baseroute)
+
+    // Compatible with next dynamic resource loading - by awesomedevin
+    const observeTarget = this.container.querySelector('micro-app-head')
+    observeTarget?.addEventListener('DOMNodeInserted',(data)=>{
+      const child = data.target
+      const { origin } = new URL(this.url)
+      if(child){
+          // Style tags with data-n-href attributes require special handling
+          if(child && child instanceof HTMLStyleElement && child.getAttribute('data-n-href')){
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.type = 'text/css'
+              link.href = CompletionPath(child.getAttribute('data-n-href') || '', this.url)
+              commonElementHander(observeTarget, link, child, globalEnv.rawReplaceChild)
+          }else if(child && child instanceof HTMLLinkElement && child.getAttribute('href') && !child.getAttribute('href')?.match(origin)){
+              const href = child.getAttribute('href')
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.type = 'text/css'
+              link.href = CompletionPath(href || '', this.url)
+              commonElementHander(observeTarget, link, child, globalEnv.rawReplaceChild)
+          }
+      }
+  })
 
     let umdHookMountResult: any // result of mount function
 

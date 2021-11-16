@@ -4,6 +4,7 @@ import { logError, CompletionPath, pureCreateElement } from '../libs/utils'
 import { extractLinkFromHtml, fetchLinksFromHtml } from './links'
 import { extractScriptElement, fetchScriptsFromHtml } from './scripts'
 import scopedCSS from './scoped_css'
+import { formatURL } from '../libs/utils'
 
 /**
  * transform html string to dom
@@ -95,7 +96,12 @@ function extractSourceDom (htmlStr: string, app: AppInterface) {
  * @param app app
  */
 export default function extractHtml (app: AppInterface): void {
-  fetchSource(app.url, app.name, { cache: 'no-cache' }).then((htmlStr: string) => {
+
+  // Support to fetch SSR multi-page projects - by awesomedevin
+  const ssrUrl = (`${formatURL(app.url, app.name).replace(/\/$/,'')}${globalThis.location.pathname}`).replace(/(\/| *)$/,'.html')
+  const url = app.ssr ? ssrUrl :  app.url
+  
+  fetchSource(url, app.name, { cache: 'no-cache' }).then((htmlStr: string) => {
     if (!htmlStr) {
       const msg = 'html is empty, please check in detail'
       app.onerror(new Error(msg))
