@@ -59,7 +59,7 @@ export default class CreateApp implements AppInterface {
   sandBox: SandBoxInterface | null = null
 
   // by awesomedevin
-  ssr: boolean 
+  ssr: boolean
 
   constructor ({ name, url, container, inline, scopecss, useSandbox, macro, baseroute, ssr }: CreateAppParam) {
     this.container = container ?? null
@@ -76,7 +76,7 @@ export default class CreateApp implements AppInterface {
       scripts: new Map<string, sourceScriptInfo>(),
     }
     // by awesomedevin
-    this.ssr = !!ssr  
+    this.ssr = !!ssr
 
     this.loadSourceCode()
     if (this.useSandbox) {
@@ -153,28 +153,7 @@ export default class CreateApp implements AppInterface {
     this.sandBox?.start(this.baseroute)
 
     // Compatible with next dynamic resource loading - by awesomedevin
-    const observeTarget = this.container.querySelector('micro-app-head')
-    observeTarget?.addEventListener('DOMNodeInserted',(data)=>{
-      const child = data.target
-      const { origin } = new URL(this.url)
-      if(child){
-          // Style tags with data-n-href attributes require special handling - by awesomedevin
-          if(child && child instanceof HTMLStyleElement && child.getAttribute('data-n-href')){
-              const link = document.createElement('link')
-              link.rel = 'stylesheet'
-              link.type = 'text/css'
-              link.href = CompletionPath(child.getAttribute('data-n-href') || '', this.url)
-              commonElementHander(observeTarget, link, child, globalEnv.rawReplaceChild)
-          }else if(child && child instanceof HTMLLinkElement && child.getAttribute('href') && !child.getAttribute('href')?.match(origin)){
-              const href = child.getAttribute('href')
-              const link = document.createElement('link')
-              link.rel = 'stylesheet'
-              link.type = 'text/css'
-              link.href = CompletionPath(href || '', this.url)
-              commonElementHander(observeTarget, link, child, globalEnv.rawReplaceChild)
-          }
-      }
-  })
+    this.observeHead()
 
     let umdHookMountResult: any // result of mount function
 
@@ -338,6 +317,32 @@ export default class CreateApp implements AppInterface {
   // get app status
   getAppStatus (): string {
     return this.status
+  }
+
+  // watch head
+  observeHead (): void {
+    const observeTarget = this.container?.querySelector('micro-app-head')
+    observeTarget?.addEventListener('DOMNodeInserted', (data: Event) => {
+      const child = data.target
+      const { origin } = new URL(this.url)
+      if (child) {
+        // Style tags with data-n-href attributes require special handling - by awesomedevin
+        if (child && child instanceof HTMLStyleElement && child.getAttribute('data-n-href')) {
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.type = 'text/css'
+          link.href = CompletionPath(child.getAttribute('data-n-href') || '', this.url)
+          commonElementHander(observeTarget, link, child, globalEnv.rawReplaceChild)
+        } else if (child && child instanceof HTMLLinkElement && child.getAttribute('href') && !child.getAttribute('href')?.match(origin)) {
+          const href = child.getAttribute('href')
+          const link = document.createElement('link')
+          link.rel = 'stylesheet'
+          link.type = 'text/css'
+          link.href = CompletionPath(href || '', this.url)
+          commonElementHander(observeTarget, link, child, globalEnv.rawReplaceChild)
+        }
+      }
+    })
   }
 
   // get umd library, if it not exist, return empty object

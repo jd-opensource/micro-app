@@ -23,7 +23,6 @@ export const elementInstanceMap = new Map<Element, boolean>()
  */
 export function defineElement (tagName: string): void {
   class MicroAppElement extends HTMLElement implements MicroAppElementType {
-
     // observe ssr attribute - by awesomedevin
     static get observedAttributes (): string[] {
       return ['name', 'url', 'ssr']
@@ -81,7 +80,7 @@ export function defineElement (tagName: string): void {
     }
 
     attributeChangedCallback (attr: ObservedAttrName, _oldVal: string, newVal: string): void {
-      const attrMap: {[key: string] : 'appName' | 'appUrl' | 'isSsr'  } = {
+      const attrMap: {[key: string] : 'appName' | 'appUrl' | 'isSsr' } = {
         [ObservedAttrName.NAME]: 'appName',
         [ObservedAttrName.URL]: 'appUrl',
         [ObservedAttrName.SSR]: 'isSsr',
@@ -104,10 +103,10 @@ export function defineElement (tagName: string): void {
           }
           this.appName = newVal
           this.handleInitialNameAndUrl()
-        } else if(attr === ObservedAttrName.SSR && typeof this.isSsr === null){
-            // Gets the tag attribute value - by awesomedevin
-            this.isSsr = !!(newVal)
-         } else if (!this.isWating) {
+        } else if (attr === ObservedAttrName.SSR && this.isSsr === null) {
+          // Gets the tag attribute value - by awesomedevin
+          this.isSsr = !!(newVal)
+        } else if (!this.isWating) {
           this.isWating = true
           defer(this.handleAttributeUpdate)
         }
