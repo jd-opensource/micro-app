@@ -167,7 +167,7 @@ export function commonElementHander (
   newChild: Node,
   passiveChild: Node | null,
   rawMethod: Func,
-) {
+): any {
   if (newChild?.__MICRO_APP_NAME__) {
     const app = appInstanceMap.get(newChild.__MICRO_APP_NAME__)
     if (app?.container) {
