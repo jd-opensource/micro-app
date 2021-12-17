@@ -47,7 +47,7 @@ function flatChildren (
       if (dom.hasAttribute('exclude')) {
         parent.replaceChild(document.createComment('style element with exclude attribute ignored by micro-app'), dom)
       } else if (app.scopecss && !dom.hasAttribute('ignore')) {
-        microAppHead.appendChild(scopedCSS(dom, app.name))
+        microAppHead.appendChild(scopedCSS(dom, app.name, microAppHead))
       }
     } else if (dom instanceof HTMLScriptElement) {
       extractScriptElement(dom, parent, app)

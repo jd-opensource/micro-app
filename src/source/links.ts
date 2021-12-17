@@ -133,9 +133,12 @@ export function fetchLinkSuccess (
   styleLink.textContent = data
   styleLink.linkpath = url
 
-  microAppHead.replaceChild(scopedCSS(styleLink, app.name), info.placeholder!)
-
-  info.placeholder = null
+  if (info.placeholder) {
+    microAppHead.replaceChild(scopedCSS(styleLink, app.name, microAppHead), info.placeholder!)
+    info.placeholder = null
+  } else {
+    microAppHead.appendChild(scopedCSS(styleLink, app.name, microAppHead))
+  }
   info.code = data
 }
 

@@ -444,3 +444,20 @@ export function rejectMicroAppStyle (): void {
     globalEnv.rawDocument.head.appendChild(style)
   }
 }
+
+// Extract @ import - by awesomedevin
+export function extractImportCss (styleElement: HTMLStyleElement, app: AppInterface, microAppHead?: Element): void {
+  const styleTextContent = styleElement.textContent
+  const container = microAppHead || app?.container?.querySelector('micro-app-head')
+  const matchs = styleTextContent && styleTextContent.match(/"(.+\.css)"/g)
+  const cssLink = matchs ? matchs[0].replace(/"|;/g, '') : ''
+  const url = CompletionPath(cssLink || '', app.url)
+
+  if (!cssLink || !container) return
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.type = 'text/css'
+  link.href = url
+  const styleDom = handleNewNode(container, link, app)
+  commonElementHander(container, styleDom, null, globalEnv.rawAppendChild)
+}

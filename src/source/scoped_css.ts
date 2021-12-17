@@ -2,6 +2,7 @@ import { appInstanceMap } from '../create_app'
 import { CompletionPath, isSafari, pureCreateElement, getLinkFileDir } from '../libs/utils'
 import microApp from '../micro_app'
 import globalEnv from '../libs/global_env'
+import { extractImportCss } from './patch'
 
 // https://developer.mozilla.org/zh-CN/docs/Web/API/CSSRule
 enum CSSRuleType {
@@ -163,7 +164,7 @@ function commonAction (
  * @param styleElement target style element
  * @param appName app name
  */
-export default function scopedCSS (styleElement: HTMLStyleElement, appName: string): HTMLStyleElement {
+export default function scopedCSS (styleElement: HTMLStyleElement, appName: string, microAppHead?: Element): HTMLStyleElement {
   const app = appInstanceMap.get(appName)
   if (app?.scopecss) {
     const prefix = `${microApp.tagName}[name=${appName}]`
@@ -173,6 +174,11 @@ export default function scopedCSS (styleElement: HTMLStyleElement, appName: stri
       templateStyle.setAttribute('id', 'micro-app-template-style')
       globalEnv.rawDocument.body.appendChild(templateStyle)
       templateStyle.sheet!.disabled = true
+    }
+
+    if (styleElement.textContent?.match('@import')) {
+      extractImportCss(styleElement, app, microAppHead)
+      globalEnv.rawWindow.requestIdleCallback(() => { extractImportCss(styleElement, app, microAppHead) })
     }
 
     if (styleElement.textContent) {
