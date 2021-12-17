@@ -177,7 +177,6 @@ export default function scopedCSS (styleElement: HTMLStyleElement, appName: stri
     }
 
     if (styleElement.textContent?.match('@import')) {
-      extractImportCss(styleElement, app, microAppHead)
       globalEnv.rawWindow.requestIdleCallback(() => { extractImportCss(styleElement, app, microAppHead) })
     }
 

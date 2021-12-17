@@ -162,7 +162,7 @@ function getMappingNode (node: Node): Node {
  * @param passiveChild passive node
  * @param rawMethodraw method
  */
-function commonElementHander (
+export function commonElementHander (
   parent: Node,
   newChild: Node,
   passiveChild: Node | null,
