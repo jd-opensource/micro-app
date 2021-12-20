@@ -53,6 +53,9 @@ declare module '@micro-app/types' {
     sandBox: SandBoxInterface | null // sanxbox
     umdMode: boolean // is umd mode
 
+    // Watch head
+    observeHead() : void
+
     // Load resources
     loadSourceCode (): void
 
