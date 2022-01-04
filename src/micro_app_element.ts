@@ -345,7 +345,7 @@ export function defineElement (tagName: string): void {
       const baseRoute = this.getBaseRouteCompatible()
       // Support to fetch SSR multi-page projects - by awesomedevin
       const res = `${url}${this.suffix}`
-      return baseRoute ? res.replace(baseRoute, '') : res
+      return baseRoute && this.getDisposeResult('ssr') ? res.replace(baseRoute, '') : res
     }
 
     // create app instance
@@ -360,8 +360,8 @@ export function defineElement (tagName: string): void {
 
       const instance: AppInterface = new CreateApp({
         name: this.appName,
-        url: this.getDisposeResult('autoRoute') ? this.preProcessingUrl(this.appUrl) : this.appUrl,
-        ssrUrl: this.getDisposeResult('autoRoute') ? this.preProcessingUrl(this.ssrUrl) : this.ssrUrl,
+        url: this.preProcessingUrl(this.appUrl),
+        ssrUrl: this.preProcessingUrl(this.ssrUrl),
         container: this.shadowRoot ?? this,
         inline: this.getDisposeResult('inline'),
         scopecss: !(this.getDisposeResult('disableScopecss') || this.getDisposeResult('shadowDOM')),
