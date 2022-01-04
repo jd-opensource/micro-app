@@ -16,6 +16,7 @@ class MicroApp extends EventCenterForBaseApp implements MicroAppConfigType {
   ssr?: boolean
   lifeCycles?: lifeCyclesType
   plugins?: plugins
+  effectiveMetas?: effectiveMetas
   fetch?: fetchType
   preFetch = preFetch
   start (options?: OptionsType) {

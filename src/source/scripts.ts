@@ -397,3 +397,20 @@ function usePlugins (url: string, code: string, appName: string, plugins: plugin
 
   return code
 }
+
+/**
+ * Call the efftiveMeta to process the dom - by awesomedevin
+ * @param appName app name
+ * @param efftiveMeta efftiveMeta
+ */
+export function useEffectiveMetas (metas: HTMLMetaElement[], appName: string, efftiveMetas: effectiveMetas): HTMLMetaElement[] {
+  if (efftiveMetas?.global && isFunction(efftiveMetas.global)) {
+    return efftiveMetas.global(metas)
+  }
+  if (efftiveMetas?.modules && isPlainObject(efftiveMetas.modules)) {
+    if (efftiveMetas.modules[appName] && isFunction(efftiveMetas.modules[appName])) {
+      return efftiveMetas.modules[appName](metas)
+    }
+  }
+  return []
+}
