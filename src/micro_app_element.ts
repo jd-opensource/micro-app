@@ -106,7 +106,7 @@ export function defineElement (tagName: string): void {
     }
 
     attributeChangedCallback (attr: ObservedAttrName, _oldVal: string, newVal: string): void {
-      const attrMap = {
+      const attrMap: {[key: string] : 'appName' | 'appUrl' | 'suffix' } = {
         [ObservedAttrName.NAME]: 'appName',
         [ObservedAttrName.URL]: 'appUrl',
         [ObservedAttrName.SUFFIX]: 'suffix',
