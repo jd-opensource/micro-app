@@ -115,6 +115,13 @@ declare module '@micro-app/types' {
     shadowDOM?: boolean
   }
 
+  type effectiveMetas = {
+    global: (metas: HTMLMetaElement[]) => HTMLMetaElement[]
+    modules: {
+      [name: string]: (metas: HTMLMetaElement[]) => HTMLMetaElement[]
+    }
+  }
+
   // prefetch params
   type prefetchParamList = Array<prefetchParam> | (() => Array<prefetchParam>)
 
@@ -173,6 +180,7 @@ declare module '@micro-app/types' {
     ssr?: boolean
     lifeCycles?: lifeCyclesType
     preFetchApps?: prefetchParamList
+    effectiveMetas?: effectiveMetas
     plugins?: plugins
     fetch?: fetchType
     globalAssets?: globalAssetsType,
@@ -210,10 +218,3 @@ declare module '@micro-zoe/micro-app/polyfill/jsx-custom-event'
 declare const __DEV__: boolean
 
 declare const __TEST__: boolean
-
-type effectiveMetas = {
-  global: (metas: HTMLMetaElement[]) => HTMLMetaElement[]
-  modules: {
-    [name: string]: (metas: HTMLMetaElement[]) => HTMLMetaElement[]
-  }
-}
