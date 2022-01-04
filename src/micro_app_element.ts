@@ -29,6 +29,7 @@ import {
 import microApp from './micro_app'
 import dispatchLifecyclesEvent from './interact/lifecycles_event'
 import globalEnv from './libs/global_env'
+import { patchHistoryMethods } from './source'
 
 // record all micro-app elements
 export const elementInstanceMap = new Map<Element, boolean>()
@@ -78,11 +79,14 @@ export function defineElement (tagName: string): void {
         this.performWhenFirstCreated()
       }
 
-      defer(() => dispatchLifecyclesEvent(
-        this,
-        this.appName,
-        lifeCycles.CREATED,
-      ))
+      defer(() => {
+        dispatchLifecyclesEvent(
+          this,
+          this.appName,
+          lifeCycles.CREATED,
+        )
+        patchHistoryMethods.call(this, this.appName)
+      })
 
       this.initialMount()
     }
