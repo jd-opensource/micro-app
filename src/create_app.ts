@@ -37,6 +37,7 @@ export interface CreateAppParam {
   inline?: boolean
   baseroute?: string
   container?: HTMLElement | ShadowRoot
+  suffix?: string
 }
 
 export default class CreateApp implements AppInterface {
@@ -60,6 +61,7 @@ export default class CreateApp implements AppInterface {
   baseroute = ''
   source: sourceType
   sandBox: SandBoxInterface | null = null
+  suffix = ''
 
   constructor ({
     name,
@@ -71,6 +73,7 @@ export default class CreateApp implements AppInterface {
     useSandbox,
     macro,
     baseroute,
+    suffix,
   }: CreateAppParam) {
     this.container = container ?? null
     this.inline = inline ?? false
@@ -86,6 +89,7 @@ export default class CreateApp implements AppInterface {
       links: new Map<string, sourceLinkInfo>(),
       scripts: new Map<string, sourceScriptInfo>(),
     }
+    this.suffix = suffix || ''
     this.loadSourceCode()
     this.useSandbox && (this.sandBox = new SandBox(name, url, this.macro))
   }

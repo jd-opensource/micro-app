@@ -40,7 +40,7 @@ export const elementInstanceMap = new Map<Element, boolean>()
 export function defineElement (tagName: string): void {
   class MicroAppElement extends HTMLElement implements MicroAppElementType {
     static get observedAttributes (): string[] {
-      return ['name', 'url']
+      return ['name', 'url', 'suffix']
     }
 
     constructor () {
@@ -58,6 +58,7 @@ export function defineElement (tagName: string): void {
     appUrl = '' // app url
     ssrUrl = '' // html path in ssr mode
     version = version
+    suffix = ''
 
     // 👇 Configuration
     // name: app name
@@ -105,9 +106,14 @@ export function defineElement (tagName: string): void {
     }
 
     attributeChangedCallback (attr: ObservedAttrName, _oldVal: string, newVal: string): void {
+      const attrMap = {
+        [ObservedAttrName.NAME]: 'appName',
+        [ObservedAttrName.URL]: 'appUrl',
+        [ObservedAttrName.SUFFIX]: 'suffix',
+      }
       if (
         this.legalAttribute(attr, newVal) &&
-        this[attr === ObservedAttrName.NAME ? 'appName' : 'appUrl'] !== newVal
+        this[attrMap[attr]] !== newVal
       ) {
         if (attr === ObservedAttrName.URL && !this.appUrl) {
           newVal = formatAppURL(newVal, this.appName)
@@ -133,6 +139,9 @@ export function defineElement (tagName: string): void {
             this.setAttribute('name', this.appName)
           }
           this.handleInitialNameAndUrl()
+        } else if (attr === ObservedAttrName.SUFFIX && this.suffix === '') {
+          // Gets the tag attribute value - by awesomedevin
+          this.suffix = newVal
         } else if (!this.isWating) {
           this.isWating = true
           defer(this.handleAttributeUpdate)
@@ -208,6 +217,7 @@ export function defineElement (tagName: string): void {
      */
     private handleAttributeUpdate = (): void => {
       this.isWating = false
+      this.suffix = formatAppName(this.getAttribute('suffix')) || ''
       const formatAttrName = formatAppName(this.getAttribute('name'))
       const formatAttrUrl = formatAppURL(this.getAttribute('url'), this.appName)
       if (this.legalAttribute('name', formatAttrName) && this.legalAttribute('url', formatAttrUrl)) {
@@ -347,6 +357,7 @@ export function defineElement (tagName: string): void {
         useSandbox: !this.getDisposeResult('disableSandbox'),
         macro: this.getDisposeResult('macro'),
         baseroute: this.getBaseRouteCompatible(),
+        suffix: this.suffix,
       })
 
       appInstanceMap.set(this.appName, instance)
