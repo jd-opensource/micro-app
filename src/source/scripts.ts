@@ -4,6 +4,7 @@ import type {
   sourceScriptInfo,
   plugins,
   Func,
+  effectiveMetas,
 } from '@micro-app/types'
 import { fetchSource } from './fetch'
 import {
