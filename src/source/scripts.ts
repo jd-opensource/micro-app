@@ -68,6 +68,7 @@ export function extractScriptElement (
       defer: script.defer || script.type === 'module',
       module: script.type === 'module',
       isGlobal: script.hasAttribute('global'),
+      origin: script
     }
     if (!isDynamic) {
       app.source.scripts.set(src, info)
@@ -84,6 +85,7 @@ export function extractScriptElement (
       async: false,
       defer: script.type === 'module',
       module: script.type === 'module',
+      origin: script
     }
     if (!isDynamic) {
       app.source.scripts.set(nonceStr, info)
@@ -239,6 +241,7 @@ export function runScript (
 ): any {
   try {
     const code = bindScope(url, app, info.code, info)
+    bindCurrentScript(info)
     if (app.inline || info.module) {
       const scriptElement = pureCreateElement('script')
       runCode2InlineScript(url, code, info.module, scriptElement, callback)
@@ -264,9 +267,9 @@ export function runScript (
 export function runDynamicRemoteScript (
   url: string,
   info: sourceScriptInfo,
-  app: AppInterface,
-  originScript: HTMLScriptElement,
+  app: AppInterface
 ): HTMLScriptElement | Comment {
+  const originScript = info.origin
   const dispatchScriptOnLoadEvent = () => dispatchOnLoadEvent(originScript)
 
   // url is unique
@@ -297,6 +300,7 @@ export function runDynamicRemoteScript (
     info.isGlobal && globalScripts.set(url, code)
     try {
       code = bindScope(url, app, code, info)
+      bindCurrentScript(info)
       if (app.inline || info.module) {
         runCode2InlineScript(url, code, info.module, replaceElement as HTMLScriptElement, dispatchScriptOnLoadEvent)
       } else {
@@ -378,6 +382,19 @@ function bindScope (
   }
 
   return code
+}
+
+/**
+ * bind currentScript getter
+ * @param info source script info
+ */
+function bindCurrentScript (info: sourceScriptInfo) {
+  Reflect.defineProperty(document, 'currentScript', {
+    get (): any {
+      return info.origin
+    },
+    configurable: true,
+  })
 }
 
 /**
