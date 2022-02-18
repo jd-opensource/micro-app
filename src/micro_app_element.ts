@@ -85,7 +85,8 @@ export function defineElement (tagName: string): void {
           this.appName,
           lifeCycles.CREATED,
         )
-        patchHistoryMethods.call(this, this.appName)
+
+        this.getDisposeResult('autoRoute') && patchHistoryMethods.call(this, this.appName)
       })
 
       this.initialMount()
@@ -345,7 +346,7 @@ export function defineElement (tagName: string): void {
       const baseRoute = this.getBaseRouteCompatible()
       // Support to fetch SSR multi-page projects - by awesomedevin
       const res = `${url}${this.suffix}`
-      return this.getDisposeResult('autoRoute') && baseRoute && this.getDisposeResult('ssr') ? res.replace(baseRoute, '') : res
+      return this.getDisposeResult('autoRoute') && baseRoute ? res.replace(baseRoute, '') : res
     }
 
     // create app instance
