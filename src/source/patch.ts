@@ -427,7 +427,7 @@ export function patchSetAttribute (): void {
           }
         })
         this.data = cloneValue
-      } else if (value !== '[object Object]') {
+      } else {
         logWarn('property data must be an object', this.getAttribute('name'))
       }
     } else if (

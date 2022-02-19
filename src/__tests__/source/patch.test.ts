@@ -164,8 +164,6 @@ describe('source patch', () => {
          */
         microAppElement1.setAttribute('data', 'not object')
         expect(console.warn).toHaveBeenLastCalledWith('[micro-app] app test-app1: property data must be an object')
-        // 模拟将对象类型转换为字符串
-        microAppElement1.setAttribute('data', '[object Object]')
         // @ts-ignore
         microAppElement1.setAttribute('data', {
           __selfName: '',
