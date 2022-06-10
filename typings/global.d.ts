@@ -54,6 +54,7 @@ declare module '@micro-app/types' {
     source: sourceType // sources of css, js, html
     sandBox: SandBoxInterface | null // sanxbox
     umdMode: boolean // is umd mode
+    suffix?: string
 
     // Load resources
     loadSourceCode (): void

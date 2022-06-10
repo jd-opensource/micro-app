@@ -345,7 +345,7 @@ export function defineElement (tagName: string): void {
     private preProcessingUrl (url: string): string {
       const baseRoute = this.getBaseRouteCompatible()
       // Support to fetch SSR multi-page projects - by awesomedevin
-      const res = `${url}${this.suffix}`
+      const res = `${url}`
       return this.getDisposeResult('autoRoute') && baseRoute ? res.replace(baseRoute, '') : res
     }
 
