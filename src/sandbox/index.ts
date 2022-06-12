@@ -192,7 +192,7 @@ export default class SandBox implements SandBoxInterface {
 
         const rawValue = Reflect.get(rawWindow, key)
 
-        return isFunction(rawValue) ? bindFunctionToRawWindow(rawWindow, rawValue) : rawValue
+        return isFunction(rawValue) ? bindFunctionToRawObject(rawWindow, rawValue) : rawValue
       },
       set: (target: microAppWindowType, key: PropertyKey, value: unknown): boolean => {
         if (this.active) {
