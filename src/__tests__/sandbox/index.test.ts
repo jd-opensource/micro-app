@@ -219,6 +219,17 @@ describe('sandbox', () => {
     expect('Math' in proxyWindow).toBe(true)
   })
 
+  // 缓存 window 属性值时，也可以正确获取到 currentAppName
+  test('test cache window property', () => {
+    const sandbox = new Sandbox('test-app-has', `http://127.0.0.1:${ports.sandbox}/common/`)
+    sandbox.start('')
+    const doc = sandbox.proxyWindow.document
+    Promise.resolve().then(() => {
+      const div = doc.createElement('div')
+      expect(div.__MICRO_APP_NAME__).toBe('test-app-has')
+    })
+  })
+
   // getOwnPropertyDescriptor 和 defineProperty
   test('getOwnPropertyDescriptor and defineProperty', () => {
     const sandbox = new Sandbox('test-app-defineProperty', `http://127.0.0.1:${ports.sandbox}/common/`)

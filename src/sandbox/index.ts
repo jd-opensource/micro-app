@@ -4,6 +4,7 @@ import {
 } from '../interact'
 import globalEnv from '../libs/global_env'
 import {
+  isBrowser,
   getEffectivePath,
   isArray,
   isPlainObject,
@@ -56,6 +57,33 @@ const escapeSetterKeyList: PropertyKey[] = [
 
 const globalPropertyList: Array<PropertyKey> = ['window', 'self', 'globalThis']
 
+let pureWindowPropertyList: Set<PropertyKey> | null = null
+
+function getPureWindowProperties () {
+  if (!pureWindowPropertyList) {
+    if (isBrowser) {
+      const { rawDocument, rawWindow } = globalEnv
+      const testFrame = rawDocument.createElement('frame')
+      rawDocument.body.appendChild(testFrame)
+      const testFrameWindow = rawWindow.frames[rawWindow.length - 1]
+      pureWindowPropertyList = new Set(Object.getOwnPropertyNames(testFrameWindow))
+      rawDocument.body.removeChild(testFrame)
+    } else {
+      pureWindowPropertyList = new Set()
+    }
+  }
+  return pureWindowPropertyList
+}
+
+function createProxyWindowProperty (rawValue: object, appName: string) {
+  return new Proxy(rawValue, {
+    get (target, key: PropertyKey, receiver) {
+      throttleDeferForSetAppName(appName)
+      return Reflect.get(target, key, receiver)
+    }
+  })
+}
+
 export default class SandBox implements SandBoxInterface {
   static activeCount = 0 // number of active sandbox
   private recordUmdEffect!: CallableFunction
@@ -68,6 +96,8 @@ export default class SandBox implements SandBoxInterface {
   private scopeProperties: PropertyKey[] = ['webpackJsonp', 'Vue']
   // Properties that can be escape to rawWindow
   private escapeProperties: PropertyKey[] = []
+  // Properties that belongs to pure window
+  private pureWindowProperties: Set<PropertyKey> = getPureWindowProperties()
   // Properties newly added to microAppWindow
   private injectedKeys = new Set<PropertyKey>()
   // Properties escape to rawWindow, cleared when unmount
@@ -179,6 +209,7 @@ export default class SandBox implements SandBoxInterface {
   private createProxyWindow (appName: string) {
     const rawWindow = globalEnv.rawWindow
     const descriptorTargetMap = new Map<PropertyKey, 'target' | 'rawWindow'>()
+    const pureWindowProperties = this.pureWindowProperties
     // window.xxx will trigger proxy
     return new Proxy(this.microAppWindow, {
       get: (target: microAppWindowType, key: PropertyKey): unknown => {
@@ -192,7 +223,11 @@ export default class SandBox implements SandBoxInterface {
 
         const rawValue = Reflect.get(rawWindow, key)
 
-        return isFunction(rawValue) ? bindFunctionToRawWindow(rawWindow, rawValue) : rawValue
+        return isFunction(rawValue)
+          ? bindFunctionToRawWindow(rawWindow, rawValue)
+          : pureWindowProperties.has(key)
+            ? createProxyWindowProperty(rawValue, appName)
+            : rawValue
       },
       set: (target: microAppWindowType, key: PropertyKey, value: unknown): boolean => {
         if (this.active) {
