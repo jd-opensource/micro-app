@@ -17,7 +17,7 @@ import {
 } from './load_event'
 
 // Global links, reuse across apps
-export const globalLinks = new Map<string, string>()
+export const globalLinks = new Map<string, { code: string, hasBeenScoped?: boolean }>()
 
 /**
  * Extract link elements
@@ -87,7 +87,7 @@ export function fetchLinksFromHtml (
   const linkEntries: Array<[string, sourceLinkInfo]> = Array.from(app.source.links.entries())
 
   const fetchLinkPromise: Array<Promise<string>|string> = linkEntries.map(([url]) => {
-    return globalLinks.has(url) ? globalLinks.get(url)! : fetchSource(url, app.name)
+    return globalLinks.has(url) ? globalLinks.get(url)!.code : fetchSource(url, app.name)
   })
 
   promiseStream<string>(fetchLinkPromise, (res: {data: string, index: number}) => {
@@ -121,7 +121,7 @@ export function fetchLinkSuccess (
   app: AppInterface,
 ): void {
   if (info.isGlobal && !globalLinks.has(url)) {
-    globalLinks.set(url, data)
+    globalLinks.set(url, { code: data })
   }
 
   const styleLink = pureCreateElement('style')
@@ -162,7 +162,7 @@ export function formatDynamicLink (
   }
 
   if (globalLinks.has(url)) {
-    const code = globalLinks.get(url)!
+    const code = globalLinks.get(url)!.code
     info.code = code
     app.source.links.set(url, info)
     replaceStyle.textContent = code
@@ -174,7 +174,7 @@ export function formatDynamicLink (
   fetchSource(url, app.name).then((data: string) => {
     info.code = data
     app.source.links.set(url, info)
-    info.isGlobal && globalLinks.set(url, data)
+    info.isGlobal && globalLinks.set(url, { code: data })
     replaceStyle.textContent = data
     scopedCSS(replaceStyle, app)
     dispatchOnLoadEvent(originLink)

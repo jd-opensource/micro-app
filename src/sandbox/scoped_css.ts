@@ -2,6 +2,7 @@
 import type { AppInterface } from '@micro-app/types'
 import { CompletionPath, getLinkFileDir, logError, trim, isFireFox } from '../libs/utils'
 import microApp from '../micro_app'
+import { globalLinks } from '../source/links'
 
 // common reg
 const rootSelectorREG = /(^|\s+)(html|:root)(?=[\s>~[.#:]+|$)/
@@ -402,6 +403,14 @@ function commonAction (
 ) {
   if (!styleElement.__MICRO_APP_HAS_SCOPED__) {
     styleElement.__MICRO_APP_HAS_SCOPED__ = true
+
+    // check global cache
+    const globalLink = linkPath ? globalLinks.get(linkPath) : undefined
+    if (globalLink?.hasBeenScoped) {
+      return globalLink.code
+    }
+
+    // do scoped
     let result: string | null = null
     try {
       result = parser.exec(
@@ -416,7 +425,15 @@ function commonAction (
       logError('An error occurred while parsing CSS:\n', appName, e)
     }
 
-    if (result) styleElement.textContent = result
+    if (result) {
+      styleElement.textContent = result
+
+      // set global cache
+      if (globalLink) {
+        globalLink.hasBeenScoped = true
+        globalLink.code = result
+      }
+    }
   }
 }
 

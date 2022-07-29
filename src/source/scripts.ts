@@ -29,7 +29,7 @@ import { globalKeyToBeCached } from '../libs/constants'
 type moduleCallBack = Func & { moduleCount?: number, errorCount?: number }
 
 // Global scripts, reuse across apps
-export const globalScripts = new Map<string, string>()
+export const globalScripts = new Map<string, { code: string, hasBeenProcessed?: boolean }>()
 
 /**
  * Extract script elements
@@ -161,9 +161,9 @@ export function fetchScriptsFromHtml (
   const fetchScriptPromiseInfo: Array<[string, sourceScriptInfo]> = []
   for (const [url, info] of scriptEntries) {
     if (info.isExternal) {
-      const globalScriptText = globalScripts.get(url)
-      if (globalScriptText) {
-        info.code = globalScriptText
+      const globalScript = globalScripts.get(url)
+      if (globalScript) {
+        info.code = globalScript.code
       } else if ((!info.defer && !info.async) || app.isPrefetch) {
         fetchScriptPromise.push(fetchSource(url, app.name))
         fetchScriptPromiseInfo.push([url, info])
@@ -200,7 +200,7 @@ export function fetchScriptSuccess (
   data: string,
 ): void {
   if (info.isGlobal && !globalScripts.has(url)) {
-    globalScripts.set(url, data)
+    globalScripts.set(url, { code: data })
   }
 
   info.code = data
@@ -325,8 +325,7 @@ export function runDynamicRemoteScript (
   }
 
   if (globalScripts.has(url)) {
-    const code = globalScripts.get(url)!
-    info.code = code
+    info.code = globalScripts.get(url)!.code
     app.source.scripts.set(url, info)
     !info.module && defer(dispatchScriptOnLoadEvent)
     return runScript(url, app, info, true, dispatchScriptOnLoadEvent)
@@ -342,7 +341,7 @@ export function runDynamicRemoteScript (
   fetchSource(url, app.name).then((code: string) => {
     info.code = code
     app.source.scripts.set(url, info)
-    info.isGlobal && globalScripts.set(url, code)
+    info.isGlobal && globalScripts.set(url, { code })
     try {
       code = bindScope(url, app, code, info)
       if (app.inline || info.module) {
@@ -438,9 +437,23 @@ function bindScope (
  * @param info source script info
  */
 function usePlugins (url: string, code: string, appName: string, plugins: plugins, info: sourceScriptInfo): string {
-  const newCode = processCode(plugins.global, code, url, info)
+  // check global cache
+  const globalScript = globalScripts.get(url)
+  if (globalScript?.hasBeenProcessed) {
+    return globalScript.code
+  }
 
-  return processCode(plugins.modules?.[appName], newCode, url, info)
+  // do plugin
+  let newCode = processCode(plugins.global, code, url, info)
+  newCode = processCode(plugins.modules?.[appName], newCode, url, info)
+
+  // set global cache
+  if (globalScript) {
+    globalScript.code = newCode
+    globalScript.hasBeenProcessed = true
+  }
+
+  return newCode
 }
 
 function processCode (configs: plugins['global'], code: string, url: string, info: sourceScriptInfo) {
