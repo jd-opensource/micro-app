@@ -323,6 +323,11 @@ declare module '@micro-app/types' {
 
   type RouterGuard = AccurateGuard | GlobalNormalGuard
 
+  type SetDefaultPageOptions = {
+    name: string,
+    path: string,
+  }
+
   // Router API for developer
   interface Router {
     // current route of all apps
@@ -377,10 +382,9 @@ declare module '@micro-app/types' {
     afterEach(guard: RouterGuard): () => boolean
     /**
      * Add defaultPage to control the first rendered page
-     * @param appName app name
-     * @param path default page path
+     * @param options SetDefaultPageOptions
      */
-    setDefaultPage(appName: string, path: string): () => boolean
+    setDefaultPage(options: SetDefaultPageOptions): () => boolean
     /**
      * Clear data of defaultPage that set by setDefaultPage
      */

@@ -57,13 +57,13 @@ import React from "react"
 import ReactDOM from "react-dom"
 import App from './App'
 
-// 👇 将渲染操作放入 mount 函数 -- 必填
-export function mount () {
+// 👇 将渲染操作放入 mount 函数
+function mount () {
   ReactDOM.render(<App />, document.getElementById("root"))
 }
 
-// 👇 将卸载操作放入 unmount 函数 -- 必填
-export function unmount () {
+// 👇 将卸载操作放入 unmount 函数
+function unmount () {
   ReactDOM.unmountComponentAtNode(document.getElementById("root"))
 }
 
@@ -86,7 +86,7 @@ import router from './router'
 import App from './App.vue'
 
 let app = null
-// 👇 将渲染操作放入 mount 函数 -- 必填
+// 👇 将渲染操作放入 mount 函数
 function mount () {
   app = new Vue({
     router,
@@ -94,7 +94,7 @@ function mount () {
   }).$mount('#app')
 }
 
-// 👇 将卸载操作放入 unmount 函数 -- 必填
+// 👇 将卸载操作放入 unmount 函数
 function unmount () {
   app.$destroy()
   app.$el.innerHTML = ''
@@ -123,7 +123,7 @@ import App from './App.vue'
 let app = null
 let router = null
 let history = null
-// 👇 将渲染操作放入 mount 函数 -- 必填
+// 👇 将渲染操作放入 mount 函数
 function mount () {
   history = VueRouter.createWebHistory(window.__MICRO_APP_BASE_ROUTE__ || '/')
   router = VueRouter.createRouter({
@@ -136,7 +136,7 @@ function mount () {
   app.mount('#app')
 }
 
-// 👇 将卸载操作放入 unmount 函数 -- 必填
+// 👇 将卸载操作放入 unmount 函数
 function unmount () {
   app.unmount()
   history.destroy()
@@ -171,14 +171,14 @@ declare global {
 }
 
 let app = null;
-// 👇 将渲染操作放入 mount 函数 -- 必填
+// 👇 将渲染操作放入 mount 函数
 async function mount () {
   app = await platformBrowserDynamic()
   .bootstrapModule(AppModule)
   .catch(err => console.error(err))
 }
 
-// 👇 将卸载操作放入 unmount 函数 -- 必填
+// 👇 将卸载操作放入 unmount 函数
 function unmount () {
   // angular在部分场景下执行destroy时会删除根元素app-root，此时可删除app.destroy()以避免这个问题
   app.destroy();
@@ -209,7 +209,7 @@ import App from './App.vue'
 let app = null
 let router = null
 let history = null
-// 👇 将渲染操作放入 mount 函数 -- 必填
+// 👇 将渲染操作放入 mount 函数
 function mount () {
   history = VueRouter.createWebHashHistory()
   router = VueRouter.createRouter({
@@ -222,7 +222,7 @@ function mount () {
   app.mount('#app')
 }
 
-// 👇 将卸载操作放入 unmount 函数 -- 必填
+// 👇 将卸载操作放入 unmount 函数
 function unmount () {
   app.unmount()
   history.destroy()
@@ -245,12 +245,12 @@ if (如果是微前端环境) {
 ```js
 // entry.js
 
-// 👇 将渲染操作放入 mount 函数 -- 必填
+// 👇 将渲染操作放入 mount 函数
 function mount () {
   ...
 }
 
-// 👇 将卸载操作放入 unmount 函数 -- 必填
+// 👇 将卸载操作放入 unmount 函数
 function unmount () {
   ...
 }

@@ -7,6 +7,7 @@ import type {
   RouterGuard,
   GuardLocation,
   AccurateGuard,
+  SetDefaultPageOptions,
 } from '@micro-app/types'
 import {
   encodeMicroPath,
@@ -49,7 +50,7 @@ export interface CreteBaseRouter {
 }
 
 export interface CreateDefaultPage {
-  setDefaultPage(appName: string, path: string): () => boolean
+  setDefaultPage(options: SetDefaultPageOptions): () => boolean
   removeDefaultPage(appName: string): boolean
   getDefaultPage(key: PropertyKey): string | undefined
 }
@@ -147,7 +148,7 @@ function createRouterApi (): RouterApi {
    * NOTE:
    * 1. Modify browser url first, and then run guards,
    *    consistent with the browser forward & back button
-   * 2. Note the element binding
+   * 2. Prevent the element binding
    * @param appName app name
    * @param to target location
    * @param from old location
@@ -234,12 +235,14 @@ function createRouterApi (): RouterApi {
 
     /**
      * defaultPage only effect when mount, and has lower priority than query on browser url
-     * @param appName app name
-     * @param path page path
+     * SetDefaultPageOptions {
+     *   @param name app name
+     *   @param path page path
+     * }
      */
-    function setDefaultPage (appName: string, path: string): () => boolean {
-      appName = formatAppName(appName)
-      if (!appName || !path) {
+    function setDefaultPage (options: SetDefaultPageOptions): () => boolean {
+      const appName = formatAppName(options.name)
+      if (!appName || !options.path) {
         if (process.env.NODE_ENV !== 'production') {
           if (!appName) {
             logWarn(`setDefaultPage: invalid appName "${appName}"`)
@@ -250,7 +253,7 @@ function createRouterApi (): RouterApi {
         return noopFalse
       }
 
-      return defaultPageRecord.add(appName, path)
+      return defaultPageRecord.add(appName, options.path)
     }
 
     function removeDefaultPage (appName: string): boolean {
