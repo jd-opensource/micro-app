@@ -349,7 +349,7 @@ export default class SandBox implements SandBoxInterface {
 
   // set hijack Properties to microAppWindow
   private setHijackProperties (microAppWindow: microAppWindowType, appName: string): void {
-    let modifiedEval: unknown, modifiedImage: unknown
+    let modifiedImage: unknown
     rawDefineProperties(microAppWindow, {
       document: {
         get () {
@@ -359,16 +359,12 @@ export default class SandBox implements SandBoxInterface {
         configurable: false,
         enumerable: true,
       },
-      eval: {
+      location: {
         get () {
-          throttleDeferForSetAppName(appName)
-          return modifiedEval || eval
+          return globalEnv.rawWindow.location
         },
-        set: (value) => {
-          modifiedEval = value
-        },
-        configurable: true,
-        enumerable: false,
+        configurable: false,
+        enumerable: true,
       },
       Image: {
         get () {

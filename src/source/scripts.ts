@@ -25,6 +25,7 @@ import {
 import microApp from '../micro_app'
 import globalEnv from '../libs/global_env'
 import { globalKeyToBeCached } from '../constants'
+import { runCodeToIframe } from '../iframe/run'
 
 type moduleCallBack = Func & { moduleCount?: number, errorCount?: number }
 
@@ -287,7 +288,7 @@ export function runScript (
       // TEST IGNORE
       app.container?.querySelector('micro-app-body')!.appendChild(scriptElement)
     } else {
-      runCode2Function(code, info)
+      runCode2Function(code, info, app)
       if (isDynamic) return document.createComment('dynamic script extract by micro-app')
     }
   } catch (e) {
@@ -341,7 +342,7 @@ export function runDynamicRemoteScript (
       if (app.inline || info.module) {
         runCode2InlineScript(url, code, info.module, replaceElement as HTMLScriptElement, dispatchScriptOnLoadEvent)
       } else {
-        runCode2Function(code, info)
+        runCode2Function(code, info, app)
       }
     } catch (e) {
       console.error(`[micro-app from runDynamicScript] app ${app.name}: `, e, url)
@@ -389,10 +390,22 @@ function runCode2InlineScript (
 }
 
 // init & run code2Function
-function runCode2Function (code: string, info: sourceScriptInfo) {
+function runCode2Function (
+  code: string,
+  info: sourceScriptInfo,
+  app: AppInterface
+) {
+  if (app.sandboxType === 'iframe') {
+    const iframeId = `micro-app-iframe-${app.name}`
+    const iframe = document.getElementById(iframeId) as HTMLIFrameElement
+    runCodeToIframe(iframe, app?.sandBox?.proxyWindow, code)
+    return
+  }
+
   if (!info.code2Function) {
     info.code2Function = new Function(code)
   }
+
   info.code2Function.call(window)
 }
 
@@ -415,10 +428,28 @@ function bindScope (
 
   if (app.sandBox && !info.module) {
     globalEnv.rawWindow.__MICRO_APP_PROXY_WINDOW__ = app.sandBox.proxyWindow
-    return `;(function(proxyWindow){with(proxyWindow.__MICRO_APP_WINDOW__){(function(${globalKeyToBeCached}){;${code}\n}).call(proxyWindow,${globalKeyToBeCached})}})(window.__MICRO_APP_PROXY_WINDOW__);`
+    return app.sandboxType === 'iframe'
+      ? createIfameSandboxJSCode(code)
+      : `;(function(proxyWindow){with(proxyWindow.__MICRO_APP_WINDOW__){(function(${globalKeyToBeCached}){;${code}\n}).call(proxyWindow,${globalKeyToBeCached})}})(window.__MICRO_APP_PROXY_WINDOW__);`
   }
 
   return code
+}
+
+const createWithStatement = (code: string) => `with(window.__MICRO_APP_WINDOW__){${code}}`
+
+export const createIfameSandboxJSCode = (code: string): string => {
+  return `(function(window, self, global,globalThis,${globalKeyToBeCached}) {
+      // Angular 特殊处理
+      var Zone = window.Zone;
+     ${createWithStatement(code)}
+}).bind(window.__MICRO_APP_PROXY_WINDOW__)(
+  window.__MICRO_APP_PROXY_WINDOW__,
+  window.__MICRO_APP_PROXY_WINDOW__,
+  window.__MICRO_APP_PROXY_WINDOW__,
+  window.__MICRO_APP_PROXY_WINDOW__,
+  ${globalKeyToBeCached}
+);`
 }
 
 /**
