@@ -285,7 +285,7 @@ export function runScript (
       runCode2InlineScript(url, code, info.module, scriptElement, callback)
       if (isDynamic) return scriptElement
       // TEST IGNORE
-      app.container?.querySelector('micro-app-body')!.appendChild(scriptElement)
+      app.querySelector('micro-app-body')?.appendChild(scriptElement)
     } else {
       runCode2Function(code, info)
       if (isDynamic) return document.createComment('dynamic script extract by micro-app')

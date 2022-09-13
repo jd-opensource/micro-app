@@ -58,6 +58,7 @@ export function releaseConsole (): void {
 // 初始基座页面的内容
 export function initDocument (): void {
   const baseStyle = document.createElement('style')
+  baseStyle.id = 'base-app-style'
   baseStyle.textContent = `
     body {
       background: #fff;

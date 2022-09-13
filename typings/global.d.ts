@@ -90,6 +90,9 @@ declare module '@micro-app/types' {
 
     // show app when connectedCallback with keep-alive
     showKeepAliveApp (container: HTMLElement | ShadowRoot): void
+
+    querySelector(selectors: string): Node | null
+    querySelectorAll(selectors: string): NodeListOf<Node> | null
   }
 
   interface MicroAppElementType {

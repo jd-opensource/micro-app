@@ -7,6 +7,7 @@ import {
 import { extractLinkFromHtml, fetchLinksFromHtml } from './links'
 import { extractScriptElement, fetchScriptsFromHtml, checkExcludeUrl, checkIgnoreUrl } from './scripts'
 import scopedCSS from './scoped_css'
+import globalEnv from '../libs/global_env'
 
 /**
  * transform html string to dom
@@ -67,10 +68,10 @@ function flatChildren (
  * @param htmlStr html string
  * @param app app
  */
-export function extractSourceDom (htmlStr: string, app: AppInterface) {
+export function extractSourceDom (htmlStr: string, app: AppInterface): void {
   const wrapElement = getWrapElement(htmlStr)
-  const microAppHead = wrapElement.querySelector('micro-app-head')
-  const microAppBody = wrapElement.querySelector('micro-app-body')
+  const microAppHead = globalEnv.rawElementQuerySelector.call(wrapElement, 'micro-app-head')
+  const microAppBody = globalEnv.rawElementQuerySelector.call(wrapElement, 'micro-app-body')
 
   if (!microAppHead || !microAppBody) {
     const msg = `element ${microAppHead ? 'body' : 'head'} is missing`

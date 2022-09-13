@@ -54,6 +54,8 @@ export function initGlobalEnv (): void {
     const rawAppend = Element.prototype.append
     const rawPrepend = Element.prototype.prepend
     const rawCloneNode = Element.prototype.cloneNode
+    const rawElementQuerySelector = Element.prototype.querySelector
+    const rawElementQuerySelectorAll = Element.prototype.querySelectorAll
     // const rawGetBoundingClientRect = Element.prototype.getBoundingClientRect
 
     const rawCreateElement = Document.prototype.createElement
@@ -105,6 +107,8 @@ export function initGlobalEnv (): void {
       rawAppend,
       rawPrepend,
       rawCloneNode,
+      rawElementQuerySelector,
+      rawElementQuerySelectorAll,
       // rawGetBoundingClientRect,
       rawCreateElement,
       rawCreateElementNS,

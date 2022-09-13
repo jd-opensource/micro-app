@@ -103,9 +103,20 @@ describe('source patch', () => {
         /**
          * querySelectorAll
          */
+        setAppName('test-app1')
+        expect(document.head.querySelector('#base-app-style')).toBeNull()
+        expect(document.head.querySelectorAll('style').length).toBe(3)
+        expect(document.body.querySelector('#app-container')).toBeNull()
+        expect(document.body.querySelectorAll('[id=root]').length).toBe(1)
+        clearAppName()
+        expect(document.head.querySelector('#base-app-style')).not.toBeNull()
+        expect(document.head.querySelectorAll('style')[0].id).toBe('base-app-style')
+        expect(document.body.querySelector('#app-container')).not.toBeNull()
+        expect(document.body.querySelectorAll('[id=root]').length).toBe(2)
         setAppName('not-exist')
         expect(document.querySelectorAll('div').length).toBe(0)
         expect(document.querySelector('div')).toBeNull()
+
         /**
          * createElementNS
          */

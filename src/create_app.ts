@@ -422,4 +422,14 @@ export default class CreateApp implements AppInterface {
 
     return {}
   }
+
+  querySelector (selectors: string): Node | null {
+    const target = this.container
+    return target ? globalEnv.rawElementQuerySelector.call(target, selectors) : null
+  }
+
+  querySelectorAll (selectors: string): NodeListOf<Node> | null {
+    const target = this.container
+    return target ? globalEnv.rawElementQuerySelectorAll.call(target, selectors) : null
+  }
 }
