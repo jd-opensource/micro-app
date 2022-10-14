@@ -240,7 +240,7 @@ function commonElementHandler (
     const app = appInstanceMap.get(newChild.__MICRO_APP_NAME__)
     if (app?.container) {
       if (isElement(newChild)) {
-        if (/^(img|script)$/i.test(newChild.tagName)) {
+        if (/^(img|script|iframe)$/i.test(newChild.tagName)) {
           if (newChild.hasAttribute('src')) {
             globalEnv.rawSetAttribute.call(newChild, 'src', CompletionPath(newChild.getAttribute('src')!, app.url))
           }
@@ -552,7 +552,7 @@ export function patchSetAttribute (): void {
         appName &&
         appInstanceMap.has(appName) &&
         (
-          ((key === 'src' || key === 'srcset') && /^(img|script)$/i.test(this.tagName)) ||
+          ((key === 'src' || key === 'srcset') && /^(img|script|iframe)$/i.test(this.tagName)) ||
           (key === 'href' && /^link$/i.test(this.tagName))
         )
       ) {
