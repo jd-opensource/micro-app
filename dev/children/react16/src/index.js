@@ -10,9 +10,9 @@ import { Modal, notification } from 'antd';
 import subMicroApp from '@micro-zoe/micro-app'
 
 // 循环内嵌
-subMicroApp.start({
-  tagName: 'micro-app-sub'
-})
+// subMicroApp.start({
+//   tagName: 'micro-app-sub'
+// })
 
 // 数据监听
 window.microApp?.addDataListener((data) => {

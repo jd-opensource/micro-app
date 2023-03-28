@@ -33,4 +33,4 @@ export enum keepAliveStates {
   KEEP_ALIVE_HIDDEN = 'KEEP_ALIVE_HIDDEN',
 }
 
-export const globalKeyToBeCached = 'window,self,globalThis,Array,Object,String,Boolean,Math,Number,Symbol,Date,Promise,Function,Proxy,WeakMap,WeakSet,Set,Map,Reflect,Element,Node,Document,RegExp,Error,TypeError,JSON,isNaN,parseFloat,parseInt,performance,console,decodeURI,encodeURI,decodeURIComponent,encodeURIComponent,location,navigator,undefined'
+export const globalKeyToBeCached = 'Array,Object,String,Boolean,Math,Number,Symbol,Date,Promise,Function,Proxy,WeakMap,WeakSet,Set,Map,Reflect,Element,Node,Document,RegExp,Error,TypeError,JSON,isNaN,parseFloat,parseInt,performance,console,decodeURI,encodeURI,decodeURIComponent,encodeURIComponent,location,history,navigator,undefined'

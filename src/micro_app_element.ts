@@ -309,6 +309,7 @@ export function defineElement (tagName: string): void {
         inline: this.getDisposeResult('inline'),
         scopecss: !(this.getDisposeResult('disableScopecss') || this.getDisposeResult('shadowDOM')),
         useSandbox: !this.getDisposeResult('disableSandbox'),
+        sandboxType: this.getAttribute('sandboxType') || 'default',
         baseroute: this.getBaseRouteCompatible(),
       })
 

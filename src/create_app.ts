@@ -23,6 +23,7 @@ import dispatchLifecyclesEvent, { dispatchCustomEventToMicroApp } from './intera
 import globalEnv from './libs/global_env'
 import { releasePatchSetAttribute } from './source/patch'
 import { getActiveApps } from './micro_app'
+import { createIframe } from './iframe/create'
 
 // micro app instances
 export const appInstanceMap = new Map<string, AppInterface>()
@@ -32,6 +33,7 @@ export interface CreateAppParam {
   name: string
   url: string
   ssrUrl?: string
+  sandboxType?: string
   scopecss: boolean
   useSandbox: boolean
   inline?: boolean
@@ -53,6 +55,7 @@ export default class CreateApp implements AppInterface {
   name: string
   url: string
   ssrUrl: string
+  sandboxType: string
   container: HTMLElement | ShadowRoot | null = null
   inline: boolean
   scopecss: boolean
@@ -69,6 +72,7 @@ export default class CreateApp implements AppInterface {
     inline,
     scopecss,
     useSandbox,
+    sandboxType,
     baseroute,
   }: CreateAppParam) {
     this.container = container ?? null
@@ -86,6 +90,7 @@ export default class CreateApp implements AppInterface {
     }
     this.loadSourceCode()
     this.useSandbox && (this.sandBox = new SandBox(name, url))
+    this.sandboxType = sandboxType ?? 'default'
   }
 
   // Load resources
@@ -160,6 +165,15 @@ export default class CreateApp implements AppInterface {
     this.state = appStates.MOUNTING
 
     cloneContainer(this.source.html as Element, this.container as Element, !this.umdMode)
+
+    // 初始化 iframe
+    if (this.sandboxType === 'iframe') {
+      const iframeId = `micro-app-iframe-${this.name}`
+      const iframe = createIframe(`micro-app-iframe-${this.name}`)
+      // @ts-ignore
+      window[iframeId] = iframe
+      this.container?.querySelector('micro-app-body')?.appendChild(iframe)
+    }
 
     this.sandBox?.start(this.baseroute)
 
