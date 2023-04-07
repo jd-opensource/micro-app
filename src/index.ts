@@ -17,3 +17,5 @@ export {
 export {
   EventCenterForMicroApp,
 } from './interact'
+
+// debug log
