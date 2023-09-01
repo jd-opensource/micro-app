@@ -65,6 +65,19 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
   const rawMicroGetElementsByClassName = microRootDocument.prototype.getElementsByClassName
   const rawMicroGetElementsByTagName = microRootDocument.prototype.getElementsByTagName
   const rawMicroGetElementsByName = microRootDocument.prototype.getElementsByName
+  const rawMicroElementFromPoint = microRootDocument.prototype.elementFromPoint
+  const rawMicroCaretRangeFromPoint = microRootDocument.prototype.caretRangeFromPoint
+
+  microRootDocument.prototype.caretRangeFromPoint = function caretRangeFromPoint (
+    x: number,
+    y: number,
+  ): Range {
+    // 这里this指向document才可以获取到子应用的document实例，range才可以被成功生成
+    const element = rawMicroElementFromPoint.call(document, x, y)
+    const range = rawMicroCaretRangeFromPoint.call(document, x, y)
+    updateElementInfo(element, appName)
+    return range
+  }
 
   microRootDocument.prototype.createElement = function createElement (
     tagName: string,
