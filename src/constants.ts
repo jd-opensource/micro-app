@@ -33,6 +33,11 @@ export enum microGlobalEvent {
   ONUNMOUNT = 'onunmount',
 }
 
+// global document event of child app
+export enum microGlobalDocumentEvent {
+  ONREADYSTATECHANGE = 'onreadystatechange'
+}
+
 // keep-alive status
 export enum keepAliveStates {
   KEEP_ALIVE_SHOW = 'keep_alive_show',

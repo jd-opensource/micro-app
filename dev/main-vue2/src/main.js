@@ -78,3 +78,7 @@ new Vue({
   router,
   render: h => h(App),
 }).$mount('#app')
+
+document.onreadystatechange = (e) => {
+  console.log(`基座应用 onreadystatechange`, document.readyState, e)
+}

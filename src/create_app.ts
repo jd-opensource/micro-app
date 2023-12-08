@@ -19,6 +19,7 @@ import {
   microGlobalEvent,
   DEFAULT_ROUTER_MODE,
   ROUTER_MODE_CUSTOM,
+  microGlobalDocumentEvent
 } from './constants'
 import {
   isFunction,
@@ -400,6 +401,13 @@ export default class CreateApp implements AppInterface {
         microApp.getData(this.name, true)
       )
 
+      // call document.onreadystatechange of child app
+      execMicroAppGlobalHook(
+        this.getMicroAppGlobalDocumentHook(microGlobalDocumentEvent.ONREADYSTATECHANGE),
+        this.name,
+        microGlobalDocumentEvent.ONREADYSTATECHANGE
+      )
+
       // dispatch state event to micro app
       dispatchCustomEventToMicroApp(this, 'statechange', {
         appState: appStates.MOUNTED
@@ -779,6 +787,11 @@ export default class CreateApp implements AppInterface {
 
   private getMicroAppGlobalHook (eventName: string): Func | null {
     const listener = (this.sandBox?.proxyWindow as Record<string, any>)?.[eventName]
+    return isFunction(listener) ? listener : null
+  }
+
+  private getMicroAppGlobalDocumentHook (eventName: string): Func | null {
+    const listener = (this.sandBox?.microAppWindow?.document as Record<string, any>)?.[eventName]
     return isFunction(listener) ? listener : null
   }
 
