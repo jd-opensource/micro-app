@@ -99,8 +99,8 @@ newImg.setAttribute('width', '50px')
 /* ---------------------- 获取script元素 --------------------- */
 // console.log('script元素', document.getElementsByTagName('script'), document.getElementsByTagName('base'))
 
-document.addEventListener('DOMContentLoaded', function () {
-  console.log(`子应用 DOMContentLoaded`, document.readyState)
+document.addEventListener('DOMContentLoaded', function (e) {
+  console.log(`子应用 DOMContentLoaded`, document.readyState, e.type)
 })
 
 document.addEventListener('readystatechange', function () {

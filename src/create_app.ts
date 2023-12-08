@@ -19,7 +19,6 @@ import {
   microGlobalEvent,
   DEFAULT_ROUTER_MODE,
   ROUTER_MODE_CUSTOM,
-  microGlobalDocumentEvent
 } from './constants'
 import {
   isFunction,
@@ -35,6 +34,7 @@ import {
 } from './libs/utils'
 import dispatchLifecyclesEvent, {
   dispatchCustomEventToMicroApp,
+  dispatchDocumentCustomEventToMicroApp
 } from './interact/lifecycles_event'
 import globalEnv from './libs/global_env'
 import microApp from './micro_app'
@@ -401,12 +401,11 @@ export default class CreateApp implements AppInterface {
         microApp.getData(this.name, true)
       )
 
-      // call document.onreadystatechange of child app
-      execMicroAppGlobalHook(
-        this.getMicroAppGlobalDocumentHook(microGlobalDocumentEvent.ONREADYSTATECHANGE),
-        this.name,
-        microGlobalDocumentEvent.ONREADYSTATECHANGE
-      )
+      // dispatch DOMContentLoaded event to micro app
+      dispatchDocumentCustomEventToMicroApp(this, 'DOMContentLoaded')
+
+      // dispatch readystatechange event to micro app
+      dispatchDocumentCustomEventToMicroApp(this, 'readystatechange')
 
       // dispatch state event to micro app
       dispatchCustomEventToMicroApp(this, 'statechange', {
@@ -787,11 +786,6 @@ export default class CreateApp implements AppInterface {
 
   private getMicroAppGlobalHook (eventName: string): Func | null {
     const listener = (this.sandBox?.proxyWindow as Record<string, any>)?.[eventName]
-    return isFunction(listener) ? listener : null
-  }
-
-  private getMicroAppGlobalDocumentHook (eventName: string): Func | null {
-    const listener = (this.sandBox?.microAppWindow?.document as Record<string, any>)?.[eventName]
     return isFunction(listener) ? listener : null
   }
 
