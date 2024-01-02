@@ -78,7 +78,7 @@ export default class IframeSandbox {
 
   constructor (appName: string, url: string) {
     const rawLocation = globalEnv.rawWindow.location
-    const browserHost = rawLocation.protocol + '//' + rawLocation.host
+    const browserHost = rawLocation.protocol + '//' + rawLocation.host + rawLocation.pathname
 
     this.deleteIframeElement = this.createIframeElement(appName, browserHost)
     this.microAppWindow = this.iframe!.contentWindow
