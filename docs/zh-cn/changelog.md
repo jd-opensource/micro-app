@@ -10,20 +10,29 @@
 
 ### 1.0.0-rc.3
 
-`2023-11-12`
+`2023-12-18`
 
 - **New**
 
+  - 🆕 新增`componentMode`组件模式，micro-app支持单独运行js文件[944](https://github.com/micro-zoe/micro-app/pull/944)。
   - 🆕 新增方法`getAppState`，用于在基座中获取子应用的状态。
   - 🆕 新增虚拟路由系统`push`, `replace`方法对Promise的支持。
+  - 🆕 新增对于CSS循环嵌套的支持[956](https://github.com/micro-zoe/micro-app/pull/956)。
 
 - **Bug Fix**
 
   - 🐞 修复了在非`custom`路由模式下设置baseroute导致子应用渲染失败的问题。
+  - 🐞 修复了`isObject`方法中参数为null导致错误的问题[998](https://github.com/micro-zoe/micro-app/pull/998)。
+  - 🐞 修复了子应用`onerror`事件无法触发的问题[992](https://github.com/micro-zoe/micro-app/pull/992)。
+  - 🐞 修复了iframe沙箱下子应用`Node.ownerDocument`指向错误的问题[988](https://github.com/micro-zoe/micro-app/pull/988)。
+  - 🐞 修复了with沙箱下判断MicroDocument实例时目标为null导致报错的问题[986](https://github.com/micro-zoe/micro-app/pull/986)。
+  - 🐞 修复了iframe沙箱下通过`document.head.querySelector(...)`查询元素异常的问题[984](https://github.com/micro-zoe/micro-app/pull/984)。
+  - 🐞 修复了子应用html自带元素`parentNode`指向异常的问题。
 
 - **Update**
   - 🆕 更新with沙箱运行逻辑，异步执行初始化操作，确保不同沙箱之间逻辑一致。
-  - 🚀 更新了官网文档。
+  - 🆕 优化了utils方法中元素判断的方式[998](https://github.com/micro-zoe/micro-app/pull/998)。
+  - 🚀 更新了案例。
   
 
 ### 1.0.0-rc.2

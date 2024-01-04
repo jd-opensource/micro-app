@@ -36,7 +36,10 @@ export const assign = Object.assign
 // Object prototype methods
 export const rawDefineProperty = Object.defineProperty
 export const rawDefineProperties = Object.defineProperties
+export const rawToString = Object.prototype.toString
 export const rawHasOwnProperty = Object.prototype.hasOwnProperty
+
+export const toTypeString = (value: unknown): string => rawToString.call(value)
 
 // is Undefined
 export function isUndefined (target: unknown): target is undefined {
@@ -70,17 +73,17 @@ export function isFunction (target: unknown): target is Function {
 
 // is PlainObject
 export function isPlainObject <T = Record<PropertyKey, unknown>> (target: unknown): target is T {
-  return toString.call(target) === '[object Object]'
+  return toTypeString(target) === '[object Object]'
 }
 
 // is Object
 export function isObject (target: unknown): target is Object {
-  return typeof target === 'object'
+  return !isNull(target) && typeof target === 'object'
 }
 
 // is Promise
 export function isPromise (target: unknown): target is Promise<unknown> {
-  return toString.call(target) === '[object Promise]'
+  return toTypeString(target) === '[object Promise]'
 }
 
 // is bind function
@@ -122,40 +125,40 @@ export function isNode (target: unknown): target is Node {
 }
 
 export function isLinkElement (target: unknown): target is HTMLLinkElement {
-  return (target as HTMLLinkElement)?.tagName?.toUpperCase() === 'LINK'
+  return toTypeString(target) === '[object HTMLLinkElement]'
 }
 
 export function isStyleElement (target: unknown): target is HTMLStyleElement {
-  return (target as HTMLStyleElement)?.tagName?.toUpperCase() === 'STYLE'
+  return toTypeString(target) === '[object HTMLStyleElement]'
 }
 
 export function isScriptElement (target: unknown): target is HTMLScriptElement {
-  return (target as HTMLScriptElement)?.tagName?.toUpperCase() === 'SCRIPT'
+  return toTypeString(target) === '[object HTMLScriptElement]'
 }
 
 export function isIFrameElement (target: unknown): target is HTMLIFrameElement {
-  return (target as HTMLIFrameElement)?.tagName?.toUpperCase() === 'IFRAME'
+  return toTypeString(target) === '[object HTMLIFrameElement]'
 }
 
 export function isDivElement (target: unknown): target is HTMLDivElement {
-  return (target as HTMLDivElement)?.tagName?.toUpperCase() === 'DIV'
+  return toTypeString(target) === '[object HTMLDivElement]'
 }
 
 export function isImageElement (target: unknown): target is HTMLImageElement {
-  return (target as HTMLImageElement)?.tagName?.toUpperCase() === 'IMG'
+  return toTypeString(target) === '[object HTMLImageElement]'
 }
 
 export function isBaseElement (target: unknown): target is HTMLBaseElement {
-  return (target as HTMLBaseElement)?.tagName?.toUpperCase() === 'BASE'
+  return toTypeString(target) === '[object HTMLBaseElement]'
 }
 
 export function isMicroAppBody (target: unknown): target is HTMLElement {
-  return (target as HTMLElement)?.tagName?.toUpperCase() === 'MICRO-APP-BODY'
+  return isElement(target) && target.tagName.toUpperCase() === 'MICRO-APP-BODY'
 }
 
 // is ProxyDocument
 export function isProxyDocument (target: unknown): target is Document {
-  return toString.call(target) === '[object ProxyDocument]'
+  return toTypeString(target) === '[object ProxyDocument]'
 }
 
 /**

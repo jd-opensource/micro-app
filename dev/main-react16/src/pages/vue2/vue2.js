@@ -77,7 +77,8 @@ function Vue2 () {
       }
       <micro-app
         name='vue2'
-        url={`${config.vue2}micro-app/vue2/`}
+        // url={`${config.vue2}micro-app/vue2/`}
+        url='http://localhost:9002/'
         data={data}
         // onBeforemount={() => hideLoading(false)}
         onMounted={mounted}

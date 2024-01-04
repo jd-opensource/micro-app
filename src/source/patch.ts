@@ -308,6 +308,11 @@ function commonElementHandler (
   ) {
     newChild.__MICRO_APP_NAME__ = newChild.__MICRO_APP_NAME__ || currentAppName!
     const app = appInstanceMap.get(newChild.__MICRO_APP_NAME__)
+    if (isStyleElement(newChild)) {
+      const isShadowNode = parent.getRootNode()
+      const isShadowEnvironment = isShadowNode instanceof ShadowRoot
+      isShadowEnvironment && newChild.setAttribute('ignore', 'true')
+    }
     if (app?.container) {
       completePathDynamic(app, newChild)
       return invokePrototypeMethod(
