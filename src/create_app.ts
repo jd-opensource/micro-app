@@ -50,6 +50,7 @@ export interface CreateAppParam {
   useSandbox: boolean
   inline?: boolean
   iframe?: boolean
+  isFullPath?: boolean
   container?: HTMLElement | ShadowRoot
   ssrUrl?: string
   isPrefetch?: boolean
@@ -76,6 +77,7 @@ export default class CreateApp implements AppInterface {
   public useSandbox: boolean
   public inline: boolean
   public iframe: boolean
+  public isFullPath: boolean
   public ssrUrl: string
   public isPrefetch: boolean
   public isPrerender: boolean
@@ -91,6 +93,7 @@ export default class CreateApp implements AppInterface {
     useSandbox,
     inline,
     iframe,
+    isFullPath,
     ssrUrl,
     isPrefetch,
     prefetchLevel,
@@ -104,6 +107,7 @@ export default class CreateApp implements AppInterface {
     this.scopecss = this.useSandbox && scopecss
     // exec before getInlineModeState
     this.iframe = iframe ?? false
+    this.isFullPath = isFullPath ?? false
     this.inline = this.getInlineModeState(inline)
     /**
      * NOTE:
@@ -705,7 +709,7 @@ export default class CreateApp implements AppInterface {
   private createSandbox (): void {
     if (this.useSandbox && !this.sandBox) {
       if (this.iframe) {
-        this.sandBox = new IframeSandbox(this.name, this.url)
+        this.sandBox = new IframeSandbox(this.name, this.url, this.isFullPath)
       } else {
         this.sandBox = new WithSandBox(this.name, this.url)
       }

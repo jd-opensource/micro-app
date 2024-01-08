@@ -76,10 +76,11 @@ export default class IframeSandbox {
   public microHead!: HTMLHeadElement
   public microBody!: HTMLBodyElement
 
-  constructor (appName: string, url: string) {
+  constructor (appName: string, url: string, isFullPath: boolean) {
     const rawLocation = globalEnv.rawWindow.location
-    const browserHost = rawLocation.protocol + '//' + rawLocation.host
-
+    const defBrowserHost = rawLocation.protocol + '//' + rawLocation.host
+    // fullPath 主应用为二级路径需要pathname
+    const browserHost = !isFullPath ? defBrowserHost : defBrowserHost + rawLocation.pathname
     this.deleteIframeElement = this.createIframeElement(appName, browserHost)
     this.microAppWindow = this.iframe!.contentWindow
 
@@ -89,7 +90,7 @@ export default class IframeSandbox {
       // get escapeProperties from plugins
       this.getSpecialProperties(appName)
       // patch location & history of child app
-      this.proxyLocation = patchRouter(appName, url, this.microAppWindow, browserHost)
+      this.proxyLocation = patchRouter(appName, url, this.microAppWindow, defBrowserHost)
       // patch window of child app
       this.windowEffect = patchWindow(appName, this.microAppWindow, this)
       // patch document of child app
