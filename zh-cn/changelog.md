@@ -8,6 +8,35 @@
 
 ---
 
+### 1.0.0-rc.5
+
+`2024-4-29`
+
+- **New**
+
+  - 🆕 新增虚拟路由系统`state`模式，用于适配更多使用场景。
+
+- **Bug Fix**
+
+  - 🐞 修复了iframe沙箱下`unhandledrejection`事件失效的问题，[issue 1102](https://github.com/micro-zoe/micro-app/issues/1102)、[issue 1159](https://github.com/micro-zoe/micro-app/issues/1159)。
+  - 🐞 修复了with沙箱下`keep-alive`子应用二次渲染后无法通过`microApp.router`控制跳转的问题，[issue 1115](https://github.com/micro-zoe/micro-app/issues/1115)。
+  - 🐞 修复了with沙箱下预渲染子应用路由跳转异常的问题。
+  - 🐞 修复了native路由模式下，主应用和子应用都是vue-router@4导致浏览器前进后退路由地址混乱的问题。
+  - 🐞 修复了设置`disable-memory-router`后，部分场景下子应用内部跳转失败的问题，[issue 1132](https://github.com/micro-zoe/micro-app/issues/1132)。
+  - 🐞 修复了iframe沙箱下`Aliplayer`视频播放器无法正常运行的问题。
+  - 🐞 修复了`native`、`disable-memory-router`路由模式下，主应用、子应用都是vue3导致路由冲突导航异常的问题，[issue 1148](https://github.com/micro-zoe/micro-app/issues/1148)、[issue 1132](https://github.com/micro-zoe/micro-app/issues/1132)。
+  - 🐞 修复了格式化子应用url导致部分场景下路由匹配异常的问题，[issue 1147](https://github.com/micro-zoe/micro-app/issues/1147)。
+  - 🐞 修复了with沙箱下生命周期`mounted`, `unmount`重复触发的问题，[issue 1161](https://github.com/micro-zoe/micro-app/issues/1161)。
+  - 🐞 修复了域名中包含.js导致子应用渲染失败的问题，[issue 1172](https://github.com/micro-zoe/micro-app/issues/1172)，[PR 1173](https://github.com/micro-zoe/micro-app/pull/1173) by [SepVeneto](https://github.com/SepVeneto)。
+  - 🐞 修复了iframe沙箱下子应用设置`history.scrollRestoration`不生效的问题。
+  - 🐞 修复了虚拟路由系统pure模式下，通过location进行跳转表现异常的问题，[issue 1135](https://github.com/micro-zoe/micro-app/issues/1135)。
+
+- **Update**
+
+  - 🚀 优化了生命周期全局监听函数的传递参数。
+  - 🚀 更新了路由相关文档。
+
+
 ### 1.0.0-rc.4
 
 `2024-1-31`
@@ -31,7 +60,7 @@
   - 🐞 修复了with沙箱子应用的`window.onpopstate`兜底到主应用导致多次执行的问题。
   - 🐞 修复了craco子应用style元素插入顺序错误导致样式优先级混乱的问题，[issue 1071](https://github.com/micro-zoe/micro-app/issues/1071)。
   - 🐞 修复了在部分场景下子应用重写`Array.prototype.includes`导致死循环的问题，[PR 1067](https://github.com/micro-zoe/micro-app/pull/1067) by [tinymins](https://github.com/tinymins)。
-  - 🐞 修复了在关闭虚拟路由系统时子应用域名与浏览器域名不一致的问题。
+  - 🐞 修复了在关闭虚拟路由系统时子应用域名与浏览器域名不一致的问题，[issue 937](https://github.com/micro-zoe/micro-app/issues/937)。
 
 - **Update**
   - 🚀 虚拟路由系统升级，新增`search`、`native`、`native-scope`、`pure`模式，用于适配更多使用场景。

@@ -1,4 +1,6 @@
-native模式下子应用完全基于浏览器路由系统进行渲染，此时需要更加复杂的路由配置，对主应用和子应用的路由都要进行一些改造。
+native模式是指放开路由隔离，主应用和子应用同时基于浏览器路由进行渲染，共用同一套location和history，拥有更好的用户体验，但更容易导致主应用和子应用的路由冲突，具体原理参考[关于native模式的原理解析](/zh-cn/native-mode?id=关于native模式的原理解析)。
+
+native模式需要更加复杂的路由配置，主应用和子应用的路由都要进行一些改造。
 
 ### 路由类型约束
 native模式下主、子应用需要遵循以下约束：
@@ -151,63 +153,68 @@ let app = new Vue({
 > vue-router@4.x设置base的方式请查看 https://next.router.vuejs.org/
 
 ### 关于native模式的原理解析
-**子应用不会根据micro-app的url属性渲染对应的页面，而是根据浏览器地址渲染对应的页面。**
+**原理：**子应用根据浏览器地址渲染对应的页面，而不是micro-app的url属性
 
-**举个栗子 🌰 :**
+##### 例1:
 
-浏览器地址为：`http://localhost:3000/page1/`，此时路由地址为`page1`。
+浏览器地址为：`http://localhost:3000/page1?id=1#hash`，此时pathname为`/page1`，search为`?id=1`，hash为`#hash`。
 
-主应用会匹配`page1`并渲染对应的组件，子应用也是一样，浏览器地址会同时影响到主应用和子应用，因为每个应用都有一套自己的路由系统，它们是可以共存的，不会冲突。
+主应用匹配`/page1`并渲染对应的页面，路由参数为`id=1`，hash为`#hash`，子应用也是一样，浏览器地址会同时影响到主应用和子应用。
 
-此时我们要渲染子应用`http://www.xxx.com/`的`page1`页面，那么micro-app的url属性填写的是`http://www.xxx.com/`，而不是`http://www.xxx.com/page1/`。
+每个应用都有一套自己的路由系统，它们是可以共存的，不会冲突。
 
-```html
-<micro-app url='http://www.xxx.com/'></micro-app>
-```
-子应用加载完成后会根据浏览器的地址`page1`匹配并渲染对应的页面。
-
-同理，页面参数和hash也是以浏览器为准。
-
-**栗子2 🌰 :**
-
-场景：子应用是hash路由，我们要渲染子应用的page1页面
-
-此时在micro-app的url属性上设置hash值是无效的，`#/page1`应该添加到浏览器地址上。
+假设我们要渲染子应用的`page1`页面，参数为`id=1`，hash为`#hash`，那么正确的形式是：1、micro-app的url属性设置为`http://子应用域名/` 2、浏览器地址为`http://主应用域名/page1?id=1#hash`。
 
 ```html
-<!-- ❌ 这里的#/page1是无效的，应该添加到浏览器地址上 -->
-<micro-app url='http://www.xxx.com/#/page1'></micro-app>
+<!-- ❌ 这里 /page1?id=1#hash 是错误的，应该添加到浏览器地址上 -->
+<micro-app url='http://子应用域名/page1?id=1#hash'></micro-app>
 
 <!-- ✔️ 这个url才是正确的 -->
-<micro-app url='http://www.xxx.com/'></micro-app>
+<micro-app url='http://子应用域名/'></micro-app>
 ```
+子应用加载完成后会根据浏览器的地址匹配并渲染对应的页面。
 
-**栗子3 🌰 :**
 
-场景：主应用是history路由，子应用是hash路由，我们要跳转主应用的`my-app`页面，页面中嵌入子应用，我们要展现子应用的`page1`页面。
-
-那么浏览器地址应该为：`域名/my-page#/page1`，我们在主应用中跳转`my-app`页面的参数为：`router.push('/my-page#/page1')`
-
-此时流程为：主应用匹配到`/my-page`路径并渲染`my-app`页面，因为`my-app`页面中嵌入了子应用，此时子应用开始加载并渲染，子应用在渲染时会匹配到`#/page1`并渲染`page1`页面。
-
-micro-app配置如下：
-```html
-<!-- 此时不需要设置baseroute -->
-<micro-app url='http://www.xxx.com/index.html'></micro-app>
-```
-
-**栗子4 🌰 :**
+##### 例2:
 
 场景：主应用是history路由，子应用也是history路由，我们要跳转主应用的`my-app`页面，`my-app`页面中嵌入子应用，我们要展现子应用的`page1`页面。
 
-那么浏览器地址应该为：`域名/my-page/page1`，我们在主应用中跳转的参数为：`router.push('/my-page/page1')`
+那么浏览器地址应该为：`http://主应用域名/my-page/page1`，我们在主应用中跳转的参数为：`router.push('/my-page/page1')`
 
-此时流程为：主应用匹配到`/my-page`路径并渲染`my-app`页面，因为`my-app`页面中嵌入了子应用，此时子应用开始加载并渲染，子应用在渲染时会匹配到`/my-page/page1`并渲染`page1`页面。
+原理：主应用匹配到`/my-page`路径并渲染`my-app`页面，因为`my-app`页面中嵌入了子应用，此时子应用开始加载并渲染，子应用在渲染时会匹配到`/my-page/page1`并渲染`page1`页面。
 
 micro-app配置如下：
 ```html
 <!-- 子应用通过baseroute设置基础路由/my-page -->
-<micro-app url='http://www.xxx.com/index.html' baseroute='/my-page'></micro-app>
+<micro-app url='http://子应用域名/index.html' baseroute='/my-page'></micro-app>
+```
+
+
+##### 例3:
+
+场景：主应用是hash路由，子应用也是hash路由，我们要跳转主应用的`my-app`页面，`my-app`页面中嵌入子应用，我们要展现子应用的`page1`页面。
+
+那么浏览器地址应该为：`http://主应用域名/#/my-page/page1`，我们在主应用中跳转的参数为：`router.push('/my-page/page1')`
+
+原理：主应用匹配到`#/my-page`路径并渲染`my-app`页面，因为`my-app`页面中嵌入了子应用，此时子应用开始加载并渲染，子应用在渲染时会匹配到`#/my-page/page1`并渲染`page1`页面。
+
+```html
+<!-- 子应用通过baseroute设置基础路由/my-page -->
+<micro-app url='http://子应用域名/index.html' baseroute='/my-page'></micro-app>
+```
+
+##### 例4:
+
+场景：主应用是history路由，子应用是hash路由，我们要跳转主应用的`my-app`页面，页面中嵌入子应用，我们要展现子应用的`page1`页面。
+
+那么浏览器地址应该为：`http://主应用域名/my-page/#/page1`，我们在主应用中跳转`my-app`页面的参数为：`router.push('/my-page/#/page1')`
+
+原理：主应用匹配到`/my-page`路径并渲染`my-app`页面，因为`my-app`页面中嵌入了子应用，此时子应用开始加载并渲染，子应用在渲染时会匹配到`#/page1`并渲染`page1`页面。
+
+micro-app配置如下：
+```html
+<!-- 此时不需要设置baseroute -->
+<micro-app url='http://子应用域名/index.html'></micro-app>
 ```
 
 > [!TIP]

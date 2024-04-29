@@ -224,7 +224,7 @@ module.exports = {
 #### 3、设置 publicPath
 如果子应用出现静态资源地址404(js、css、图片)，建议设置`publicPath`来尝试解决这个问题。
 
-`publicPath`是webpack提供的功能，它可以补全静态资源的地址，详情参考webpack文档 [publicPath](https://webpack.docschina.org/guides/public-path/#on-the-fly)
+`publicPath`是webpack提供的功能，所以vite应用是不支持的，它可以补全静态资源的地址，详情参考webpack文档 [publicPath](https://webpack.docschina.org/guides/public-path/#on-the-fly)
 
 **步骤1:** 在子应用src目录下创建名称为`public-path.js`的文件，并添加如下内容
 ```js
@@ -311,13 +311,32 @@ export default defineConfig({
 ```
 <!-- tabs:end -->
 
-<!-- #### 2、子应用中element-plus部分弹框样式失效
+#### 2、虚拟路由系统为search模式时主应用循环刷新
 
-**原因：**element-plus中部分组件，如`Select`, `TimePicker`的弹框元素会脱离micro-app的范围逃逸到外层body上，导致样式失效。
+**解决方式：**将router-view或者包含微前端的上层组件中`:key="route.fullPath"`改为`:key="route.path"`或者`:key="route.name"`
 
-**解决方式：** 
+**例如：**
 
-  1、关闭样式隔离[disablescopecss](/zh-cn/configure?id=disablescopecss)
+```html
+<!-- bad 😭 -->
+<router-view v-slot="{ Component, route }">
+  <transition name="fade">
+    <component :is="Component" :key="route.fullPath" />
+  </transition>
+</router-view>
 
-  2、部分组件，如`Select`提供了`popper-append-to-body`配置，用于设置弹框不插入body，可以避免这个问题。如果组件没有提供类似的功能，则暂且只能通过关闭样式隔离解决。 -->
+<!-- good 😊 -->
+<router-view v-slot="{ Component, route }">
+  <transition name="fade">
+    <component :is="Component" :key="route.path" />
+  </transition>
+</router-view>
+```
 
+```html
+<!-- bad 😭 -->
+<router-view :key="$route.fullPath"></router-view>
+
+<!-- good 😊 -->
+<router-view :key="$route.path"></router-view>
+```

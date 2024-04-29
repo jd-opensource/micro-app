@@ -38,7 +38,7 @@ import './public-path'
 
 **描述：子应用的基础路由**
 
-详情见[路由-基础路由](/zh-cn/browser-router?id=基础路由)一章。
+详情见[路由-基础路由](/zh-cn/native-mode?id=基础路由)一章。
 
 ### `__MICRO_APP_BASE_APPLICATION__`
 

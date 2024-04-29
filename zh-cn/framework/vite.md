@@ -28,3 +28,9 @@ window.microApp.location.href = 'xxx'
 window.microApp.location.pathname = 'xxx'
 ```
 
+#### 2、iframe沙箱加载了主应用的资源
+
+**解决方式：**在主应用head最前面插入下面js
+```html
+<script>if(window.parent !== window) {window.stop()}</script>
+```

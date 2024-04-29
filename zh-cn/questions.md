@@ -166,5 +166,39 @@ microApp.start({
 + <i className="iconfont1 right"></i>
 ```
 
+## 11、Vue主应用接入微前端时循环刷新（页面闪烁）
 
+**解决方式：**将主应用router-view或者包含微前端的上层组件中`:key="route.fullPath"`改为`:key="route.path"`或者`:key="route.name"`
 
+**例如：**
+
+```html
+<!-- bad 😭 -->
+<router-view v-slot="{ Component, route }">
+  <transition name="fade">
+    <component :is="Component" :key="route.fullPath" />
+  </transition>
+</router-view>
+
+<!-- good 😊 -->
+<router-view v-slot="{ Component, route }">
+  <transition name="fade">
+    <component :is="Component" :key="route.path" />
+  </transition>
+</router-view>
+```
+
+```html
+<!-- bad 😭 -->
+<router-view :key="$route.fullPath"></router-view>
+
+<!-- good 😊 -->
+<router-view :key="$route.path"></router-view>
+```
+
+## 12、iframe沙箱加载了主应用的资源
+
+**解决方式：**如果主应用不会作为iframe嵌入，可以在主应用head最前面插入下面js
+```html
+<script>if(window.parent !== window) {window.stop()}</script>
+```

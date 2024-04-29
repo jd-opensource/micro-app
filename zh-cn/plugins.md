@@ -151,7 +151,7 @@ we use the package like this step:
 
 ### 注意
 
-- 目前插件目前仅在with沙箱下适用
+- 目前插件仅在with沙箱下适用
 
 - 插件以umd同步的方式引入sdk，异步加载的方式暂不支持
 

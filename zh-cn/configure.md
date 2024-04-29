@@ -26,7 +26,7 @@ MicroApp会根据url地址自动补全子应用的静态资源，如js、css、�
 ## iframe
 - Desc: `开启iframe沙箱`
 - Default: `false`
-- 使用方式: `<micro-app iframe></micro-app>`
+- 使用方式: `<micro-app name='xx' url='xx' iframe></micro-app>`
 
 MicroApp有两种沙箱方案：`with沙箱`和`iframe沙箱`。
 

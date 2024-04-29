@@ -15,7 +15,7 @@
 子应用卸载时触发。
 
 #### 5. error
-子应用渲染出错时触发，只有会导致渲染终止的错误才会触发此生命周期。
+子应用加载出错时触发，只有会导致渲染终止的错误才会触发此生命周期。
 
 
 ## 监听生命周期
@@ -37,10 +37,10 @@ import jsxCustomEvent from '@micro-zoe/micro-app/polyfill/jsx-custom-event'
   name='xx'
   url='xx'
   onCreated={() => console.log('micro-app元素被创建')}
-  onBeforemount={() => console.log('即将被渲染')}
+  onBeforemount={() => console.log('即将渲染')}
   onMounted={() => console.log('已经渲染完成')}
   onUnmount={() => console.log('已经卸载')}
-  onError={() => console.log('渲染出错')}
+  onError={() => console.log('加载出错')}
 />
 ```
 
@@ -66,7 +66,7 @@ export default {
       console.log('micro-app元素被创建')
     },
     beforemount () {
-      console.log('即将被渲染')
+      console.log('即将渲染')
     },
     mounted () {
       console.log('已经渲染完成')
@@ -75,7 +75,7 @@ export default {
       console.log('已经卸载')
     },
     error () {
-      console.log('渲染出错')
+      console.log('加载出错')
     }
   }
 }
@@ -117,20 +117,20 @@ import microApp from '@micro-zoe/micro-app'
 
 microApp.start({
   lifeCycles: {
-    created (e) {
-      console.log('created')
+    created (e, appName) {
+      console.log(`子应用${appName}被创建`)
     },
-    beforemount (e) {
-      console.log('beforemount')
+    beforemount (e, appName) {
+      console.log(`子应用${appName}即将渲染`)
     },
-    mounted (e) {
-      console.log('mounted')
+    mounted (e, appName) {
+      console.log(`子应用${appName}已经渲染完成`)
     },
-    unmount (e) {
-      console.log('unmount')
+    unmount (e, appName) {
+      console.log(`子应用${appName}已经卸载`)
     },
-    error (e) {
-      console.log('error')
+    error (e, appName) {
+      console.log(`子应用${appName}加载出错`)
     }
   }
 })

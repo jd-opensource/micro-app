@@ -92,9 +92,9 @@ microApp.start({
 >
 > 我们以cssnano为例，是因为它是PostCSS中使用最广泛的压缩插件，如果你使用了另外的压缩工具，请根据实际情况调整，防止build后的注释被删除。
 
-## 三、shadowDOM
+<!-- ## 三、shadowDOM
 shadowDOM具有更好的隔离性，但一些框架(如React)对shadowDOM的兼容性不好，请谨慎使用。
 
 开启shadowDOM后，默认的样式隔离将失效。
 
-开启方式：[shadowDOM](/zh-cn/configure?id=shadowdom)
+开启方式：[shadowDOM](/zh-cn/configure?id=shadowdom) -->

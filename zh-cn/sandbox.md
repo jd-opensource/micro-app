@@ -67,7 +67,7 @@ microApp.start({
 通过给title设置一个空函数，来忽略 document.title 执行
 ```js
 microApp.start({
-  customProxyDocumentProperties: new Map([
+  customProxyDocumentProps: new Map([
     ['title', (value) => {}]
   ]),
 })

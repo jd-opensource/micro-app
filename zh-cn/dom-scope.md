@@ -23,8 +23,8 @@
 ```js
 import { removeDomScope } from '@micro-zoe/micro-app'
 
-// 解除元素绑定，并且一定时间内(一个微任务Promise时间)阻止再次绑定
-removeDomScope(true)
+// 解除元素绑定，并且一定时间内阻止再次绑定(一个微任务Promise时间)
+removeDomScope(true) // 或者 removeDomScope()
 
 const div = window.document.createElement('div')
 // 插入到主应用body中
@@ -33,8 +33,8 @@ document.body.appendChild(div)
 
 #### ** 子应用 **
 ```js
-// 解除元素绑定，并且一定时间内(一个微任务Promise时间)阻止再次绑定
-window.microApp.removeDomScope(true) 
+// 解除元素绑定，并且一定时间内阻止再次绑定(一个微任务Promise时间)
+window.microApp.removeDomScope(true) // 或者 window.microApp.removeDomScope()
 
 const div = window.rawDocument.createElement('div')
 // 插入到主应用body中
