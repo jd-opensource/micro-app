@@ -413,8 +413,7 @@ dl, dd, dt {
 }
 
 .footer-content a:hover {
-  color: #5264EE;
-  text-decoration: underline;
+  text-shadow: 2px 2px 5px white;
 }
 
 .footer-content dt {
