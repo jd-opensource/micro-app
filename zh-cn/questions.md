@@ -202,3 +202,7 @@ microApp.start({
 ```html
 <script>if(window.parent !== window) {window.stop()}</script>
 ```
+
+## 13、一个页面加载过多个微前端
+
+微前端在过多加载和深度嵌套时，要谨慎使用，尤其同个页面在不同版本微前端之间可能会有相互影响，使用者要酌情处理。
