@@ -1,6 +1,6 @@
 本篇以`nuxtjs 2`作为案例介绍nuxtjs的接入方式，其它版本nuxtjs接入方式会在后续补充，如果你在使用时出现问题，请在github上提issue告知我们。
 
-## 作为主应用
+## 作为主应用 :id=main
 
 #### 1、安装依赖
 ```bash
@@ -30,16 +30,13 @@ export default {
 </script>
 ```
 
-#### 3、在页面中嵌入子应用
+#### 3、在页面中加载子应用
 因为micro-app只能运行在浏览器环境，所以在`mounted`钩子中通过变量控制子应用显示。
 
 ```html
 <template>
-  <div>
-    <h1>子应用</h1>
-    <!-- name：应用名称, url：应用地址 -->
-    <micro-app v-if='show' name='my-app' url='http://localhost:3000/'></micro-app>
-  </div>
+  <!-- name：应用名称, url：应用地址 -->
+  <micro-app v-if='show' name='my-app' url='http://localhost:3000/'></micro-app>
 </template>
 
 <script>
@@ -57,9 +54,9 @@ export default {
 </script>
 ```
 
-## 作为子应用
+## 作为子应用 :id=child
 
-#### 1、在主应用中添加ssr配置
+#### 1、在主应用中添加ssr配置 :id=ssr
 当子应用是ssr应用时，主应用需要在micro-app元素上添加ssr属性，此时micro-app会根据ssr模式加载子应用。
 
 ```html
@@ -67,7 +64,7 @@ export default {
 ```
 
 
-#### 2、设置跨域支持
+#### 2、设置跨域支持 :id=Access-Control-Allow-Origin
 通过自定义服务设置跨域访问。
 
 **步骤1、在根目录创建`server.js`**
@@ -121,12 +118,12 @@ app.listen(port, host, () => {
 ```
 
 
-#### 3、通过env注入运行时变量`assetPrefix`
+#### 3、通过env注入运行时变量`assetPrefix` :id=assetPrefix
 `assetPrefix`为静态资源路径前缀，开发者需要手动通过`assetPrefix`补全图片地址，避免子应用的图片在使用相对地址时加载失败的情况。
 
 ```js
 // nuxt.config.js
-const basePath = '基础路由' // 默认为 '/'
+const basePath = '基础路径' // 默认为 '/'
 // 静态资源路径前缀
 const assetPrefix = process.env.NODE_ENV === 'production' ? `线上域名${basePath}` : `http://localhost:${process.env.PORT || 3000}${basePath}`
 
@@ -135,7 +132,7 @@ module.exports = {
   env: {
     assetPrefix,
   },
-  // 设置基础路由
+  // 设置基础路径
   router: {
     base: basePath,
   },
@@ -165,7 +162,7 @@ export default Vue.extend({
 ```
 
 
-#### 4、监听卸载
+#### 4、监听卸载 :id=unmount
 子应用被卸载时会接受到一个名为`unmount`的事件，在此可以进行卸载相关操作。
 
 ```js
@@ -175,15 +172,18 @@ window.addEventListener('unmount', function () {
 })
 ```
 
-#### 5、切换到iframe沙箱
+#### 5、切换到iframe沙箱 :id=iframe
 MicroApp有两种沙箱方案：`with沙箱`和`iframe沙箱`。
 
 默认开启with沙箱，如果with沙箱无法正常运行，可以尝试切换到iframe沙箱。
 
+```html
+<micro-app name='xxx' url='xxx' iframe></micro-app>
+```
 
 
 ## 常见问题
-#### 1、控制台抛出警告`[Vue warn]: Unknown custom element: <micro-app>`
+#### 1、控制台抛出警告`[Vue warn]: Unknown custom element: <micro-app>` :id=question-1
   
 **解决方式：**在`nuxt.config.js`中添加配置，设置`ignoredElements`忽略micro-app元素。
 ```js
@@ -204,6 +204,6 @@ module.exports = {
 >
 > nuxtjs相关问题可以在[nuxtjs专属讨论贴](https://github.com/micro-zoe/micro-app/issues/169)下反馈。
 
-#### 2、无法预加载ssr子应用
+#### 2、无法预加载ssr子应用 :id=question-2
 
 **原因：**因为ssr应用每个路由地址加载的html、js、css等静态资源都不同，所以无法对ssr子应用使用预加载。

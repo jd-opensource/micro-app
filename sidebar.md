@@ -14,9 +14,10 @@
   - [数据通信](zh-cn/data)
   - [资源系统](zh-cn/static-source)
   - [预加载](zh-cn/prefetch)
-  - [插件系统](zh-cn/plugins)
-  - [多层嵌套](zh-cn/nest)
+  - [umd模式](zh-cn/umd)
   - [keep-alive](zh-cn/keep-alive)
+  - [多层嵌套](zh-cn/nest)
+  - [插件系统](zh-cn/plugins)
   - [高级功能](zh-cn/advanced)
 
 - 手把手
@@ -28,8 +29,11 @@
   - [Nextjs](zh-cn/framework/nextjs)
   - [Nuxtjs](zh-cn/framework/nuxtjs)
 
+- API
+  - [主应用API](zh-cn/api/base-app)
+  - [子应用API](zh-cn/api/child-app)
+
 - 其他
-  - [API](zh-cn/api)
   - [Micro-App-DevTools](zh-cn/micro-app-devtools)
   - [部署](zh-cn/deploy)
   - [常见问题](zh-cn/questions)

@@ -1,4 +1,4 @@
-## 1、我需要用到微前端吗？
+## 1、我需要用到微前端吗？ :id=1
 在此之前建议你先阅读[Why Not Iframe](https://www.yuque.com/kuitos/gky7yw/gesexv)。
 
 相比于iframe，微前端拥有更好的用户体验，同时它也要求开发者对于前端框架和路由原理具有一定的理解。
@@ -9,21 +9,12 @@
 
 如果你不知道自己是否需要用微前端，那么大概率是不需要。
 
-## 2、子应用一定要支持跨域吗？
+## 2、子应用一定要支持跨域吗？ :id=2
 是的！
 
-如果是开发环境，可以在webpack-dev-server中设置headers支持跨域。
-```js
-devServer: {
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-  },
-},
-```
+micro-app从主应用通过fetch加载子应用的静态资源，由于主应用与子应用的域名不一定相同，所以子应用必须支持跨域。
 
-如果是线上环境，可以通过[配置nginx](https://segmentfault.com/a/1190000012550346)支持跨域。
-
-## 3、兼容性如何
+## 3、兼容性如何 :id=3
 micro-app依赖于CustomElements和Proxy两个较新的API。
 
 对于不支持CustomElements的浏览器，可以通过引入polyfill进行兼容，详情可参考：[webcomponents/polyfills](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)。
@@ -37,66 +28,25 @@ micro-app依赖于CustomElements和Proxy两个较新的API。
 - 移动端：ios10+、android5+
 
 
-## 4、micro-app 报错 an app named xx already exists
+## 4、micro-app 报错 an app named xx already exists :id=4
 这是`name`名称冲突导致的，请确保每个子应用的`name`值是唯一的。
 
-## 5、主应用的样式影响到子应用
+## 5、主应用的样式影响到子应用 :id=5
 虽然我们将子应用的样式进行隔离，但主应用的样式依然会影响到子应用，如果发生冲突，推荐通过约定前缀或CSS Modules方式解决。
 
 如果你使用的是`ant-design`等组件库，一般会提供添加前缀进行样式隔离的功能。
 
-## 6、子应用在沙箱环境中如何获取到外部真实window？
-  目前有3种方式在子应用中获取外部真实window
-  - 1、new Function("return window")() 或 Function("return window")()
-  - 2、(0, eval)('window')
-  - 3、window.rawWindow
+## 6、子应用如何获取到真实window、document :id=6
+子应用通过：`window.rawWindow`、`window.rawDocument` 可以获取真实的window、document
 
-## 7、错误信息：xxx undefined
+## 7、子应用抛出错误信息：xxx 未定义 :id=7
+参考[JS沙箱常见问题-1](/zh-cn/sandbox?id=undefined)
 
-**包括：**
-- `xxx is not defined`
-- `xxx is not a function`
-- `Cannot read properties of undefined`
-
-**原因：**
-
-在微前端的沙箱环境中，顶层变量不会泄漏为全局变量。
-
-例如在正常情况下，通过 var name 或 function name () {} 定义的顶层变量会泄漏为全局变量，通过window.name或name就可以全局访问。
-
-但是在沙箱环境下这些顶层变量无法泄漏为全局变量，window.name或name为undefined，导致出现问题。
-
-**解决方式**：
-
-*方式一：手动修改*
-
-将 var name 或 function name () {} 修改为 window.name = xx
-
-*方式二：通过插件系统修改子应用代码*
-
-比如常见的加载webpack打包的dll文件失败的问题，因为dll文件的内容和js地址相对固定，可以直接进行全局查找和修改。
-```js
-microApp.start({
-  plugins: {
-    modules: {
-      应用名称: [{
-        loader(code, url) {
-          if (url === 'xxx.js') {
-            code = code.replace('var xx_dll=', 'window.xx_dll=')
-          }
-          return code
-        }
-      }]
-    }
-  }
-})
-```
-
-## 8、jsonp请求如何处理？
-  参考[ignore](/zh-cn/configure?id=ignore忽略元素)
+## 8、jsonp请求如何处理？ :id=8
+参考[ignore](/zh-cn/configure?id=ignore忽略元素)
 
 
-## 9、子应用通过a标签下载文件失败
+## 9、子应用通过a标签下载文件失败 :id=9
   **原因：**当跨域时(主应用和文件在不同域名下)，无法通过a标签的download属性实现下载。
 
   **解决方式：**
@@ -129,7 +79,7 @@ microApp.start({
 
   **方式2：**将文件放到主应用域名下，判断微前端环境下a标签href属性设置为主应用的文件地址
 
-## 10、iconfont 图标冲突了如何处理？
+## 10、iconfont 图标冲突了如何处理？ :id=10
 
 | 产生原因                                        | 解决方案                                                     |
 | ----------------------------------------------- | ------------------------------------------------------------ |
@@ -166,43 +116,25 @@ microApp.start({
 + <i className="iconfont1 right"></i>
 ```
 
-## 11、Vue主应用接入微前端时循环刷新（页面闪烁）
+## 11、子应用script元素被注释、消失 :id=11
+默认情况下，子应用的js会被提取并在后台运行，script元素原位置会留下注释：`<!--script with src='xxx' extract by micro-app-->`
 
-**解决方式：**将主应用router-view或者包含微前端的上层组件中`:key="route.fullPath"`改为`:key="route.path"`或者`:key="route.name"`
+如果想要保留script元素，可以开启inline模式，配置方式参考：[inline](/zh-cn/configure?id=inline)
 
-**例如：**
+## 12、Vue主应用接入微前端时循环刷新（页面闪烁） :id=12
+参考[Vue常见问题-2](/zh-cn/framework/vue?id=question-2)
 
-```html
-<!-- bad 😭 -->
-<router-view v-slot="{ Component, route }">
-  <transition name="fade">
-    <component :is="Component" :key="route.fullPath" />
-  </transition>
-</router-view>
+## 13、子应用使用`Module Federation`模块联邦时报错 :id=13
+参考[JS沙箱常见问题-2](/zh-cn/sandbox?id=module-federation)
 
-<!-- good 😊 -->
-<router-view v-slot="{ Component, route }">
-  <transition name="fade">
-    <component :is="Component" :key="route.path" />
-  </transition>
-</router-view>
-```
+## 14、子应用`DllPlugin`拆分的文件加载失败 :id=14
+参考[JS沙箱常见问题-3](/zh-cn/sandbox?id=dllplugin)
 
-```html
-<!-- bad 😭 -->
-<router-view :key="$route.fullPath"></router-view>
+## 15、iframe沙箱加载了主应用的资源 :id=15
+参考[JS沙箱常见问题-4](/zh-cn/sandbox?id=iframe-source)
 
-<!-- good 😊 -->
-<router-view :key="$route.path"></router-view>
-```
+## 16、内存泄漏 :id=16
+参考[JS沙箱常见问题-5](/zh-cn/sandbox?id=memory)
 
-## 12、iframe沙箱加载了主应用的资源
-
-**解决方式：**如果主应用不会作为iframe嵌入，可以在主应用head最前面插入下面js
-```html
-<script>if(window.parent !== window) {window.stop()}</script>
-```
-
-## 13、一个页面加载过多个微前端
-
+## 17、一个页面加载过多个微前端 :id=17
 微前端在过多加载和深度嵌套时，要谨慎使用，尤其同个页面在不同版本微前端之间可能会有相互影响，使用者要酌情处理。

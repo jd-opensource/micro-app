@@ -11,60 +11,37 @@
 这一点和ShadowDom不同，在微前端下主应用拥有统筹全局的作用，所以我们没有对主应用操作子应用元素的行为进行限制。
 
 ### 解除元素绑定
-默认情况下，当子应用操作元素时会绑定元素作用域，而解绑过程是异步的，这可能会导致操作元素异常，此时有两种方式可以解决这个问题。
+默认情况下，当子应用操作元素时会绑定元素作用域，而解绑过程是异步的，这可能会导致操作元素异常。
 
-**方式一：执行removeDomScope**
+**常见问题：**主应用元素错误插入到子应用`<micro-app>`元素内部。
 
-[removeDomScope](/zh-cn/api?id=removedomscope)方法可以解除元素绑定，通常用于受子应用元素绑定影响，导致主应用元素错误绑定到子应用的情况。
+**解决方法：**使用`removeDomScope`方法解除元素绑定。
 
-**具体方式如下：**
+具体方式如下：
 <!-- tabs:start -->
 #### ** 主应用 **
 ```js
 import { removeDomScope } from '@micro-zoe/micro-app'
 
-// 解除元素绑定，并且一定时间内阻止再次绑定(一个微任务Promise时间)
-removeDomScope(true) // 或者 removeDomScope()
-
-const div = window.document.createElement('div')
-// 插入到主应用body中
-document.body.appendChild(div) 
+removeDomScope(true) // 解除元素绑定
+/**
+ * 中间区域的元素操作都指向主应用
+ * 例如：
+ * document.body.appendChild(document.createElement('div')) 
+ * div元素将插入到主应用body中
+ */
+removeDomScope(false) // 恢复元素绑定
 ```
 
 #### ** 子应用 **
 ```js
-// 解除元素绑定，并且一定时间内阻止再次绑定(一个微任务Promise时间)
-window.microApp.removeDomScope(true) // 或者 window.microApp.removeDomScope()
-
-const div = window.rawDocument.createElement('div')
-// 插入到主应用body中
-document.body.appendChild(div) 
-```
-<!-- tabs:end -->
-
-
-**方式二：使用setTimeout**
-<!-- tabs:start -->
-#### ** 主应用 **
-```js
-// 等待解绑结束后操作元素
-setTimeout(() => {
-  const div = window.document.createElement('div')
-  // 插入到主应用body中
-  document.body.appendChild(div) 
-}, 0)
-```
-
-#### ** 子应用 **
-```js
-// 记录主应用document
-const rawDocument = window.rawDocument
-
-// 等待解绑结束后操作元素
-setTimeout(() => {
-  const div = rawDocument.createElement('div')
-  // 插入到主应用body中
-  rawDocument.body.appendChild(div) 
-}, 0)
+window.microApp.removeDomScope(true) // 解除元素绑定
+/**
+ * 中间区域的元素操作都指向主应用
+ * 例如：
+ * document.body.appendChild(document.createElement('div')) 
+ * div元素将插入到主应用body中
+ */
+window.microApp.removeDomScope(false) // 恢复元素绑定
 ```
 <!-- tabs:end -->

@@ -1,64 +1,20 @@
-### 沙箱介绍
-我们使用`Proxy`拦截了用户全局操作的行为，防止对window的访问和修改，避免全局变量污染。`micro-app`中的每个子应用都运行在沙箱环境，以获取相对纯净的运行空间。
+JS沙箱通过自定义的window、document拦截子应用的JS操作，实现一个相对独立的运行空间，避免全局变量污染，让每个子应用都拥有一个相对纯净的运行环境。
 
-沙箱是默认开启的，正常情况下不建议关闭，以避免出现不可预知的问题。
+`micro-app`有两种沙箱模式：with沙箱和iframe沙箱，它们覆盖不同的使用场景且可以随意切换，默认情况下使用with沙箱，如果无法正常运行可以切换到iframe沙箱。
 
-如何关闭沙箱请查看：[disableSandbox](/zh-cn/configure?id=disablesandbox)
+## 知识点
 
-### 注意事项
+#### 1、子应用如何获取到真实window、document :id=rawWindow
 
-#### 1、子应用在沙箱环境中如何获取到真实window
-目前有3种方式在子应用中获取外部真实window
-- 1、new Function("return window")() 或 Function("return window")()
-- 2、(0, eval)('window')
-- 3、window.rawWindow
+子应用通过：`window.rawWindow`、`window.rawDocument` 可以获取真实的window、document（即最外层主应用的window和document）。
+<!-- 
+#### 2、对子应用 document 的属性进行自定义代理拦截 :id=custom-document
 
-#### 2、子应用抛出错误信息：xxx 未定义
-**包括：**
-- `xxx is not defined`
-- `xxx is not a function`
-- `Cannot read properties of undefined`
+微前端环境下，MicroApp代理了document的大部分操作，如事件监听、元素的增删改查，也有一部分属性会兜底到原生document上，如document.body、document.head、document.title。
 
-**原因：**
+但有时我们希望对某些特定的属性进行自定义代理拦截，进行一些特殊操作，这时需要使用`customProxyDocumentProps`。
 
-在沙箱环境中，顶层变量不会泄漏为全局变量。
-
-例如在正常情况下，通过 var name 或 function name () {} 定义的顶层变量会泄漏为全局变量，通过window.name或name就可以全局访问。
-
-但是在沙箱环境下这些顶层变量无法泄漏为全局变量，window.name或name的值为undefined，导致出现问题。
-
-**解决方式**：
-
-*方式一：手动修改*
-
-将 var name 或 function name () {} 修改为 window.name = xx
-
-*方式二：通过插件系统修改子应用代码*
-
-比如常见的加载webpack打包的dll文件失败的问题，因为dll文件的内容和js地址相对固定，可以直接进行全局查找和修改。
-```js
-microApp.start({
-  plugins: {
-    modules: {
-      应用名称: [{
-        loader(code, url) {
-          if (url === 'xxx.js') {
-            code = code.replace('var xx_dll=', 'window.xx_dll=')
-          }
-          return code
-        }
-      }]
-    }
-  }
-})
-```
-
-#### 3、基座如何对子应用 document 的一些属性进行自定义代理扩展
-
-**场景：**
-
-微前端模式下，通常由基座负责设置站点标题，不希望受到子应用的干扰。   
-但是因为 microApp 对 documet 的代理处理过程，并没有处理 document.title，所以子应用中可能通过 `document.title = 'xxx'` 意外改变了基座的站点标题。   
+例如：子应用通过 `document.title = 'xxx'` 意外改变了主应用的站点标题。
 
 **解决方式**：
 
@@ -71,4 +27,146 @@ microApp.start({
     ['title', (value) => {}]
   ]),
 })
+``` -->
+
+## 常见问题
+
+### 1、子应用抛出错误信息：xxx 未定义 :id=undefined
+**包括：**
+- `xxx is not defined`
+- `xxx is not a function`
+- `Cannot read properties of undefined`
+
+**常见场景：**
+  - 1、webpack DllPlugin 拆分的独立文件
+  - 2、通过script引入的第三方js文件
+
+**原因：**
+
+在沙箱环境中，顶层变量不会泄漏为全局变量。
+
+例如：在正常情况下，通过 var name 或 function name () {} 定义的顶层变量会泄漏为全局变量，通过window.name或name就可以全局访问，但是在沙箱环境下这些顶层变量无法泄漏为全局变量，window.name或name的值为undefined，导致出现问题。
+
+**解决方式**：
+
+##### 方式一：修改子应用webpack dll配置
+
+子应用webpack dll配置文件中[output.library.type](https://webpack.docschina.org/configuration/output/#outputlibrarytype)设置为`window`，这种方式适合DllPlugin拆分的独立文件。
+```js
+// webpack.dll.config.js
+module.exports = {
+  // ...
+  output: {
+    library: {
+      type: 'window',
+    },
+  },
+}
 ```
+
+##### 方式二：手动修改
+
+将 var name 或 function name () {} 修改为 window.name = xx
+
+##### 方式三：通过插件系统修改子应用代码
+
+通过插件系统，将 var name 或 function name () {} 修改为 window.name = xx，不同项目的代码形式并不统一，根据实际情况调整。
+
+```js
+microApp.start({
+  plugins: {
+    modules: {
+      应用名称: [{
+        loader(code, url) {
+          if (url === 'xxx.js') {
+            // 根据实际情况调整
+            code = code.replace('var xxx=', 'window.xxx=')
+          }
+          return code
+        }
+      }]
+    }
+  }
+})
+```
+
+### 2、子应用使用`Module Federation`模块联邦时报错 :id=module-federation
+**原因：**与上述[常见问题1](/zh-cn/sandbox?id=undefined)相同，在沙箱环境中，顶层变量不会泄漏为全局变量导致的。
+
+**解决方式：**将`ModuleFederationPlugin`插件中`library.type`设置为`window`。
+
+```js
+new ModuleFederationPlugin({
+  // ...
+  name: "app1",
+  library: { 
+    type: "window", 
+    name: "app1",
+  },
+})
+```
+
+### 3、子应用`DllPlugin`拆分的文件加载失败 :id=DllPlugin
+
+**原因：**与上述[常见问题1](/zh-cn/sandbox?id=undefined)相同，在沙箱环境中，顶层变量不会泄漏为全局变量导致的。
+
+**解决方式：**修改子应用webpack dll配置
+
+子应用webpack dll配置文件中[output.library.type](https://webpack.docschina.org/configuration/output/#outputlibrarytype)设置为`window`。
+```js
+// webpack.dll.config.js
+module.exports = {
+  // ...
+  output: {
+    library: {
+      type: 'window',
+    },
+  },
+}
+```
+
+### 4、iframe沙箱加载了主应用的资源 :id=iframe-source
+
+![iframe-source](https://img12.360buyimg.com/imagetools/jfs/t1/233529/17/19491/20911/667027a9F8cfada1e/7cf9213644e14b24.png ':size=700')
+
+**原因：**由于iframe的src必须指向主应用域名，导致沙箱在初始化时有几率加载主应用的静态资源。
+
+**解决方式：**
+
+**方案一：**在主应用创建一个空的empty.html文件，将iframe的src指向它
+
+- 步骤1：在静态资源文件夹中创建一个空的empty.html文件
+```
+静态资源文件夹：即vue、react项目的public文件夹，angular项目的assets文件夹，不同项目可能会不同，根据实际情况调整。
+```
+
+- 步骤2：设置iframeSrc，指向empty.html文件
+```js
+microApp.start({
+    iframeSrc: 'http://主应用域名/基础路径(如果有)/empty.html',
+})
+```
+如果是多层嵌套，中间层的iframeSrc也要指向最外层主应用的empty.html
+
+
+**方案二：**使用window.stop()阻止脚本执行
+
+- 在主应用head最前面插入下面js：
+```html
+<script>if(window.parent !== window) {window.stop()}</script>
+```
+window.stop虽然可以阻止脚本执行，但对于已经发送的js请求无法撤回，所以network中会看到canceled请求，但不影响正常功能，如果无法接受推荐使用方案一。
+
+
+### 5、内存优化 :id=memory
+为了优化性能，沙箱在子应用初始化时会缓存静态资源和数据，在子应用卸载后不会自动清除，以提升二次渲染速度，这是正常现象。
+
+初始化时占用的内存是一次性的，不会一直增长。
+
+如果在切换子应用时内存一直增长，造成内存泄漏风险，需要进行以下操作：
+  
+- 1、将子应用切换到umd模式，切换方式参考[umd模式](/zh-cn/umd)
+- 2、不要设置[destroy](/zh-cn/configure?id=destroy)属性
+- 3、保证name和url一一对应
+
+做到以上几点基本上不会有内存泄漏问题，如果问题依然存在，可以试着切换到[iframe](/zh-cn/configure?id=iframe)沙箱。

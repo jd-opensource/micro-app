@@ -4,7 +4,8 @@ Github 地址为：[https://github.com/micro-zoe/micro-app-chrome-plugin](https:
 
 # 如何使用
 
-下载[插件地址](https://github.com/micro-zoe/micro-app-chrome-plugin/raw/master/micro-app-chrome-plugin.zip)，（提示：无需解压），在chrome中输入[chrome://extensions](chrome://extensions)打开扩展程序，将已下载的插件拖入。
+在chrome中输入`chrome://extensions`打开扩展程序，打开[插件下载地址](https://github.com/micro-zoe/micro-app-chrome-plugin/releases)，选择最新Release包的`micro-app-chrome-plugin.zip`
+文件下载，无需解压，将已下载的插件拖入。
 
 ![扩展程序](https://img12.360buyimg.com/imagetools/jfs/t1/119438/16/38287/53001/646b50e3F9012f2e8/3bba9844bbb1431b.png)
 
@@ -13,29 +14,19 @@ Github 地址为：[https://github.com/micro-zoe/micro-app-chrome-plugin](https:
 
 ## 1、Environment环境
 
-可查看`Micro app`的`Environment`环境如下
+可查看`Micro app`的全局变量，目前显示的是最后一次加载的微应用信息，并支持点击具体条目跳转到官方文档说明。
 
-```js
-'__MICRO_APP_ENVIRONMENT__': '判断应用是否在微前端环境中'
-'__MICRO_APP_VERSION__': '微前端版本号'
-'__MICRO_APP_NAME__': '应用名称'
-'__MICRO_APP_PUBLIC_PATH__': '子应用的静态资源前缀'
-'__MICRO_APP_BASE_ROUTE__': '子应用的基础路由'
-```
-
-![控制台](https://m.360buyimg.com/babel/jfs/t1/92170/34/45320/165007/650c20d5F5db8671a/7472d637694733c6.png)
+![控制台](https://img14.360buyimg.com/imagetools/jfs/t1/249320/9/3342/57393/65a73e41Fe655b286/feb7e2aa224d0481.jpg)
 
 ## 2、Communicate通讯
-查看父子应用通讯
-数据通信面板
+用于查看页面`Micro app`微应用结构、基本信息，以及模拟发送接收数据。
+左侧展示的是页面微应用的层级结构，可选择对其进行操作。右侧上部显示当前应用的基本信息，包括名称、路由、iframe模式及版本号等信息。还可对其进行高亮标记，方便快速定位。
+所有应用均支持模拟获取数据及发送数据，并可自动储存历史记录。
 
-### 功能一、获取父应用数据
-点击按钮获取当前被嵌入页面基座应用的JSON格式数据
-
-![数据](https://m.360buyimg.com/babel/jfs/t1/134966/38/37257/31060/650bfcb8Fd7206838/d80ac758e26cab7d.png)
+![通讯](https://img14.360buyimg.com/imagetools/jfs/t1/242631/34/3623/54593/65a73e41Fabc284b6/61d467579d7a922e.jpg)
 
 
-### 功能二、子应用开发环境模拟
+### 3、子应用开发环境模拟
 点击按钮跳转至功能一中子应用开发环境模拟页面，此处模仿内嵌子应用，使用说明如下所示：
 
 在子应用开发环境模拟页面中输入子页面`URL`等信息
@@ -57,26 +48,16 @@ Github 地址为：[https://github.com/micro-zoe/micro-app-chrome-plugin](https:
 
 #### 快捷打开方式二
 点击鼠标右键，选择micro-app下，二级菜单点子应用开发环境模拟
-![快捷方式](https://m.360buyimg.com/babel/jfs/t1/172993/25/37523/30273/64a6384eF736c8180/59fa4375248f460f.png)
 
-## 3、View子应用视图
-查看子应用相关视图信息
-### 查看子应用范围
-点击按钮即可获取当前被嵌入页面基座应用的视图
+![快捷方式](https://github.com/micro-zoe/micro-app-chrome-plugin/assets/14011130/91b40f7c-a826-4ffe-8c20-0b43a5c3bc6f)
 
-![嵌入页面](https://m.360buyimg.com/babel/jfs/t1/122818/13/33795/75508/64a6376dFda233623/601deb9d6e6c01ec.png)
-#### 快捷打开方式
-点击鼠标右键，选择micro-app下，二级菜单点击查看子应用范围
-![快捷方式](https://m.360buyimg.com/babel/jfs/t1/138697/34/36942/29835/64a637f4F11b0ec84/87108f5df15e1b4b.png)
 
-## 4、Route路由
-查看子应用路由信息
+## 常见问题
+### 1、baseroute？
+现象：插件系统的路由模块中，获取子应用链接功能与用户在嵌入微前端时是否使用到baseroute有很大的联系，如果用户配置了baseroute并且子应用路由确实使用了，则会获取正确的子应用链接，相反则可能会获取错误的子应用链接。
 
-![快捷方式](https://m.360buyimg.com/babel/jfs/t1/104185/16/45873/134059/650bf92cFd2de845e/83d692c452ce2abb.png)
-### 功能一、获取子应用路由
-点击查看子应用URL按钮即可获取当前页面下所有子应用的路由地址
-### 功能二、复制及打开子应用路由链接
-点击复制按钮复制子应用路由，点击打开按钮直接在浏览器打开子应用链接地址
+校正：若子应用与配置的baseroute无关联，建议删除配置顶baseroute。
+
 
 ## 🤝 参与共建
 
@@ -84,6 +65,4 @@ Github 地址为：[https://github.com/micro-zoe/micro-app-chrome-plugin](https:
 欢迎小伙伴们加入`Micro-App-DevTools`微信群交流^ ^   
 
 ![image](https://img12.360buyimg.com/imagetools/jfs/t1/29962/13/20207/70265/646c9851Fe104e7c1/fed2ab97e2cf5f29.png)
-
-
 

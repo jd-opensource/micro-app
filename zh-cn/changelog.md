@@ -8,6 +8,47 @@
 
 ---
 
+### 1.0.0-rc.6
+
+`2024-7-29`
+
+- **Bug Fix**
+
+  - 🐞 修复 iframe沙箱下history.go传入的是非0数字时iframe被重置导致异常的问题，[PR 1112](https://github.com/micro-zoe/micro-app/pull/1112) by [keuby](https://github.com/keuby)。
+  - 🐞 修复 iframe沙箱下子应用事件类型判断异常的问题，[issue 975](https://github.com/micro-zoe/micro-app/issues/975)，[issue 1120](https://github.com/micro-zoe/micro-app/issues/1120)，[PR 985](https://github.com/micro-zoe/micro-app/pull/985) by [keuby](https://github.com/keuby)。
+  - 🐞 修复 UnoCSS等异步注册mount、unmount场景下导致umd模式加载失败的问题，[issue 881](https://github.com/micro-zoe/micro-app/issues/881)、[issue 1047](https://github.com/micro-zoe/micro-app/issues/1047)、[issue 1179](https://github.com/micro-zoe/micro-app/issues/1179)、[issue 1218](https://github.com/micro-zoe/micro-app/issues/1218)。
+  - 🐞 修复 类型声明jsx.IntrinsicElements导致vue-ts部分元素lint异常的问题。
+  - 🐞 修复 state路由模式下子应用为vue3时刷新浏览器路由状态丢失的问题。
+  - 🐞 修复 iframe沙箱在默认模式下二次渲染时初始化沙箱过程中卸载子应用导致异常的问题。
+  - 🐞 修复 当子应用的`window.unmount`非空且不为函数时卸载子应用报错的问题。
+  - 🐞 修复 当子应用在开启预渲染后，加载资源过程中被卸载表现异常的问题。
+  - 🐞 修复 fiber子应用在初始化过程中被卸载导致渲染异常的问题。
+  - 🐞 修复 主应用和子应用都是vue-router@4.x时，跳转子应用后点击返回按钮浏览器地址错误的问题，[issue 1234](https://github.com/micro-zoe/micro-app/issues/1234)。
+  - 🐞 修复 子应用beforeunload事件无法正常挂载的问题，[issue 1233](https://github.com/micro-zoe/micro-app/issues/1233)。
+  - 🐞 修复 当官网文档页面内容含有tab时，跳转或刷新后标题锚点定为不准确的问题。
+  - 🐞 修复 循环嵌套时，中间层子应用为iframe沙箱时通过data属性传递初始化数据失败的问题。
+  - 🐞 修复 native路由模式下vue3按需加载页面在部分场景下点击浏览器前进后退按钮时浏览器地址错误。
+  - 🐞 修复 svg中图片路径无法自动补全的问题，[issue 1222](https://github.com/micro-zoe/micro-app/issues/1222)。
+  - 🐞 修复 Firefox浏览器下子应用`favicon.ico`将主应用图标替换的问题，[issue 1262](https://github.com/micro-zoe/micro-app/issues/1262)。
+  - 🐞 修复 Firefox浏览器下子应用元素的`ownerDocument`指向异常导致React16子应用渲染失败的问题。
+  - 🐞 修复 Firefox浏览器下子应用元素的原型链被重置导致子应用渲染异常的的问题，[1089](https://github.com/micro-zoe/micro-app/issues/1089)、[913](https://github.com/micro-zoe/micro-app/issues/913)。
+  - 🐞 修复 iframe沙箱下`message`事件无法被触发的问题。
+  - 🐞 修复 iframe沙箱下window和document通过`dispatchEvent`主动发送某些特殊事件时无法正常触发事件的问题。
+  - 🐞 修复 iframe沙箱下`DOMParser`解析失败导致`AntV X6`, `docx-preview`等库运行异常的问题[1292](https://github.com/micro-zoe/micro-app/issues/1292)。
+  - 🐞 修复 iframe沙箱下主应用元素被错误插入到子应用中的情况[1260](https://github.com/micro-zoe/micro-app/issues/1260)。
+  - 🐞 修复 iframe沙箱下富文本编辑器表现异常的问题[1031](https://github.com/micro-zoe/micro-app/issues/1031)、[1231](https://github.com/micro-zoe/micro-app/issues/1231)、[1023](https://github.com/micro-zoe/micro-app/issues/1203)。
+  - 🐞 修复 Fragment内部link、script等元素无法拦截和处理的问题。
+  - 🐞 修复 iframe沙箱下通过`document.querySelector`、`document.querySelectorAll`获取script元素异常的问题。
+  - 🐞 修复 样式隔离对CSS规则`@layer`的支持，[PR 1303](https://github.com/micro-zoe/micro-app/pull/1303) by [alexgofreight](https://github.com/alexgofreight)。
+  - 🐞 修复 子应用存在多层CSS嵌套时样式隔离解析失败的问题，[PR 1300](https://github.com/micro-zoe/micro-app/pull/1300)、[PR 1298](https://github.com/micro-zoe/micro-app/pull/1298) by [alexgofreight](https://github.com/alexgofreight)。
+
+- **Update**
+  - 🚀 优化 `removeDomScope`方法，支持解除元素绑定的开关操作。
+  - 🚀 优化 沙箱架构设计。
+  - 🚀 优化 子应用卸载行为逻辑。
+  - 🚀 优化 路由相关文档。
+
+
 ### 1.0.0-rc.5
 
 `2024-4-29`
@@ -584,7 +625,7 @@
 
 - **Bug Fix**
 
-  - 🐞 修复了在火狐浏览器80及以上版本中，样式隔离执行速度过慢的问题。
+  - 🐞 修复了在Firefox浏览器80及以上版本中，样式隔离执行速度过慢的问题。
 
 
 ### 0.8.3
