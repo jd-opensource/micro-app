@@ -31,12 +31,12 @@
   - 🐞 修复 svg中图片路径无法自动补全的问题，[issue 1222](https://github.com/micro-zoe/micro-app/issues/1222)。
   - 🐞 修复 Firefox浏览器下子应用`favicon.ico`将主应用图标替换的问题，[issue 1262](https://github.com/micro-zoe/micro-app/issues/1262)。
   - 🐞 修复 Firefox浏览器下子应用元素的`ownerDocument`指向异常导致React16子应用渲染失败的问题。
-  - 🐞 修复 Firefox浏览器下子应用元素的原型链被重置导致子应用渲染异常的的问题，[1089](https://github.com/micro-zoe/micro-app/issues/1089)、[913](https://github.com/micro-zoe/micro-app/issues/913)。
+  - 🐞 修复 Firefox浏览器下子应用元素的原型链被重置导致子应用渲染异常的的问题，[issue 1089](https://github.com/micro-zoe/micro-app/issues/1089)、[issue 913](https://github.com/micro-zoe/micro-app/issues/913)。
   - 🐞 修复 iframe沙箱下`message`事件无法被触发的问题。
   - 🐞 修复 iframe沙箱下window和document通过`dispatchEvent`主动发送某些特殊事件时无法正常触发事件的问题。
-  - 🐞 修复 iframe沙箱下`DOMParser`解析失败导致`AntV X6`, `docx-preview`等库运行异常的问题[1292](https://github.com/micro-zoe/micro-app/issues/1292)。
-  - 🐞 修复 iframe沙箱下主应用元素被错误插入到子应用中的情况[1260](https://github.com/micro-zoe/micro-app/issues/1260)。
-  - 🐞 修复 iframe沙箱下富文本编辑器表现异常的问题[1031](https://github.com/micro-zoe/micro-app/issues/1031)、[1231](https://github.com/micro-zoe/micro-app/issues/1231)、[1023](https://github.com/micro-zoe/micro-app/issues/1203)。
+  - 🐞 修复 iframe沙箱下`DOMParser`解析失败导致`AntV X6`, `docx-preview`等库运行异常的问题，[issue 1292](https://github.com/micro-zoe/micro-app/issues/1292)。
+  - 🐞 修复 iframe沙箱下主应用元素被错误插入到子应用中的情况，[issue 1260](https://github.com/micro-zoe/micro-app/issues/1260)。
+  - 🐞 修复 iframe沙箱下富文本编辑器表现异常的问题，[issue 1031](https://github.com/micro-zoe/micro-app/issues/1031)、[issue 1231](https://github.com/micro-zoe/micro-app/issues/1231)、[issue 1023](https://github.com/micro-zoe/micro-app/issues/1203)。
   - 🐞 修复 Fragment内部link、script等元素无法拦截和处理的问题。
   - 🐞 修复 iframe沙箱下通过`document.querySelector`、`document.querySelectorAll`获取script元素异常的问题。
   - 🐞 修复 样式隔离对CSS规则`@layer`的支持，[PR 1303](https://github.com/micro-zoe/micro-app/pull/1303) by [alexgofreight](https://github.com/alexgofreight)。
