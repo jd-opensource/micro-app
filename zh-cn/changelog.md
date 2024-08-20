@@ -8,6 +8,14 @@
 
 ---
 
+### 1.0.0-rc.8
+
+`2024-8-20`
+
+- **Bug Fix**
+  - 🐞 修复 with沙箱下子应用重写`history.pushState`、`history.replaceState`失败的问题，[issue 1210](https://github.com/micro-zoe/micro-app/issues/1210)。
+
+
 ### 1.0.0-rc.7
 
 `2024-8-20`
