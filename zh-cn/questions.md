@@ -138,3 +138,25 @@ micro-app依赖于CustomElements和Proxy两个较新的API。
 
 ## 17、一个页面加载过多个微前端 :id=17
 微前端在过多加载和深度嵌套时，要谨慎使用，尤其同个页面在不同版本微前端之间可能会有相互影响，使用者要酌情处理。
+
+## 18、子应用加载资源或请求接口时没有带上cookie :id=18
+
+<!-- tabs:start -->
+#### ** 场景1：加载子应用的静态资源时没有带上cookie **
+
+**原因：**MicroApp加载子应用的html、js等静态资源时默认不带cookie
+
+**解决方式：**通过自定义MicroApp的fetch方法，修改fetch的credentials配置，具体步骤参考[自定义fetch](/zh-cn/advanced?id=custom-fetch)
+
+> [!NOTE]
+> 需要注意的是，由于带了cookie，那么子应用的跨域配置`Access-Control-Allow-Origin`不能设置为`*`，必须指定域名，同时设置`Access-Control-Allow-Credentials: true`
+
+
+
+#### ** 场景2：子应用请求接口时没有带上cookie **
+
+**原因：**常见于子应用域名与接口域名相同，而与主应用域名不同的场景，主应用域名与cookie Domain不匹配，导致无法携带cookie
+
+**解决方式：**让后端在写入cookie时设置SameSite为None
+
+<!-- tabs:end -->

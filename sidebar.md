@@ -34,7 +34,7 @@
   - [子应用API](zh-cn/api/child-app)
 
 - 其他
+  - [常见问题](zh-cn/questions)
   - [Micro-App-DevTools](zh-cn/micro-app-devtools)
   - [部署](zh-cn/deploy)
-  - [常见问题](zh-cn/questions)
   - [更新日志](zh-cn/changelog)

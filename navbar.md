@@ -1,6 +1,9 @@
 - [API](zh-cn/api/base-app)
 - [Micro-App-DevTools](zh-cn/micro-app-devtools)
 - [常见问题](zh-cn/questions)
+- API
+  - [主应用API](zh-cn/api/base-app)
+  - [子应用API](zh-cn/api/child-app)
 - Translations
   - [:cn: 中文](/zh-cn/)
   - [:uk: English](/en-us/)

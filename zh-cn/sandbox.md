@@ -163,10 +163,13 @@ window.stop虽然可以阻止脚本执行，但对于已经发送的js请求无�
 
 初始化时占用的内存是一次性的，不会一直增长。
 
-如果在切换子应用时内存一直增长，造成内存泄漏风险，需要进行以下操作：
+如果在切换子应用时内存一直增长，造成内存泄漏风险，需要检查以下操作：
   
 - 1、将子应用切换到umd模式，切换方式参考[umd模式](/zh-cn/umd)
-- 2、不要设置[destroy](/zh-cn/configure?id=destroy)属性
-- 3、保证name和url一一对应
+- 2、不要设置[destroy](/zh-cn/configure?id=destroy)属性，destroy只适合一次性渲染的子应用。
+- 3、不要频繁使用新的[name](/zh-cn/configure?id=name)，因为内存是基于name进行缓存的，新的name会重新初始化应用，导致内存不断增长。
+
+    推荐的方式：一个子应用对应一个name，通过路由控制子应用渲染哪一个页面。
+    
 
 做到以上几点基本上不会有内存泄漏问题，如果问题依然存在，可以试着切换到[iframe](/zh-cn/configure?id=iframe)沙箱。

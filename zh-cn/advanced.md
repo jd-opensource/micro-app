@@ -1,4 +1,4 @@
-## 1、自定义fetch
+## 1、自定义fetch :id=custom-fetch
 通过自定义fetch替换框架自带的fetch，可以修改fetch配置(添加cookie或header信息等等)，或拦截HTML、JS、CSS等静态资源。
 
 自定义的fetch必须是一个返回string类型的Promise。
@@ -33,4 +33,4 @@ microApp.start({
 ```
 
 > [!NOTE]
-> 1、如果跨域请求带cookie，那么`Access-Control-Allow-Origin`不能设置为`*`，必须指定域名，同时设置`Access-Control-Allow-Credentials: true`
+> 需要注意的是，如果跨域请求带cookie，那么`Access-Control-Allow-Origin`不能设置为`*`，必须指定域名，同时设置`Access-Control-Allow-Credentials: true`
