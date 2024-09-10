@@ -13,9 +13,15 @@ microApp.start({
   plugins: {
     // 全局插件，作用于所有子应用的js文件
     global?: Array<{
-      // 可选，强隔离的全局变量(默认情况下子应用无法找到的全局变量会兜底到主应用中，scopeProperties可以禁止这种情况)
+      /**
+       * 可选，强隔离的全局变量（with沙箱才会生效）
+       * 默认情况下with沙箱子应用无法找到的全局变量会兜底到主应用中查找，设置scopeProperties后，全局变量只会在子应用内部查找，阻止兜底查找操作
+       */
       scopeProperties?: string[],
-      // 可选，可以逃逸到外部的全局变量(escapeProperties中的变量会同时赋值到子应用和外部真实的window上)
+      /**
+       * 可选，可以逃逸的全局变量
+       * 默认情况下iframe沙箱子应用的全局变量只会在内部查找，不会兜底到主应用查找，设置escapeProperties后，无法查找的全局变量会兜底到主应用查找。
+       */
       escapeProperties?: string[],
       // 可选，如果函数返回 `true` 则忽略 script 和 link 标签的创建
       excludeChecker?: (url: string) => boolean
@@ -33,9 +39,15 @@ microApp.start({
     modules?: {
       // appName为应用的名称，这些插件只会作用于指定的应用
       [appName: string]: Array<{
-        // 可选，强隔离的全局变量(默认情况下子应用无法找到的全局变量会兜底到主应用中，scopeProperties可以禁止这种情况)
+        /**
+         * 可选，强隔离的全局变量（with沙箱才会生效）
+         * 默认情况下with沙箱子应用无法找到的全局变量会兜底到主应用中查找，设置scopeProperties后，全局变量只会在子应用内部查找，阻止兜底查找操作
+         */
         scopeProperties?: string[],
-        // 可选，可以逃逸到外部的全局变量(escapeProperties中的变量会同时赋值到子应用和外部真实的window上)
+        /**
+         * 可选，可以逃逸的全局变量
+         * 默认情况下iframe沙箱子应用的全局变量只会在内部查找，不会兜底到主应用查找，设置escapeProperties后，无法查找的全局变量会兜底到主应用查找。
+         */
         escapeProperties?: string[],
         // 可选，如果函数返回 `true` 则忽略 script 和 link 标签的创建
         excludeChecker?: (url: string) => boolean

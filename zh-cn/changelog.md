@@ -8,6 +8,19 @@
 
 ---
 
+### 1.0.0-rc.9
+
+`2024-9-10`
+
+- **Feature**
+  - 支持 cesiumjs及其生态, [issue 1351](https://github.com/micro-zoe/micro-app/issues/1351)
+- **Bug Fix**
+  - 🐞 修复 vite环境下iframe沙箱对于插件系统`escapeProperties`不支持的问题。
+  - 🐞 修复 iframe沙箱下jquery通过`$('body').append`创建元素逃逸的问题，[issue 1339](https://github.com/micro-zoe/micro-app/issues/1339)。
+  - 🐞 修复 iframe沙箱部分场景下执行`instanceOf`导致死循环的问题，[issue 1341](https://github.com/micro-zoe/micro-app/issues/1341)。
+  - 🐞 修复 子应用css样式缺少闭合标签导致解析失败的问题，[issue 1342](https://github.com/micro-zoe/micro-app/issues/1342)。
+
+
 ### 1.0.0-rc.8
 
 `2024-8-20`
