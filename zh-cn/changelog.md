@@ -8,6 +8,16 @@
 
 ---
 
+
+### 1.0.0-rc.11
+
+`2024-9-29`
+
+- **Bug Fix**
+  - 🐞 修复 wangEditor-next 富文本插件报错，[issue 1354](https://github.com/micro-zoe/micro-app/issues/1354)。
+  - 🐞 修复 vue3.5中自定义元素defineCustomElement在子应用中报错，[issue 1367](https://github.com/micro-zoe/micro-app/issues/1367)。
+  - 🐞 修复 new Worker 不传第二个参数报错，[issue 1368](https://github.com/micro-zoe/micro-app/issues/1368)。
+
 ### 1.0.0-rc.10
 
 `2024-9-14`
