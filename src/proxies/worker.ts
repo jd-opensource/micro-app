@@ -8,6 +8,10 @@ interface WorkerOptions {
   credentials?: 'omit' | 'same-origin' | 'include';
 }
 
+const EXCLUDE_URL_PROTOCOLS = [
+  'blob:'
+]
+
 interface WorkerInstance extends EventTarget {
   postMessage(message: any, transfer?: Transferable[]): void;
   terminate(): void;
@@ -20,14 +24,12 @@ interface Worker {
 const originalWorker = window.Worker
 
 function isSameOrigin(url: string | URL): boolean {
-  if (url instanceof URL && url.protocol === 'blob:') {
-    // 如果 url 是 Blob URL，直接返回 true
-    return true
-  }
-
-  // 检查 URL 是否与当前页面在同一个源
   try {
-    const parsedUrl = new URL(url as string)
+    // 检查 URL 是否与当前页面在同一个源
+    const parsedUrl = url instanceof URL ? url : new URL(url as string)
+    if (EXCLUDE_URL_PROTOCOLS.includes(parsedUrl.protocol)) {
+      return true
+    }
     return (
       parsedUrl.protocol === window.location.protocol &&
       parsedUrl.hostname === window.location.hostname &&
