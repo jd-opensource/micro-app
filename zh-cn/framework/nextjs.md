@@ -218,4 +218,4 @@ module.exports = {
 
 > [!TIP]
 >
-> nextjs相关问题可以在[nextjs专属讨论贴](https://github.com/micro-zoe/micro-app/issues/168)下反馈。
+> nextjs相关问题可以在[nextjs专属讨论贴](https://github.com/jd-opensource/micro-app/issues/168)下反馈。

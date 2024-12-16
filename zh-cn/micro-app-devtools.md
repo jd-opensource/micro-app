@@ -1,10 +1,10 @@
 # 📖简介
 `Micro-App-DevTools`是基于京东零售推出的一款为`micro-app`框架而开发的`chrome`插件，旨在方便开发者对微前端进行数据查看以及调试,提升工作效率。
-Github 地址为：[https://github.com/micro-zoe/micro-app-chrome-plugin](https://github.com/micro-zoe/micro-app-chrome-plugin)，欢迎 Star 一下
+Github 地址为：[https://github.com/jd-opensource/micro-app-chrome-plugin](https://github.com/jd-opensource/micro-app-chrome-plugin)，欢迎 Star 一下
 
 # 如何使用
 
-在chrome中输入`chrome://extensions`打开扩展程序，打开[插件下载地址](https://github.com/micro-zoe/micro-app-chrome-plugin/releases)，选择最新Release包的`micro-app-chrome-plugin.zip`
+在chrome中输入`chrome://extensions`打开扩展程序，打开[插件下载地址](https://github.com/jd-opensource/micro-app-chrome-plugin/releases)，选择最新Release包的`micro-app-chrome-plugin.zip`
 文件下载，无需解压，将已下载的插件拖入。
 
 ![扩展程序](https://img12.360buyimg.com/imagetools/jfs/t1/119438/16/38287/53001/646b50e3F9012f2e8/3bba9844bbb1431b.png)
@@ -49,7 +49,7 @@ Github 地址为：[https://github.com/micro-zoe/micro-app-chrome-plugin](https:
 #### 快捷打开方式二
 点击鼠标右键，选择micro-app下，二级菜单点子应用开发环境模拟
 
-![快捷方式](https://github.com/micro-zoe/micro-app-chrome-plugin/assets/14011130/91b40f7c-a826-4ffe-8c20-0b43a5c3bc6f)
+![快捷方式](https://github.com/jd-opensource/micro-app-chrome-plugin/assets/14011130/91b40f7c-a826-4ffe-8c20-0b43a5c3bc6f)
 
 
 ## 常见问题
@@ -61,7 +61,7 @@ Github 地址为：[https://github.com/micro-zoe/micro-app-chrome-plugin](https:
 
 ## 🤝 参与共建
 
-如果您对这个项目感兴趣，欢迎提[pull request](https://github.com/micro-zoe/micro-app-chrome-plugin/pulls)参与贡献，也欢迎 [Star](https://github.com/micro-zoe/micro-app-chrome-plugin) 支持一下 ^_^
+如果您对这个项目感兴趣，欢迎提[pull request](https://github.com/jd-opensource/micro-app-chrome-plugin/pulls)参与贡献，也欢迎 [Star](https://github.com/jd-opensource/micro-app-chrome-plugin) 支持一下 ^_^
 欢迎小伙伴们加入`Micro-App-DevTools`微信群交流^ ^   
 
 ![image](https://img12.360buyimg.com/imagetools/jfs/t1/29962/13/20207/70265/646c9851Fe104e7c1/fed2ab97e2cf5f29.png)

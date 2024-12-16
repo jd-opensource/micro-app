@@ -1,7 +1,7 @@
 > [!ATTENTION]
 > 在正式版中接入vite子应用需要关闭沙箱，这会导致很多问题，暂时不建议接入。
 >
-> 在1.0公测版中我们推出了为vite打造的沙箱方案，对于新接入的项目，推荐使用新的方案，具体详情请跳转[1.0公测版文档](https://micro-zoe.com/docs/1.x/#/zh-cn/start)。
+> 在1.0公测版中我们推出了为vite打造的沙箱方案，对于新接入的项目，推荐使用新的方案，具体详情请跳转[1.0公测版文档](https://jd-opensource.com/docs/1.x/#/zh-cn/start)。
 
 
 ## 作为基座应用
@@ -181,4 +181,4 @@ window.eventCenterForViteApp1.dispatch({type: '子应用发送的数据'})
 ## 实战案例
 以上介绍了vite如何接入微前端，但在实际使用中会涉及更多功能，如数据通信、路由跳转、打包部署，为此我们提供了一套案例，用于展示vite作为基座嵌入(或作为子应用被嵌入) react、vue、angular、vite、nextjs、nuxtjs等框架，在案例中我们使用尽可能少的代码实现尽可能多的功能。
 
-案例地址：https://github.com/micro-zoe/micro-app-demo-0.x
+案例地址：https://github.com/jd-opensource/micro-app-demo-0.x

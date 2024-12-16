@@ -191,7 +191,7 @@ window.addEventListener('unmount', function () {
 ## 实战案例
 以上介绍了vue如何接入微前端，但在实际使用中会涉及更多功能，如数据通信、路由跳转、打包部署，为此我们提供了一套案例，用于展示vue作为基座嵌入(或作为子应用被嵌入) react、vue、angular、vite、nextjs、nuxtjs等框架，在案例中我们使用尽可能少的代码实现尽可能多的功能。
 
-案例地址：https://github.com/micro-zoe/micro-app-demo-0.x
+案例地址：https://github.com/jd-opensource/micro-app-demo-0.x
 
 ## 常见问题
 #### 1、基座应用中抛出警告，micro-app未定义
@@ -273,13 +273,13 @@ export default defineConfig({
 
 **测试版本：**vue-router@4.0.12
 
-**相关issue：**[155](https://github.com/micro-zoe/micro-app/issues/155)
+**相关issue：**[155](https://github.com/jd-opensource/micro-app/issues/155)
 
 **解决方式：**在子应用中添加如下设置
 ```js
 if (window.__MICRO_APP_ENVIRONMENT__) {
   // 如果__MICRO_APP_BASE_ROUTE__为 `/基座应用基础路由/子应用基础路由/`，则应去掉`/基座应用基础路由`
-  // 如果对这句话不理解，可以参考案例：https://github.com/micro-zoe/micro-app-demo-0.x
+  // 如果对这句话不理解，可以参考案例：https://github.com/jd-opensource/micro-app-demo-0.x
   const realBaseRoute = window.__MICRO_APP_BASE_ROUTE__
 
   router.beforeEach(() => {

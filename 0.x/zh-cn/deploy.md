@@ -33,7 +33,7 @@ module.exports = {
 
 但在实际开发中经常会出现地址404、资源丢失等问题，这通常是因为服务器配置错误或者micro-app元素url属性地址错误导致。
 
-我们以[micro-app-demo](https://github.com/micro-zoe/micro-app-demo-0.x)为例介绍部署相关内容，以供大家参考，因为`micro-app-demo`覆盖了history路由、hash路由、ssr、根路径、二级路径等大部分场景，是一个典型的案例。
+我们以[micro-app-demo](https://github.com/jd-opensource/micro-app-demo-0.x)为例介绍部署相关内容，以供大家参考，因为`micro-app-demo`覆盖了history路由、hash路由、ssr、根路径、二级路径等大部分场景，是一个典型的案例。
 
 #### 代码仓库目录结构：
 ```
@@ -96,7 +96,7 @@ server {
   server_name  www.micro-zoe.com micro-zoe.com;
 
   location / {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     index index.php index.html index.htm;
     # add_header Cache-Control;
     add_header Access-Control-Allow-Origin *;
@@ -108,7 +108,7 @@ server {
 
   # 主应用main-angular11
   location /main-angular11 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -119,7 +119,7 @@ server {
 
   # 主应用main-react16
   location /main-react16 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -130,7 +130,7 @@ server {
 
   # 主应用main-react17
   location /main-react17 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -141,7 +141,7 @@ server {
 
   # 主应用main-vite
   location /main-vite {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -152,7 +152,7 @@ server {
 
   # 主应用main-vue2
   location /main-vue2 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -163,7 +163,7 @@ server {
 
   # 主应用main-vue3
   location /main-vue3 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -174,7 +174,7 @@ server {
 
   # 子应用child-angular11
   location /child/angular11 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -185,7 +185,7 @@ server {
 
   # 子应用child-react16
   location /child/react16 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -196,7 +196,7 @@ server {
 
   # 子应用child-react17
   location /child/react17 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -207,7 +207,7 @@ server {
   
   # 子应用child-sidebar
   location /child/sidebar {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -218,7 +218,7 @@ server {
 
   # 子应用child-vite
   location /child/vite {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -229,7 +229,7 @@ server {
 
   # 子应用child-vue2
   location /child/vue2 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;
@@ -240,7 +240,7 @@ server {
 
   # 子应用child-vue3
   location /child/vue3 {
-    root /root/mygit/micro-zoe;
+    root /root/mygit/jd-opensource;
     add_header Access-Control-Allow-Origin *;
     if ( $request_uri ~* ^.+.(js|css|jpg|png|gif|tif|dpg|jpeg|eot|svg|ttf|woff|json|mp4|rmvb|rm|wmv|avi|3gp)$ ){
       add_header Cache-Control max-age=7776000;

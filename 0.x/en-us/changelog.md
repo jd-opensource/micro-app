@@ -48,7 +48,7 @@
 
 - **Bug Fix**
 
-  - 🐞 Fixed the conflict of vue, when the base app load Vue through remote link, issue [#234](https://github.com/micro-zoe/micro-app/issues/234)。
+  - 🐞 Fixed the conflict of vue, when the base app load Vue through remote link, issue [#234](https://github.com/jd-opensource/micro-app/issues/234)。
 
 - **Update**
 
@@ -61,12 +61,12 @@
 
 - **Bug Fix**
 
-  - 🐞 Fix bug of element-plus dom escape from micro-app element, issue [#157](https://github.com/micro-zoe/micro-app/issues/157), [#121](https://github.com/micro-zoe/micro-app/issues/121).
-  - 🐞 Fix bug of parser style error when using IE6 and 7 csshack, issue [#232](https://github.com/micro-zoe/micro-app/issues/223).
+  - 🐞 Fix bug of element-plus dom escape from micro-app element, issue [#157](https://github.com/jd-opensource/micro-app/issues/157), [#121](https://github.com/jd-opensource/micro-app/issues/121).
+  - 🐞 Fix bug of parser style error when using IE6 and 7 csshack, issue [#232](https://github.com/jd-opensource/micro-app/issues/223).
 
 - **Update**
 
-  - 🚀 Optimized plugins logic and code, PR [#224](https://github.com/micro-zoe/micro-app/pull/224) by [LinFeng1997](https://github.com/LinFeng1997).
+  - 🚀 Optimized plugins logic and code, PR [#224](https://github.com/jd-opensource/micro-app/pull/224) by [LinFeng1997](https://github.com/LinFeng1997).
   - 🚀 Optimized sandbox logic and code.
 
 
@@ -80,7 +80,7 @@
 
 - **Bug Fix**
 
-  - 🐞 修复了在使用css变量时导致样式丢失的问题，issue [#157](https://github.com/micro-zoe/micro-app/issues/157)、[#121](https://github.com/micro-zoe/micro-app/issues/121)。
+  - 🐞 修复了在使用css变量时导致样式丢失的问题，issue [#157](https://github.com/jd-opensource/micro-app/issues/157)、[#121](https://github.com/jd-opensource/micro-app/issues/121)。
   - 🐞 修复了在部分浏览器(如：safari)下，css表现有差异的问题。
 
 - **Update**
@@ -95,7 +95,7 @@
 - **Bug Fix**
 
   - 🐞 修复了link标签在非head时样式丢失的问题
-  - 🐞 修复了错误补全svg地址的问题，PR [#207](https://github.com/micro-zoe/micro-app/pull/207) by [icksky](https://github.com/icksky)。
+  - 🐞 修复了错误补全svg地址的问题，PR [#207](https://github.com/jd-opensource/micro-app/pull/207) by [icksky](https://github.com/icksky)。
   - 🐞 修复了在部分浏览器下报`WeakRef is not defined`错误的问题。
 
 
@@ -134,7 +134,7 @@
 
 - **Bug Fix**
 
-  - 🐞 修复了通过`new Image()`创建的元素逃离沙箱的问题，issue [#186](https://github.com/micro-zoe/micro-app/issues/186)，PR [#187](https://github.com/micro-zoe/micro-app/pull/187) by [asiainfoliwei](https://github.com/asiainfoliwei)。
+  - 🐞 修复了通过`new Image()`创建的元素逃离沙箱的问题，issue [#186](https://github.com/jd-opensource/micro-app/issues/186)，PR [#187](https://github.com/jd-opensource/micro-app/pull/187) by [asiainfoliwei](https://github.com/asiainfoliwei)。
   - 🐞 修复了通过`cloneNode`创建的元素逃离沙箱的问题。
 
 - **Update**
@@ -214,8 +214,8 @@
 
 - **Bug Fix**
 
-  - 🐞 修复了在不支持`ShadowRoot`的浏览器中的报错问题，issue [#134](https://github.com/micro-zoe/micro-app/issues/134)
-  - 🐞 修复了元素查询时带有特殊字符导致报错的问题，issue [#140](https://github.com/micro-zoe/micro-app/issues/140)
+  - 🐞 修复了在不支持`ShadowRoot`的浏览器中的报错问题，issue [#134](https://github.com/jd-opensource/micro-app/issues/134)
+  - 🐞 修复了元素查询时带有特殊字符导致报错的问题，issue [#140](https://github.com/jd-opensource/micro-app/issues/140)
 
 
 ### 0.4.2
@@ -226,13 +226,13 @@
 
   - 🆕 新增了数据通信中`getGlobalData`方法，用于主动获取全局数据
   - 🆕 新增了对`mount`, `unmount`方法promise类型的支持
-  - 🆕 新增了`destroy`配置项，用于替换`destory`，但依然保持对低版本的兼容，issue [#132](https://github.com/micro-zoe/micro-app/issues/132)
+  - 🆕 新增了`destroy`配置项，用于替换`destory`，但依然保持对低版本的兼容，issue [#132](https://github.com/jd-opensource/micro-app/issues/132)
 
 - **Bug Fix**
 
   - 🐞 修复了umd模式下，react16及以下版本二次渲染后路由跳转刷新页面的问题
   - 🐞 修复了SSR子应用二次渲染时url不同导致渲染失败的问题
-  - 🐞 修复了 react-inlinesvg 无法正常渲染的问题，issue [#56](https://github.com/micro-zoe/micro-app/issues/56)
+  - 🐞 修复了 react-inlinesvg 无法正常渲染的问题，issue [#56](https://github.com/jd-opensource/micro-app/issues/56)
   - 🐞 修复了 safari 浏览器中，创建module脚本错误的问题
   - 🐞 修复了子应用通过defineProperty重写document.onclick时报错的问题
 
