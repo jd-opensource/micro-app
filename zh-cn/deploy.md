@@ -33,7 +33,7 @@ module.exports = {
 
 但在实际开发中经常会出现地址404、资源丢失等问题，这通常是因为服务器配置错误或者micro-app元素url属性地址错误导致。
 
-我们以[micro-app-demo](https://github.com/jd-opensource/micro-app-demo)为例介绍部署相关内容，以供大家参考，因为`micro-app-demo`覆盖了history路由、hash路由、ssr、根路径、二级路径等大部分场景，是一个典型的案例。
+我们以[micro-app-demo](https://github.com/micro-zoe/micro-app-demo)为例介绍部署相关内容，以供大家参考，因为`micro-app-demo`覆盖了history路由、hash路由、ssr、根路径、二级路径等大部分场景，是一个典型的案例。
 
 #### 代码仓库目录结构：
 ```
