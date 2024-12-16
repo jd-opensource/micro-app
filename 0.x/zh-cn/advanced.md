@@ -287,4 +287,4 @@ if (window.__MICRO_APP_ENVIRONMENT__) {
 >
 > 3、因为注册了`unmount`函数，所以卸载监听事件 `window.addEventListener('unmount', () => {})` 就不需要了
 >
-> 4、umd模式下，因为初次渲染和后续渲染逻辑不同，可能会出现一些问题，如：[#138](https://github.com/micro-zoe/micro-app/issues/138)
+> 4、umd模式下，因为初次渲染和后续渲染逻辑不同，可能会出现一些问题，如：[#138](https://github.com/jd-opensource/micro-app/issues/138)

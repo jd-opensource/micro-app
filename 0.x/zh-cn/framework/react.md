@@ -120,7 +120,7 @@ window.addEventListener('unmount', function () {
 ## 实战案例
 以上介绍了react如何接入微前端，但在实际使用中会涉及更多功能，如数据通信、路由跳转、打包部署，为此我们提供了一套案例，用于展示react作为基座嵌入(或作为子应用被嵌入) react、vue、angular、vite、nextjs、nuxtjs等框架，在案例中我们使用尽可能少的代码实现尽可能多的功能。
 
-案例地址：https://github.com/micro-zoe/micro-app-demo-0.x
+案例地址：https://github.com/jd-opensource/micro-app-demo-0.x
 
 ## 常见问题
 #### 1、create-react-app创建的子应用，被嵌入微前端后sockjs-node报错

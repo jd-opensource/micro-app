@@ -202,7 +202,7 @@ module.exports = {
 
 > [!TIP]
 >
-> nuxtjs相关问题可以在[nuxtjs专属讨论贴](https://github.com/micro-zoe/micro-app/issues/169)下反馈。
+> nuxtjs相关问题可以在[nuxtjs专属讨论贴](https://github.com/jd-opensource/micro-app/issues/169)下反馈。
 
 #### 2、无法预加载ssr子应用 :id=question-2
 
