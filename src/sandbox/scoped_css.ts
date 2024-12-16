@@ -8,7 +8,7 @@ const rootSelectorREG = /(^|\s+)(html|:root)(?=[\s>~[.#:]+|$)/
 const bodySelectorREG = /(^|\s+)((html[\s>~]+body)|body)(?=[\s>~[.#:]+|$)/
 
 type parseErrorType = Error & { reason: string, filename?: string }
-function parseError (msg: string, linkPath?: string): void {
+function parseError(msg: string, linkPath?: string): void {
   msg = linkPath ? `${linkPath} ${msg}` : msg
   const err = new Error(msg) as parseErrorType
   err.reason = msg
@@ -35,7 +35,7 @@ class CSSParser {
   private scopecssDisableSelectors: Array<string> = [] // disable or enable scopecss for specific selectors
   private scopecssDisableNextLine = false // use block comments /* scopecss-disable-next-line */ to disable scopecss on a specific line
 
-  public exec (
+  public exec(
     cssText: string,
     prefix: string,
     baseURI: string,
@@ -49,14 +49,14 @@ class CSSParser {
     return isFireFox() ? decodeURIComponent(this.result) : this.result
   }
 
-  public reset (): void {
+  public reset(): void {
     this.cssText = this.prefix = this.baseURI = this.linkPath = this.result = ''
     this.scopecssDisable = this.scopecssDisableNextLine = false
     this.scopecssDisableSelectors = []
   }
 
   // core action for match rules
-  private matchRules (): void {
+  private matchRules(): void {
     this.matchLeadingSpaces()
     this.matchComments()
     while (
@@ -69,7 +69,7 @@ class CSSParser {
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleRule
-  private matchStyleRule (): boolean | void {
+  private matchStyleRule(): boolean | void {
     const selectors = this.formatSelector(true)
 
     // reset scopecssDisableNextLine
@@ -88,7 +88,7 @@ class CSSParser {
     return true
   }
 
-  private formatSelector (skip: boolean): false | string {
+  private formatSelector(skip: boolean): false | string {
     const m = this.commonMatch(/^[^{]+/, skip)
     if (!m) return false
 
@@ -107,7 +107,7 @@ class CSSParser {
      *  6. :where(.a, .b, .c) a {}
      *    should be ==> micro-app[name=xxx] :where(.a, .b, .c) a {}
      */
-    const attributeValues: {[key: string]: any} = {}
+    const attributeValues: { [key: string]: any } = {}
     const matchRes = m[0].replace(/\[(\w+)~=(.+)\]/g, (match, p1, p2) => {
       const mock = `__mock_${p1}Value__`
       attributeValues[mock] = p2
@@ -116,9 +116,9 @@ class CSSParser {
 
     return matchRes.replace(/(^|,[\n\s]*)([^,]+)/g, (_, separator, selector) => {
       selector = trim(selector)
-      selector = selector.replace(/\[([^\]=]+)(?:=([^\]]+))?\]/g, (match:string, p1: string) => {
-        if (attributeValues[p1]) {
-          return match.replace(p1, attributeValues[p1])
+      selector = selector.replace(/\[([^\]=]+)(?:=([^\]]+))?\]/g, (match: string, _: string, p2: string) => {
+        if (attributeValues[p2]) {
+          return match.replace(p2, attributeValues[p2])
         }
         return match
       })
@@ -144,7 +144,7 @@ class CSSParser {
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration
-  private styleDeclarations (): boolean | void {
+  private styleDeclarations(): boolean | void {
     if (!this.matchOpenBrace()) return this.printError("Declaration missing '{'", this.linkPath)
 
     this.matchAllDeclarations()
@@ -154,7 +154,7 @@ class CSSParser {
     return true
   }
 
-  private matchAllDeclarations (nesting = 0): void {
+  private matchAllDeclarations(nesting = 0): void {
     let cssValue = (this.commonMatch(/^(?:url\(["']?(?:[^)"'}]+)["']?\)|[^{}/])*/, true) as RegExpExecArray)[0]
 
     if (cssValue) {
@@ -203,7 +203,7 @@ class CSSParser {
     return this.matchAllDeclarations(nesting)
   }
 
-  private matchAtRule (): boolean | void {
+  private matchAtRule(): boolean | void {
     if (this.cssText[0] !== '@') return false
     // reset scopecssDisableNextLine
     this.scopecssDisableNextLine = false
@@ -232,7 +232,7 @@ class CSSParser {
   // }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/CSSKeyframesRule
-  private keyframesRule (): boolean | void {
+  private keyframesRule(): boolean | void {
     if (!this.commonMatch(/^@([-\w]+)?keyframes\s*/)) return false
 
     if (!this.commonMatch(/^[^{]+/)) return this.printError('@keyframes missing name', this.linkPath)
@@ -253,7 +253,7 @@ class CSSParser {
     return true
   }
 
-  private keyframeRule (): boolean {
+  private keyframeRule(): boolean {
     let r; const valList = []
 
     while (r = this.commonMatch(/^((\d+\.\d+|\.\d+|\d+)%?|[a-z]+)\s*/)) {
@@ -271,7 +271,7 @@ class CSSParser {
   }
 
   // https://github.com/postcss/postcss-custom-media
-  private customMediaRule (): boolean {
+  private customMediaRule(): boolean {
     if (!this.commonMatch(/^@custom-media\s+(--[^\s]+)\s*([^{;]+);/)) return false
 
     this.matchLeadingSpaces()
@@ -280,7 +280,7 @@ class CSSParser {
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/CSSPageRule
-  private pageRule (): boolean | void {
+  private pageRule(): boolean | void {
     if (!this.commonMatch(/^@page */)) return false
 
     this.formatSelector(false)
@@ -292,14 +292,14 @@ class CSSParser {
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/CSSFontFaceRule
-  private fontFaceRule (): boolean | void {
+  private fontFaceRule(): boolean | void {
     if (!this.commonMatch(/^@font-face\s*/)) return false
 
     return this.commonHandlerForAtRuleWithSelfRule('font-face')
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/@layer
-  private layerRule (): boolean | void {
+  private layerRule(): boolean | void {
     if (!this.commonMatch(/^@layer\s*([^{;]+)/)) return false
 
     if (!this.matchOpenBrace()) return !!this.commonMatch(/^[;]+/)
@@ -333,7 +333,7 @@ class CSSParser {
   private containerRule = this.createMatcherForRuleWithChildRule(/^@container *([^{]+)/, '@container')
 
   // common matcher for @media, @supports, @document, @host, :global, @container
-  private createMatcherForRuleWithChildRule (reg: RegExp, name: string): () => boolean | void {
+  private createMatcherForRuleWithChildRule(reg: RegExp, name: string): () => boolean | void {
     return () => {
       if (!this.commonMatch(reg)) return false
 
@@ -352,7 +352,7 @@ class CSSParser {
   }
 
   // common matcher for @import, @charset, @namespace
-  private createMatcherForNoneBraceAtRule (name: string): () => boolean {
+  private createMatcherForNoneBraceAtRule(name: string): () => boolean {
     const reg = new RegExp('^@' + name + '\\s*([^;]+);')
     return () => {
       if (!this.commonMatch(reg)) return false
@@ -362,7 +362,7 @@ class CSSParser {
   }
 
   // common handler for @font-face, @page
-  private commonHandlerForAtRuleWithSelfRule (name: string): boolean | void {
+  private commonHandlerForAtRuleWithSelfRule(name: string): boolean | void {
     if (!this.matchOpenBrace()) return this.printError(`@${name} missing '{'`, this.linkPath)
 
     this.matchAllDeclarations()
@@ -375,12 +375,12 @@ class CSSParser {
   }
 
   // match and slice comments
-  private matchComments (): void {
+  private matchComments(): void {
     while (this.matchComment());
   }
 
   // css comment
-  private matchComment (): boolean | void {
+  private matchComment(): boolean | void {
     if (this.cssText.charAt(0) !== '/' || this.cssText.charAt(1) !== '*') return false
     // reset scopecssDisableNextLine
     this.scopecssDisableNextLine = false
@@ -425,7 +425,7 @@ class CSSParser {
     return true
   }
 
-  private commonMatch (reg: RegExp, skip = false): RegExpExecArray | null | void {
+  private commonMatch(reg: RegExp, skip = false): RegExpExecArray | null | void {
     const matchArray = reg.exec(this.cssText)
     if (!matchArray) return
     const matchStr = matchArray[0]
@@ -434,21 +434,21 @@ class CSSParser {
     return matchArray
   }
 
-  private matchOpenBrace () {
+  private matchOpenBrace() {
     return this.commonMatch(/^{\s*/)
   }
 
-  private matchCloseBrace () {
+  private matchCloseBrace() {
     return this.commonMatch(/^}\s*/)
   }
 
   // match and slice the leading spaces
-  private matchLeadingSpaces (): void {
+  private matchLeadingSpaces(): void {
     this.commonMatch(/^\s*/)
   }
 
   // splice string
-  private recordResult (strFragment: string): void {
+  private recordResult(strFragment: string): void {
     // Firefox performance degradation when string contain special characters, see https://github.com/micro-zoe/micro-app/issues/256
     if (isFireFox()) {
       this.result += encodeURIComponent(strFragment)
@@ -457,7 +457,7 @@ class CSSParser {
     }
   }
 
-  private printError (msg: string, linkPath?: string): void {
+  private printError(msg: string, linkPath?: string): void {
     if (this.cssText.length) {
       parseError(msg, linkPath)
     }
@@ -467,7 +467,7 @@ class CSSParser {
 /**
  * common method of bind CSS
  */
-function commonAction (
+function commonAction(
   styleElement: HTMLStyleElement,
   appName: string,
   prefix: string,
@@ -500,7 +500,7 @@ let parser: CSSParser
  * @param styleElement target style element
  * @param appName app name
  */
-export default function scopedCSS (
+export default function scopedCSS(
   styleElement: HTMLStyleElement,
   app: AppInterface,
   linkPath?: string,
@@ -540,7 +540,7 @@ export default function scopedCSS (
   return styleElement
 }
 
-export function createPrefix (appName: string, reg = false): string {
+export function createPrefix(appName: string, reg = false): string {
   const regCharacter = reg ? '\\' : ''
   return `${microApp.tagName}${regCharacter}[name=${appName}${regCharacter}]`
 }
