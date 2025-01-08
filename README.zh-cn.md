@@ -148,7 +148,7 @@ yarn start # 访问 http://localhost:3000
 
 # 贡献者们
 <a href="https://github.com/jd-opensource/micro-app/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=micro-zoe/micro-app" />
+  <img src="https://contrib.rocks/image?repo=jd-opensource/micro-app" />
 </a>
 
 
