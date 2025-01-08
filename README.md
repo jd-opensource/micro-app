@@ -149,7 +149,7 @@ For more commands, see [DEVELOP](https://github.com/jd-opensource/micro-app/blob
 
 # Contributors
 <a href="https://github.com/jd-opensource/micro-app/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=micro-zoe/micro-app" />
+  <img src="https://contrib.rocks/image?repo=jd-opensource/micro-app" />
 </a>
 
 # License
