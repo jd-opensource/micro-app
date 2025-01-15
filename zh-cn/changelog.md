@@ -7,6 +7,13 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.19
+
+`2025-01-15`
+- **Bug Fix**
+  - 🐞 修复 子应用渲染之后，使用Html2Canvas截图，页面崩溃，无限循环加载当前页面静态资源 [issue 1483](https://github.com/jd-opensource/micro-app/issues/1483)。
+  - 🐞 修复 vite热更样式隔离丢失问题
+
 ### 1.0.0-rc.18
 
 `2024-12-16`
