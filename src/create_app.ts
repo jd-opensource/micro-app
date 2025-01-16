@@ -79,6 +79,7 @@ export default class CreateApp implements AppInterface {
   public prefetchLevel?: number
   public fiber = false
   public routerMode: string
+  public isReloading = false
 
   constructor ({
     name,
@@ -102,6 +103,7 @@ export default class CreateApp implements AppInterface {
     // exec before getInlineModeState
     this.iframe = iframe ?? false
     this.inline = this.getInlineModeState(inline)
+    this.isReloading = false
     /**
      * NOTE:
      *  1. Navigate after micro-app created, before mount
@@ -540,7 +542,7 @@ export default class CreateApp implements AppInterface {
     if (this.umdMode && this.container && !destroy) {
       this.cloneContainer(this.source.html, this.container as HTMLElement, false)
     }
-
+    const shouldClearData = this.isReloading ? false : (clearData || destroy)
     /**
      * this.container maybe contains micro-app element, stop sandbox should exec after cloneContainer
      * NOTE:
@@ -551,7 +553,7 @@ export default class CreateApp implements AppInterface {
       umdMode: this.umdMode,
       keepRouteState: keepRouteState && !destroy,
       destroy,
-      clearData: clearData || destroy,
+      clearData: shouldClearData,
     })
 
     // dispatch unmount event to base app

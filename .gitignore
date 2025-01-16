@@ -21,3 +21,4 @@ logs
 *.log
 # eslint
 .eslintcache
+.history

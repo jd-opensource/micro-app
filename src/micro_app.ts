@@ -191,7 +191,15 @@ export function reload (appName: string, destroy?: boolean): Promise<boolean> {
     if (app) {
       const rootContainer = app.container && getRootContainer(app.container)
       if (rootContainer) {
-        resolve(rootContainer.reload(destroy))
+        const currentData = microApp.getData(appName)
+        app.isReloading = true
+        rootContainer.reload(destroy).then(() => {
+          if (currentData) {
+            microApp.setData(appName, currentData)
+          }
+          app.isReloading = false
+          resolve(true)
+        })
       } else {
         logWarn(`app ${appName} is not rendered, cannot use reload`)
         resolve(false)

@@ -188,6 +188,7 @@ declare module '@micro-app/types' {
     routerMode: string // virtual router mode
     isPrefetch: boolean // whether prefetch app, default is false
     isPrerender: boolean
+    isReloading?: boolean
     prefetchLevel?: number
     // defaultPage: string // default page when mount
     // baseroute: string // route prefix, default is ''
