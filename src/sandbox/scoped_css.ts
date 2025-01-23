@@ -510,21 +510,19 @@ export default function scopedCSS (
 
     if (!parser) parser = new CSSParser()
 
+    const escapeRegExp = (regStr: string) => regStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
     if (styleElement.textContent) {
-      commonAction(
-        styleElement,
-        app.name,
-        prefix,
-        app.url,
-        linkPath,
-      )
+      commonAction(styleElement, app.name, prefix, app.url, linkPath)
+
       const observer = new MutationObserver(() => {
-        const isPrefixed = styleElement.textContent && new RegExp(prefix).test(styleElement.textContent)
+        const escapedPrefix = escapeRegExp(prefix)
+        const isPrefixed = styleElement.textContent && new RegExp(escapedPrefix).test(styleElement.textContent)
         observer.disconnect()
         if (!isPrefixed) {
           styleElement.__MICRO_APP_HAS_SCOPED__ = false
+          scopedCSS(styleElement, app, linkPath)
         }
-        scopedCSS(styleElement, app, linkPath)
       })
       observer.observe(styleElement, { childList: true, characterData: true })
     } else {
