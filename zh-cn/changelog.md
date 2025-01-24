@@ -7,6 +7,16 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.20
+
+`待定`
+- **Bug Fix**
+  - 🐞 修复 从rc8升级到rc18后，子应用中使用instanceof判断出现异常 [issue 1497](https://github.com/jd-opensource/micro-app/issues/1497)。
+  - 🐞 修复 setTimeout 执行后未清理记录导致内存泄漏。
+  - 🐞 修复 子应用采用 "react": "^18.3.1"  + jdesign Dragger 上传组件异常问题。
+- **Feature**
+  - 支持 子应用A标签href自定义补齐回调钩子。
+  
 ### 1.0.0-rc.19
 
 `2025-01-15`
