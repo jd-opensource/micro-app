@@ -2,7 +2,7 @@
 
 它拥有更好的用户体验，但也更容易导致主应用和子应用的路由冲突，所以需要更加复杂的路由配置，要对主应用和子应用路由进行一些改造。
 
-实际上主应用和子应用的路由即同时基于浏览器地址进行渲染，又相互独立，我们通过路由配置让两个独立的路由系统实现共存，具体原理参考[关于native模式的原理解析](/zh-cn/native-mode?id=关于native模式的原理解析)。
+实际上主应用和子应用的路由即同时基于浏览器地址进行渲染，又相互独立，我们通过路由配置让两个独立的路由系统实现共存，具体原理参考[关于native模式的原理解析](/zh-cn/native-mode?id=principle)。
 
 ### 基础路径 :id=base
 基础路径即vue-router的[base](https://router.vuejs.org/zh/api/interfaces/RouterHistory.html#Properties-base)、react-router的[basename](https://reactrouter.com/en/main/router-components/browser-router#basename)，通常与应用托管在服务器的文件夹地址一致，但在微前端下子应用基础路径的设置有所不同，需要根据主应用的地址动态设置。
