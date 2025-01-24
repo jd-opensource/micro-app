@@ -9,11 +9,12 @@
 ---
 ### 1.0.0-rc.20
 
-`待定`
+`2025-01-24`
 - **Bug Fix**
   - 🐞 修复 从rc8升级到rc18后，子应用中使用instanceof判断出现异常 [issue 1497](https://github.com/jd-opensource/micro-app/issues/1497)。
   - 🐞 修复 setTimeout 执行后未清理记录导致内存泄漏。
   - 🐞 修复 子应用采用 "react": "^18.3.1"  + jdesign Dragger 上传组件异常问题。
+  - 🐞 修复 子应用document.body逃逸问题[issue 1452](https://github.com/jd-opensource/micro-app/issues/1452)。
 - **Feature**
   - 支持 子应用A标签href自定义补齐回调钩子。
   
