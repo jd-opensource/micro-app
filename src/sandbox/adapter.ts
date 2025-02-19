@@ -1,8 +1,5 @@
-import type {
-  BaseSandboxType,
-  AppInterface,
-} from '@micro-app/types'
-import globalEnv from '../libs/global_env'
+import type { BaseSandboxType, AppInterface } from "@micro-app/types";
+import globalEnv from "../libs/global_env";
 import {
   defer,
   isNode,
@@ -11,69 +8,63 @@ import {
   getPreventSetState,
   throttleDeferForIframeAppName,
   isAnchorElement,
-} from '../libs/utils'
-import {
-  appInstanceMap,
-  isIframeSandbox,
-} from '../create_app'
-import microApp from '../micro_app'
-import { AppManager } from '../app_manager'
+} from "../libs/utils";
+import { appInstanceMap, isIframeSandbox } from "../create_app";
+import microApp from "../micro_app";
+import { AppManager } from "../app_manager";
 
 export class BaseSandbox implements BaseSandboxType {
-  constructor (appName: string, url: string) {
-    this.appName = appName
-    this.url = url
-    this.injectReactHMRProperty()
+  constructor(appName: string, url: string) {
+    this.appName = appName;
+    this.url = url;
+    this.injectReactHMRProperty();
   }
 
   // keys that can only assigned to rawWindow
-  public rawWindowScopeKeyList: PropertyKey[] = [
-    'location',
-  ]
+  public rawWindowScopeKeyList: PropertyKey[] = ["location"];
 
   // keys that can escape to rawWindow
-  public staticEscapeProperties: PropertyKey[] = [
-    'System',
-    '__cjsWrapper',
-  ]
+  public staticEscapeProperties: PropertyKey[] = ["System", "__cjsWrapper"];
 
   // keys that scoped in child app
   public staticScopeProperties: PropertyKey[] = [
-    'webpackJsonp',
-    'webpackHotUpdate',
-    'Vue',
+    "webpackJsonp",
+    "webpackHotUpdate",
+    "Vue",
     // TODO: 是否可以和constants/SCOPE_WINDOW_ON_EVENT合并
-    'onpopstate',
-    'onhashchange',
-    'event',
-  ]
+    "onpopstate",
+    "onhashchange",
+    "event",
+  ];
 
-  public appName: string
-  public url: string
+  public appName: string;
+  public url: string;
   // Properties that can only get and set in microAppWindow, will not escape to rawWindow
-  public scopeProperties: PropertyKey[] = Array.from(this.staticScopeProperties)
+  public scopeProperties: PropertyKey[] = Array.from(
+    this.staticScopeProperties
+  );
   // Properties that can be escape to rawWindow
-  public escapeProperties: PropertyKey[] = []
+  public escapeProperties: PropertyKey[] = [];
   // Properties newly added to microAppWindow
-  public injectedKeys = new Set<PropertyKey>()
+  public injectedKeys = new Set<PropertyKey>();
   // Properties escape to rawWindow, cleared when unmount
-  public escapeKeys = new Set<PropertyKey>()
+  public escapeKeys = new Set<PropertyKey>();
   // Promise used to mark whether the sandbox is initialized
-  public sandboxReady!: Promise<void>
+  public sandboxReady!: Promise<void>;
   // reset mount, unmount when stop in default mode
-  public clearHijackUmdHooks!: () => void
+  public clearHijackUmdHooks!: () => void;
 
   // adapter for react
-  private injectReactHMRProperty (): void {
+  private injectReactHMRProperty(): void {
     if (__DEV__) {
       // react child in non-react env
-      this.staticEscapeProperties.push('__REACT_ERROR_OVERLAY_GLOBAL_HOOK__')
+      this.staticEscapeProperties.push("__REACT_ERROR_OVERLAY_GLOBAL_HOOK__");
       // in react parent
       if (globalEnv.rawWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__) {
         this.staticScopeProperties = this.staticScopeProperties.concat([
-          '__REACT_ERROR_OVERLAY_GLOBAL_HOOK__',
-          '__reactRefreshInjected',
-        ])
+          "__REACT_ERROR_OVERLAY_GLOBAL_HOOK__",
+          "__reactRefreshInjected",
+        ]);
       }
     }
   }
@@ -88,23 +79,28 @@ export class BaseSandbox implements BaseSandboxType {
 export class CustomWindow {}
 
 // Fix conflict of babel-polyfill@6.x
-export function fixBabelPolyfill6 (): void {
-  if (globalEnv.rawWindow._babelPolyfill) globalEnv.rawWindow._babelPolyfill = false
+export function fixBabelPolyfill6(): void {
+  if (globalEnv.rawWindow._babelPolyfill)
+    globalEnv.rawWindow._babelPolyfill = false;
 }
 
 /**
  * Fix error of hot reload when parent&child created by create-react-app in development environment
  * Issue: https://github.com/jd-opensource/micro-app/issues/382
  */
-export function fixReactHMRConflict (app: AppInterface): void {
+export function fixReactHMRConflict(app: AppInterface): void {
   if (__DEV__) {
-    const rawReactErrorHook = globalEnv.rawWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__
-    const childReactErrorHook = app.sandBox?.proxyWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__
+    const rawReactErrorHook =
+      globalEnv.rawWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__;
+    const childReactErrorHook =
+      app.sandBox?.proxyWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__;
     if (rawReactErrorHook && childReactErrorHook) {
-      globalEnv.rawWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__ = childReactErrorHook
+      globalEnv.rawWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__ =
+        childReactErrorHook;
       defer(() => {
-        globalEnv.rawWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__ = rawReactErrorHook
-      })
+        globalEnv.rawWindow.__REACT_ERROR_OVERLAY_GLOBAL_HOOK__ =
+          rawReactErrorHook;
+      });
     }
   }
 }
@@ -114,17 +110,15 @@ export function fixReactHMRConflict (app: AppInterface): void {
  * @param container target dom
  * @param appName app name
  */
-export function patchElementTree (
-  container: Node,
-  appName: string,
-): void {
-  const children = Array.from(container.childNodes)
+export function patchElementTree(container: Node, appName: string): void {
+  const children = Array.from(container.childNodes);
 
-  children.length && children.forEach((child) => {
-    patchElementTree(child, appName)
-  })
+  children.length &&
+    children.forEach((child) => {
+      patchElementTree(child, appName);
+    });
 
-  updateElementInfo(container, appName)
+  updateElementInfo(container, appName);
 }
 
 /**
@@ -133,7 +127,7 @@ export function patchElementTree (
  * @param appName app name
  * @returns target node
  */
-export function updateElementInfo <T> (node: T, appName: string | null): T {
+export function updateElementInfo<T>(node: T, appName: string | null): T {
   if (
     appName &&
     isNode(node) &&
@@ -145,33 +139,35 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
      * TODO:
      *  1. 测试baseURI和ownerDocument在with沙箱中是否正确
      *    经过验证with沙箱不能重写ownerDocument，否则react点击事件会触发两次
-    */
-    const props: {[kye:string]:any} = {
+     */
+    const props: { [kye: string]: any } = {
       __MICRO_APP_NAME__: {
         configurable: true,
         enumerable: true,
         writable: true,
         value: appName,
       },
-    }
+    };
     if (isAnchorElement(node)) {
       // a 标签
-      const microApp = AppManager.getInstance().get(appName)
-      if (microApp) {
+      const microApp = AppManager.getInstance().get(appName);
+      const hrefDescriptor = Object.getOwnPropertyDescriptor(node, "href");
+      const hrefConfigurable = hrefDescriptor?.configurable || !hrefDescriptor;
+      if (microApp && hrefConfigurable) {
         props.href = {
           get() {
-            return this.getAttribute('href')
+            return this.getAttribute("href");
           },
           set(value: string) {
             if (value === undefined) {
-              return
+              return;
             }
-            this.setAttribute('href', value)
+            this.setAttribute("href", value);
           },
-        }
+        };
       }
     }
-    rawDefineProperties(node, props)
+    rawDefineProperties(node, props);
 
     /**
      * In FireFox, iframe Node.prototype will point to native Node.prototype after insert to document
@@ -190,7 +186,7 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
      *  7. Image
      */
     if (isIframeSandbox(appName)) {
-      const proxyWindow = appInstanceMap.get(appName)?.sandBox?.proxyWindow
+      const proxyWindow = appInstanceMap.get(appName)?.sandBox?.proxyWindow;
       if (proxyWindow) {
         rawDefineProperties(node, {
           baseURI: {
@@ -201,26 +197,27 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
           ownerDocument: {
             configurable: true,
             enumerable: true,
-            get: () => node !== proxyWindow.document ? proxyWindow.document : null,
+            get: () =>
+              node !== proxyWindow.document ? proxyWindow.document : null,
           },
           parentNode: getIframeParentNodeDesc(
             appName,
-            globalEnv.rawParentNodeDesc,
+            globalEnv.rawParentNodeDesc
           ),
           getRootNode: {
             configurable: true,
             enumerable: true,
             writable: true,
-            value: function getRootNode (): Node {
-              return proxyWindow.document
-            }
+            value: function getRootNode(): Node {
+              return proxyWindow.document;
+            },
           },
-        })
+        });
       }
     }
   }
 
-  return node
+  return node;
 }
 
 /**
@@ -228,16 +225,16 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
  * @param appName app name
  * @param parentNode parentNode Descriptor of iframe or browser
  */
-export function getIframeParentNodeDesc (
+export function getIframeParentNodeDesc(
   appName: string,
-  parentNodeDesc: PropertyDescriptor,
+  parentNodeDesc: PropertyDescriptor
 ): PropertyDescriptor {
   return {
     configurable: true,
     enumerable: true,
-    get (this: Node) {
-      throttleDeferForIframeAppName(appName)
-      const result: ParentNode = parentNodeDesc.get?.call(this)
+    get(this: Node) {
+      throttleDeferForIframeAppName(appName);
+      const result: ParentNode = parentNodeDesc.get?.call(this);
       /**
        * If parentNode is <micro-app-body>, return rawDocument.body
        * Scenes:
@@ -250,9 +247,12 @@ export function getIframeParentNodeDesc (
        *  e.g. target.parentNode.remove(target)
        */
       if (isMicroAppBody(result) && appInstanceMap.get(appName)?.container) {
-        return microApp.options.getRootElementParentNode?.(this, appName) || globalEnv.rawDocument.body
+        return (
+          microApp.options.getRootElementParentNode?.(this, appName) ||
+          globalEnv.rawDocument.body
+        );
       }
-      return result
-    }
-  }
+      return result;
+    },
+  };
 }
