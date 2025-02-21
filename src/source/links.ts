@@ -206,7 +206,8 @@ export function fetchLinkSuccess (
       appSpaceData.attrs,
     )
 
-    if (placeholder.parentNode) {
+    if (placeholder.parentNode && placeholder.parentNode.replaceChild) {
+      // debugger;
       placeholder.parentNode.replaceChild(convertStyle, placeholder)
     } else {
       microAppHead.appendChild(convertStyle)

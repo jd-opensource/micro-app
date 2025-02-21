@@ -17,8 +17,18 @@
         color: red;
       }
     </style>
-    <script type='module' class="module">
-      console.log('inline module script')
+    <!-- <link rel="stylesheet" href="https://storage.360buyimg.com/shop-pageframe/shop.jd.com/v1/pageframe.css"> -->
+    <link rel="stylesheet" href="./pageframe.css" />
+
+    <script type="module" class="module">
+      console.log("inline module script");
+    </script>
+    <script id="test-id">
+      console.assert(
+        escapeKey3 !== undefined,
+        "window.escapeKey3 兜底到主应用，主应用存在该值，不为undefined"
+      );
+      console.log("测试script带有id时的处理逻辑");
     </script>
 
     <!-- <link rel="stylesheet" href="http://127.0.0.1:8080/test.css">
@@ -34,10 +44,21 @@
 
     <style type="text/css">
       /* @charset "UTF-8"; */
-      @keyframes Ws6lWOlzL1N2S94_Uz\+mO-5hg\=\=/*sdf*/ {0%{transform:scaleY(1);transform-origin:0 0;opacity:1}to{transform:scaleY(.8);transform-origin:0 0;opacity:0}}
+      @keyframes Ws6lWOlzL1N2S94_Uz\+mO-5hg\=\=/*sdf*/ {
+        0% {
+          transform: scaleY(1);
+          transform-origin: 0 0;
+          opacity: 1;
+        }
+        to {
+          transform: scaleY(0.8);
+          transform-origin: 0 0;
+          opacity: 0;
+        }
+      }
 
-      .S94UzmO5hg\=\={
-        color:#fff;
+      .S94UzmO5hg\=\= {
+        color: #fff;
       }
     </style>
   </head>
@@ -46,6 +67,22 @@
     <div id="root"></div>
   </body>
   <script>
-    console.log(`子应用${window.__MICRO_APP_NAME__}的内联script`)
+    console.log(`子应用${window.__MICRO_APP_NAME__}的内联script`);
+    console.log("iceerror-test");
+    window.addEventListener(
+      "error",
+      (event) => {
+        debugger;
+        const errorInfo = {
+          message: event.message,
+          filename: event.filename,
+          line: event.lineno,
+          column: event.colno,
+          errorStack: event.error?.stack,
+        };
+        console.log("[ICEERROR] 错误定位", errorInfo, event);
+      },
+      !0
+    );
   </script>
 </html>
