@@ -32,5 +32,33 @@ microApp.start({
 })
 ```
 
+## 2、excludeRunScriptFilter: 自定义屏蔽JS加载异常 
+通过`excludeRunScriptFilter`钩子，可选择性屏蔽JS加载异常。
+注意：全局捕获异常，将无法感知自定义屏蔽部分。
+
+```js
+import microApp from '@micro-zoe/micro-app'
+
+microApp.start({
+  /**
+   * 自定义 excludeRunScriptFilter
+   * @param {string} address js地址
+   * @param {Error} error fetch请求配置项
+   * @param {string|null} appName 应用名称
+   * @param {string|null} appUrl 应用地址
+   * @returns {boolean|any} true: 屏蔽异常, false及其他: 不屏蔽
+  */
+  excludeRunScriptFilter (address: string, error: Error, appName: string, appUrl: string) {
+    if (address === 'http://localhost:3001/non-block-script.js') {
+      // 自行处理异常，如上报等功能
+      // 非阻塞性功能js
+      return true
+    }
+    return false
+  }
+})
+```
+
+
 > [!NOTE]
 > 需要注意的是，如果跨域请求带cookie，那么`Access-Control-Allow-Origin`不能设置为`*`，必须指定域名，同时设置`Access-Control-Allow-Credentials: true`
