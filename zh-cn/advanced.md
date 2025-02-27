@@ -59,6 +59,11 @@ microApp.start({
 })
 ```
 
+## 3、inheritBaseBody: 子应用body标签是否采用基座标签，默认不采用
+`true`: 采用   
+`false`: 不采用
+
+
 
 > [!NOTE]
 > 需要注意的是，如果跨域请求带cookie，那么`Access-Control-Allow-Origin`不能设置为`*`，必须指定域名，同时设置`Access-Control-Allow-Credentials: true`
