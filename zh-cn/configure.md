@@ -234,6 +234,7 @@ microApp.start({
   'keep-router-state': true, // 子应用在卸载时保留路由状态，默认值false
   'disable-patch-request': true, // 关闭子应用请求的自动补全功能，默认值false
   iframeSrc: location.origin, // 设置iframe沙箱中iframe的src地址，默认为子应用所在页面地址
+  inheritBaseBody: true, // true: 采用基座标签 作为子应用的标签， false: 不采用
 })
 ```
 

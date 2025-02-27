@@ -60,8 +60,14 @@ microApp.start({
 ```
 
 ## 3、inheritBaseBody: 子应用body标签是否采用基座标签，默认不采用
-`true`: 采用   
-`false`: 不采用
+```js
+import microApp from '@micro-zoe/micro-app'
+
+microApp.start({
+  inheritBaseBody: true // true: 采用基座标签 作为子应用的标签， false: 不采用
+
+})
+```
 
 
 
