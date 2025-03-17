@@ -8,12 +8,21 @@
 
 ---
 
+### 1.0.0-rc.23
+
+`2025-03-17`
+- **Bug Fix**
+  - 🐞 修复 micro-app标签的name属性修改后，子应用addDataListener无法接收基座数据。
+  - 🐞 修复 micro-app stop rendering SecurityError: Failed to sea named property'__MICRO_APP_STATE__' "On 'Window': Blocked a frame with origin "xxxx" from accessing a cross-origin frame。
+  - 🐞 修复 reload子应用后，子应用antd组件select、tooltip等组件会报错，导致子应用崩溃 [issue 1533](https://github.com/jd-opensource/micro-app/issues/1533)。
+
 ### 1.0.0-rc.22
 
 `2025-02-27`
 - **Feature**
   - start 支持`inheritBaseBody` 参数:子应用是否采用基座，默认不适用。
   - 子应用支持addEventListener('error')捕捉自身异常。
+  
 ### 1.0.0-rc.21
 
 `2025-02-22`
