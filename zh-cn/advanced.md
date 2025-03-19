@@ -32,6 +32,9 @@ microApp.start({
 })
 ```
 
+> [!NOTE]
+> 需要注意的是，如果跨域请求带cookie，那么`Access-Control-Allow-Origin`不能设置为`*`，必须指定域名，同时设置`Access-Control-Allow-Credentials: true`
+
 ## 2、excludeRunScriptFilter: 自定义屏蔽JS加载异常 
 通过`excludeRunScriptFilter`钩子，可选择性屏蔽JS加载异常。
 注意：全局捕获异常，将无法感知自定义屏蔽部分。
@@ -69,7 +72,23 @@ microApp.start({
 })
 ```
 
+// 配置所有子应用 a 标签的 href 自动补齐方式
+  aHrefResolver: (hrefValue: string, appName: string, appUrl: string) => {
+    return 'https://www.abc.com/'+ hrefValue
+  }
 
 
-> [!NOTE]
-> 需要注意的是，如果跨域请求带cookie，那么`Access-Control-Allow-Origin`不能设置为`*`，必须指定域名，同时设置`Access-Control-Allow-Credentials: true`
+
+## 4、aHrefResolver: 自定义处理所有子应用 a 标签的 href 拼接方式
+
+```js
+import microApp from '@micro-zoe/micro-app'
+
+microApp.start({
+  aHrefResolver: (hrefValue: string, appName: string, appUrl: string) => {
+    return 'https://www.abc.com/'+ hrefValue
+  }
+})
+```
+
+
