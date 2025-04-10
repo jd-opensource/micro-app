@@ -1,6 +1,7 @@
 
 欢迎小伙伴们加入micro-app微信群交流^ ^
-![Uploading IMG_3890.jpeg…]()
+![IMG_3890](https://github.com/user-attachments/assets/7c4dc938-c69e-40ce-8fb8-9fb23c0f7013)
+
 
 
 
