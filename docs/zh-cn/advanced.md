@@ -84,12 +84,12 @@ microApp.start({
 })
 ```
 
-## escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件
+## 5、escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件
 ```js
 import microApp from '@micro-zoe/micro-app'
 
 microApp.start({
-  // 子应用的
+  // 配置所有iframe子应用 逃逸沙盒的window事件
   escapeIframeWindowEvents: ['message']
 })
 ```

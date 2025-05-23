@@ -237,7 +237,7 @@ function patchWindowEffect (microAppWindow: microAppWindowType): CommonEffectHoo
      */
     let escapeSandboxEvent: Array<string> = []
     if (Array.isArray(microApp?.options?.escapeIframeWindowEvents)) {
-      escapeSandboxEvent = microApp?.options?.escapeIframeWindowEvents
+      escapeSandboxEvent = microApp.options.escapeIframeWindowEvents
     }
     const scopeWindowEvent = SCOPE_WINDOW_EVENT_OF_IFRAME.filter(item => !escapeSandboxEvent.includes(item))
     return scopeWindowEvent.includes(type) ? microAppWindow : rawWindow
