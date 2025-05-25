@@ -371,6 +371,7 @@ declare module '@micro-app/types' {
     aHrefResolver?: (hrefValue: string, appName: string, appUrl: string) => string
     inheritBaseBody?:boolean,
     escapeIframeWindowEvents? : Array<string>,
+    disableIframeRootDocument?: boolean,
   }
 
   // MicroApp config

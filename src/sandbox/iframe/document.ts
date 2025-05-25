@@ -54,6 +54,12 @@ export function patchDocument (
 
   return patchDocumentEffect(appName, microAppWindow)
 }
+function getElementDocument(microDocument: Document, rawDocument: Document): Document {
+  if (microApp?.options?.disableIframeRootDocument) {
+    return rawDocument
+  }
+  return microDocument
+}
 
 function patchDocumentPrototype (appName: string, microAppWindow: microAppWindowType): void {
   const rawDocument = globalEnv.rawDocument
@@ -88,7 +94,7 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     tagName: string,
     options?: ElementCreationOptions,
   ): HTMLElement {
-    let element = rawMicroCreateElement.call(this, tagName, options)
+    let element = rawMicroCreateElement.call(getElementDocument(this, rawDocument), tagName, options)
     if (isWebComponentElement(element)) {
       element = rawMicroCreateElement.call(rawDocument, tagName, options)
     }
@@ -100,22 +106,22 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     name: string,
     options?: string | ElementCreationOptions,
   ): HTMLElement {
-    const element = rawMicroCreateElementNS.call(this, namespaceURI, name, options)
+    const element = rawMicroCreateElementNS.call(getElementDocument(this, rawDocument), namespaceURI, name, options)
     return updateElementInfo(element, appName)
   }
 
   microRootDocument.prototype.createTextNode = function createTextNode (data: string): Text {
-    const element = rawMicroCreateTextNode.call(this, data)
+    const element = rawMicroCreateTextNode.call(getElementDocument(this, rawDocument), data)
     return updateElementInfo<Text>(element, appName)
   }
 
   microRootDocument.prototype.createDocumentFragment = function createDocumentFragment (): DocumentFragment {
-    const element = rawMicroCreateDocumentFragment.call(this)
+    const element = rawMicroCreateDocumentFragment.call(getElementDocument(this, rawDocument))
     return updateElementInfo(element, appName)
   }
 
   microRootDocument.prototype.createComment = function createComment (data: string): Comment {
-    const element = rawMicroCreateComment.call(this, data)
+    const element = rawMicroCreateComment.call(getElementDocument(this, rawDocument), data)
     return updateElementInfo<Comment>(element, appName)
   }
 
@@ -184,7 +190,7 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     }
 
     try {
-      return querySelector.call(this, `#${key}`)
+      return querySelector.call(getElementDocument(this, rawDocument), `#${key}`)
     } catch {
       return rawMicroGetElementById.call(_this, key)
     }
@@ -197,14 +203,14 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     }
 
     try {
-      return querySelectorAll.call(this, `.${key}`)
+      return querySelectorAll.call(getElementDocument(this, rawDocument), `.${key}`)
     } catch {
       return rawMicroGetElementsByClassName.call(_this, key)
     }
   }
 
   microRootDocument.prototype.getElementsByTagName = function getElementsByTagName (key: string): HTMLCollectionOf<Element> {
-    const _this = getBindTarget(this)
+    const _this = getBindTarget(getElementDocument(this, rawDocument))
     if (
       isUniqueElement(key) ||
       isInvalidQuerySelectorKey(key)
@@ -216,20 +222,20 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     }
 
     try {
-      return querySelectorAll.call(this, key)
+      return querySelectorAll.call(getElementDocument(this, rawDocument), key)
     } catch {
       return rawMicroGetElementsByTagName.call(_this, key)
     }
   }
 
   microRootDocument.prototype.getElementsByName = function getElementsByName (key: string): NodeListOf<HTMLElement> {
-    const _this = getBindTarget(this)
+    const _this = getBindTarget(getElementDocument(this, rawDocument))
     if (isInvalidQuerySelectorKey(key)) {
       return rawMicroGetElementsByName.call(_this, key)
     }
 
     try {
-      return querySelectorAll.call(this, `[name=${key}]`)
+      return querySelectorAll.call(getElementDocument(this, rawDocument), `[name=${key}]`)
     } catch {
       return rawMicroGetElementsByName.call(_this, key)
     }
