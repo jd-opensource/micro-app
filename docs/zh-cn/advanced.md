@@ -84,14 +84,22 @@ microApp.start({
 })
 ```
 
-## escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件
+## 5、escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件
 ```js
 import microApp from '@micro-zoe/micro-app'
 
 microApp.start({
-  // 子应用的
+  // 配置所有iframe子应用 逃逸沙盒的window事件
   escapeIframeWindowEvents: ['message']
 })
 ```
+## 6、disableIframeRootDocument : iframe模式禁用沙箱Document 默认为false
+```js
+import microApp from '@micro-zoe/micro-app'
 
+microApp.start({
+  // iframe模式禁用沙箱Document，避免一些ui组件库Modal 或tooltip 偏移
+  disableIframeRootDocument: true
+})
+```
 
