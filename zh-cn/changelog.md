@@ -7,11 +7,16 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.26
+
+`2025-05-25`
+- **Feature**
+  - 支持 disableIframeRootDocument : iframe模式禁用沙箱Document，默认为false。
 ### 1.0.0-rc.25
 
 `2025-05-23`
 - **Feature**
-  - 支持escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件。
+  - 支持escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件， Array<string>。
 - **Bug Fix**
   - 🐞 修复 子应用样式加载异常，[issue 1553](https://github.com/jd-opensource/micro-app/issues/1553)。
   - 🐞 修复 当开启样式隔离时子应用属性选择器样式错误，[issue 1573](https://github.com/jd-opensource/micro-app/issues/1573)。
