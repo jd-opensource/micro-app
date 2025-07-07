@@ -250,7 +250,14 @@ export function getIframeParentNodeDesc (
        *  e.g. target.parentNode.remove(target)
        */
       if (isMicroAppBody(result) && appInstanceMap.get(appName)?.container) {
-        return microApp.options.getRootElementParentNode?.(this, appName) || globalEnv.rawDocument.body
+        const customParent = microApp.options.getRootElementParentNode?.(this, appName)
+        if (customParent) {
+          return customParent
+        }
+        if (microApp?.options?.inheritBaseBody !== true) {
+          return appInstanceMap.get(appName)?.container?.querySelector('micro-app-body') || globalEnv.rawDocument.body
+        }
+        return globalEnv.rawDocument.body
       }
       return result
     }
