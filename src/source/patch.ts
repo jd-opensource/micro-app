@@ -32,11 +32,13 @@ import {
   isImageElement,
   isVideoElement,
   isAudioElement,
+  defer,
 } from '../libs/utils'
 import scopedCSS from '../sandbox/scoped_css'
 import {
   extractLinkFromHtml,
   formatDynamicLink,
+  getAutoRemoveObserver,
 } from './links'
 import {
   extractScriptElement,
@@ -104,6 +106,17 @@ function handleNewNode(child: Node, app: AppInterface): Node {
     if (address && linkInfo) {
       const replaceStyle = formatDynamicLink(address, app, linkInfo, child)
       dynamicElementInMicroAppMap.set(child, replaceStyle)
+
+      // mini-css-extract-plugin in hmr mode updates css by finding the <link /> element and replacing it.
+      // so we need to insert the disabled link after the convertStyle
+      defer(() => {
+        globalEnv.rawSetAttribute.call(child, 'disabled', 'true')
+        globalEnv.rawInsertAdjacentElement.call(replaceStyle, 'afterend', child)
+        const observer = getAutoRemoveObserver(replaceStyle, child)
+        if (replaceStyle.parentElement) {
+          observer.observe(replaceStyle.parentElement, { childList: true })
+        }
+      })
       return replaceStyle
     } else if (replaceComment) {
       dynamicElementInMicroAppMap.set(child, replaceComment)
