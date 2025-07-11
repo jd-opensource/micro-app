@@ -320,11 +320,21 @@ export function fetchScriptsFromHtml (
 
   const fiberScriptTasks: fiberTasks = app.isPrefetch || app.fiber ? [] : null
 
+  const startIdentifier = app.mountIdentifier
+
   if (fetchScriptPromise.length) {
     promiseStream<string>(fetchScriptPromise, (res: {data: string, index: number}) => {
+      const address = fetchScriptPromiseInfo[res.index][0]
+      const scriptInfo = fetchScriptPromiseInfo[res.index][1]
+      const currIdentifier = app.mountIdentifier
+      if (startIdentifier !== currIdentifier) {
+        scriptInfo.code = res.data
+        // app has been unmounted, old sandbox is not valid anymore. should not execute script
+        throw new Error('app has been unmounted, abort loading script')
+      }
       injectFiberTask(fiberScriptTasks, () => fetchScriptSuccess(
-        fetchScriptPromiseInfo[res.index][0],
-        fetchScriptPromiseInfo[res.index][1],
+        address,
+        scriptInfo,
         res.data,
         app,
       ))
@@ -578,8 +588,14 @@ export function runDynamicRemoteScript (
   if (scriptInfo.code || isTypeModule(app, scriptInfo)) {
     defer(runDynamicScript)
   } else {
+    const startIdentifier = app.mountIdentifier
     fetchSource(address, app.name).then((code: string) => {
+      const currIdentifier = app.mountIdentifier
       scriptInfo.code = code
+      if (startIdentifier !== currIdentifier) {
+        // app has been unmounted, old sandbox is not valid anymore. should not execute script
+        throw new Error('app has been unmounted, abort loading script')
+      }
       runDynamicScript()
     }).catch((err) => {
       logError(err, app.name)
