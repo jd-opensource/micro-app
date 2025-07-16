@@ -34,6 +34,7 @@ import microApp from '../micro_app'
 import globalEnv from '../libs/global_env'
 import { GLOBAL_CACHED_KEY } from '../constants'
 import sourceCenter from './source_center'
+import { appCurrentScriptMap } from '../create_app'
 
 export type moduleCallBack = Func & { moduleCount?: number, errorCount?: number }
 
@@ -665,7 +666,17 @@ function runParsedFunction (app: AppInterface, scriptInfo: ScriptSourceInfo) {
   if (!appSpaceData.parsedFunction) {
     appSpaceData.parsedFunction = getParsedFunction(app, scriptInfo, appSpaceData.parsedCode!)
   }
-  appSpaceData.parsedFunction.call(getEffectWindow(app))
+  const targetWindow = getEffectWindow(app)
+  const dummyScriptTag = document.createElement('script')
+  dummyScriptTag.src = scriptInfo.appSpace[app.name].attrs.get('src') || ''
+  appCurrentScriptMap.set(app.name, dummyScriptTag)
+  try {
+    appSpaceData.parsedFunction.call(targetWindow)
+  } finally {
+    if (appCurrentScriptMap.get(app.name) === dummyScriptTag) {
+      appCurrentScriptMap.delete(app.name)
+    }
+  }
 }
 
 /**
