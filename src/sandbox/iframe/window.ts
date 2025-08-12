@@ -95,13 +95,18 @@ function patchWindowProperty (
        *  ...
        */
       if (isConstructor(microAppWindow[key]) && key in rawWindow && !UN_PROXY_INSTANCEOF_KEYS.includes(key)) {
-        rawDefineProperty(microAppWindow[key], Symbol.hasInstance, {
+        const { configurable } = Object.getOwnPropertyDescriptor(microAppWindow[key], Symbol.hasInstance) || {
           configurable: true,
-          enumerable: false,
-          value (target: unknown): boolean {
-            return instanceOf(target, rawWindow[key]) || instanceOf(target, microAppWindow[key])
-          },
-        })
+        }
+        if (configurable) {
+          rawDefineProperty(microAppWindow[key], Symbol.hasInstance, {
+            configurable: true,
+            enumerable: false,
+            value (target: unknown): boolean {
+              return instanceOf(target, rawWindow[key]) || instanceOf(target, microAppWindow[key])
+            },
+          })
+        }
       }
 
       return /^on/.test(key) && !SCOPE_WINDOW_ON_EVENT_OF_IFRAME.includes(key)
