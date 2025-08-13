@@ -94,7 +94,12 @@ function patchWindowProperty (
        *  4. native url instanceof iframe window.URL
        *  ...
        */
-      if (isConstructor(microAppWindow[key]) && key in rawWindow && !UN_PROXY_INSTANCEOF_KEYS.includes(key)) {
+      if (
+        isConstructor(microAppWindow[key]) &&
+        key in rawWindow &&
+        !UN_PROXY_INSTANCEOF_KEYS.includes(key) &&
+        !microApp.options.excludeRewriteIframeConstructor?.includes(key)
+      ) {
         rawDefineProperty(microAppWindow[key], Symbol.hasInstance, {
           configurable: true,
           enumerable: false,
