@@ -14,6 +14,7 @@ import {
   rawDefineProperties,
 } from '../../libs/utils'
 import {
+  appCurrentScriptMap,
   appInstanceMap,
 } from '../../create_app'
 import {
@@ -232,6 +233,8 @@ function createProxyDocument (
       if (key === 'removeEventListener') return removeEventListener
       if (key === 'microAppElement') return appInstanceMap.get(appName)?.container
       if (key === '__MICRO_APP_NAME__') return appName
+      // mini-css-extract-plugin in hmr mode depends on document.currentScript to map module-id to chunk file href
+      if (key === 'currentScript') return appCurrentScriptMap.get(appName)
       return bindFunctionToRawTarget<Document>(Reflect.get(target, key), rawDocument, 'DOCUMENT')
     },
     set: (target: Document, key: PropertyKey, value: unknown): boolean => {
