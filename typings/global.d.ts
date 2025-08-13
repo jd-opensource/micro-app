@@ -372,6 +372,7 @@ declare module '@micro-app/types' {
     inheritBaseBody?:boolean,
     escapeIframeWindowEvents? : Array<string>,
     disableIframeRootDocument?: boolean,
+    excludeRewriteIframeConstructor?: string[]
   }
 
   // MicroApp config
