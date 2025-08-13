@@ -102,4 +102,12 @@ microApp.start({
   disableIframeRootDocument: true
 })
 ```
+## excludeRewriteIframeConstructor : iframe模式下排除对指定构造函数的Symbol.hasInstance属性重写
+```js
+import microApp from '@micro-zoe/micro-app'
 
+microApp.start({
+  // iframe模式下，不对事件对象的原型判断进行代理
+  excludeRewriteIframeConstructor: ['EventTarget']
+})
+```
