@@ -45,6 +45,10 @@ class CSSParser {
     this.prefix = prefix
     this.baseURI = baseURI
     this.linkPath = linkPath || ''
+    
+    // @layer: {:root, :host {}} => @layer: { * {}}
+    this.preprocessLayerSelectors()
+    
     this.matchRules()
     return isFireFox() ? decodeURIComponent(this.result) : this.result
   }
@@ -302,7 +306,15 @@ class CSSParser {
   private layerRule (): boolean | void {
     if (!this.commonMatch(/^@layer\s*([^{;]+)/)) return false
 
-    if (!this.matchOpenBrace()) return !!this.commonMatch(/^[;]+/)
+    // check if it ends with ; (declaration or single line)
+    if (this.cssText.charAt(0) === ';') {
+      this.commonMatch(/^;/) // delete ;
+      this.matchLeadingSpaces()
+      return true
+    }
+
+    // check if it starts with { (block)
+    if (!this.matchOpenBrace()) return false
 
     this.matchComments()
 
@@ -461,6 +473,22 @@ class CSSParser {
     if (this.cssText.length) {
       parseError(msg, linkPath)
     }
+  }
+
+  // @layer: {:root, :host {}} => @layer: { * {}}
+  private preprocessLayerSelectors (): void {
+    this.cssText = this.cssText.replace(
+      /@layer\s+([^{]+)\s*\{([^}]*)\}/g,
+      (_, layerDeclaration, layerContent) => {
+        
+        const processedContent = layerContent.replace(
+          /(:root\s*,\s*:host|:host\s*,\s*:root)\s*\{/g,
+          ' *  {'
+        )
+        
+        return `@layer ${layerDeclaration} {${processedContent}}`
+      }
+    )
   }
 }
 
