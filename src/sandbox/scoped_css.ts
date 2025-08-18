@@ -524,7 +524,7 @@ export default function scopedCSS (
           scopedCSS(styleElement, app, linkPath)
         }
       })
-      observer.observe(styleElement, { childList: true, characterData: true })
+      observer.observe(styleElement, { childList: true, characterData: true, subtree: true })
     } else {
       const observer = new MutationObserver(function () {
         observer.disconnect()
