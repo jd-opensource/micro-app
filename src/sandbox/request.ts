@@ -47,7 +47,7 @@ export function createMicroFetch (url: string, target?: Window['fetch']): Window
 export function createMicroXMLHttpRequest (url: string, target?: XMLHttpRequest): any {
   const rawXMLHttpRequest = !isUndefined(target) ? target : globalEnv.rawWindow.XMLHttpRequest
   if (!isConstructor(rawXMLHttpRequest)) return rawXMLHttpRequest
-  return class MicroXMLHttpRequest extends rawXMLHttpRequest {
+  class MicroXMLHttpRequest extends rawXMLHttpRequest {
     open (method: string, reqUrl: string, ...rests: unknown[]): void {
       if ((isString(reqUrl) && !/^f(ile|tp):\/\//.test(reqUrl)) || isURL(reqUrl)) {
         reqUrl = createURL(reqUrl, url).toString()
@@ -56,6 +56,9 @@ export function createMicroXMLHttpRequest (url: string, target?: XMLHttpRequest)
       super.open(method, reqUrl, ...rests)
     }
   }
+  // The methods defined by class are hung on the prototype, and enumerable is false by default
+  MicroXMLHttpRequest.prototype && Object.defineProperty(MicroXMLHttpRequest.prototype, 'open', { enumerable: true })
+  return MicroXMLHttpRequest
 }
 
 export interface EventSourceInstance {
