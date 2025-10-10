@@ -1,6 +1,7 @@
 
 欢迎小伙伴们加入micro-app微信群交流^ ^
-![7fac694bf64014df3ebc05be9d119348](https://github.com/user-attachments/assets/5de269dc-03f7-464d-9b73-50b764583d78)
+![206f40db2a5738a48ecad60c9d30631c](https://github.com/user-attachments/assets/f03fc09e-1ce6-4846-983b-8868a1484d8f)
+
 
 
 
@@ -9,7 +10,8 @@
 
 
 欢迎小伙伴们加入micro-app-DevTools开发交流群^ ^
-![5d7dc4a18e88ffd3bcdb76a9a64634e8](https://github.com/user-attachments/assets/40e6196d-a088-4f20-a1c3-8b4e19ce76b1)
+![5f9db032dbb34f3cb896a3a90897f570](https://github.com/user-attachments/assets/57bd72b2-fabf-4fca-b38e-23d9ee62b791)
+
 
 
 
