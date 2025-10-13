@@ -78,10 +78,16 @@ const WorkerProxy = new Proxy<Worker>(originalWorker, {
     }
 
     if (url && !isSameOrigin(url)) {
+      let workerPath = scriptURL
       // 如果 scriptURL 是跨域的，使用 Blob URL 加载并执行 worker
-      const script = `import "${scriptURL}";`
-      const workerPath = urlFromScript(script)
-      options.type = 'module'
+      // 应该遵总 worker 的 type 类型。classic worker
+      if (options.type === 'module') {
+        const script = `import "${scriptURL}";`
+        workerPath = urlFromScript(script)
+      } else {
+        const script = `importScripts("${scriptURL}");`
+        workerPath = urlFromScript(script)
+      }
       return new Target(workerPath, options) as WorkerInstance
     } else {
       // 如果 scriptURL 是同源的，直接使用原生的 Worker 构造函数

@@ -26,6 +26,7 @@ import {
 import {
   appInstanceMap,
 } from '../../create_app'
+import WorkerProxy from '../../proxies/worker'
 
 /**
  * patch window of child app
@@ -87,9 +88,18 @@ function createProxyWindow (
   const rawWindow = globalEnv.rawWindow
   const descriptorTargetMap = new Map<PropertyKey, 'target' | 'rawWindow'>()
 
+  Object.defineProperty(microAppWindow, 'Worker', {
+    value: WorkerProxy,
+    configurable: true,
+    writable: true,
+  })
+
   const proxyWindow = new Proxy(microAppWindow, {
     get: (target: microAppWindowType, key: PropertyKey): unknown => {
       throttleDeferForSetAppName(appName)
+      if (key === 'Worker') {
+        return WorkerProxy
+      }
       if (
         Reflect.has(target, key) ||
         (isString(key) && /^__MICRO_APP_/.test(key)) ||
