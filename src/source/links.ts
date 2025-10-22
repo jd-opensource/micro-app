@@ -162,6 +162,60 @@ export function fetchLinksFromHtml (
 }
 
 /**
+ * Get a MutationObserver that will remove the convertStyle and disabledLink when the the other is removed
+ * @param convertStyle converted style
+ * @param disabledLink disabled link
+ * @returns MutationObserver
+ */
+export function getAutoRemoveObserver (convertStyle: HTMLStyleElement, disabledLink: HTMLLinkElement): MutationObserver {
+  const observer = new MutationObserver((mutations, obs) => {
+    mutations.forEach((mutation) => {
+      const removedNodes = mutation.removedNodes
+      const removedLength = removedNodes.length
+      let needRemoveElement: Element | null = null
+      for (let i = 0; i < removedLength; i++) {
+        const removedNode = removedNodes[i]
+        if (removedNode === disabledLink) {
+          needRemoveElement = convertStyle
+          break
+        }
+        if (removedNode === convertStyle) {
+          needRemoveElement = disabledLink
+          break
+        }
+      }
+      if (needRemoveElement) {
+        obs.disconnect()
+        needRemoveElement.remove()
+      }
+    })
+  })
+
+  return observer
+}
+
+function getDisabledLink (convertStyle: HTMLStyleElement, linkInfo: LinkSourceInfo, app: AppInterface) {
+  const disabledLink = pureCreateElement('link')
+  const appSpaceData = linkInfo.appSpace[app.name]
+  appSpaceData.attrs?.forEach((value, key) => {
+    if (key === 'href') {
+      globalEnv.rawSetAttribute.call(disabledLink, 'data-origin-href', value)
+      globalEnv.rawSetAttribute.call(disabledLink, 'href', CompletionPath(value, app.url))
+    } else {
+      globalEnv.rawSetAttribute.call(disabledLink, key, value)
+    }
+  })
+  globalEnv.rawSetAttribute.call(disabledLink, 'disabled', 'true')
+
+  const observer = getAutoRemoveObserver(convertStyle, disabledLink)
+
+  return {
+    disabledLink,
+    observer,
+  }
+}
+
+/**
  * Fetch link succeeded, replace placeholder with style tag
  * NOTE:
  * 1. Only exec when init, no longer exec when remount
@@ -198,6 +252,10 @@ export function fetchLinkSuccess (
   if (placeholder) {
     const convertStyle = pureCreateElement('style')
 
+    // mini-css-extract-plugin in hmr mode updates css by finding the <link /> element and replacing it.
+    // so we need to create a disabled link for the hmr to work
+    const { disabledLink, observer } = getDisabledLink(convertStyle, linkInfo, app)
+
     handleConvertStyle(
       app,
       address,
@@ -207,9 +265,15 @@ export function fetchLinkSuccess (
     )
 
     if (placeholder.parentNode) {
-      placeholder.parentNode.replaceChild(convertStyle, placeholder)
+      const parentNode = placeholder.parentNode
+      parentNode.insertBefore(convertStyle, placeholder)
+      parentNode.insertBefore(disabledLink, placeholder)
+      parentNode.removeChild(placeholder)
+      observer.observe(parentNode, { childList: true })
     } else {
       microAppHead.appendChild(convertStyle)
+      microAppHead.appendChild(disabledLink)
+      observer.observe(microAppHead, { childList: true })
     }
 
     // clear placeholder
