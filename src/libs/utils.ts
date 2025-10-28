@@ -319,7 +319,7 @@ export function formatAppURL(url: string | null, appName: string | null = null):
      * BUG FIX: Never using '/' to complete url, refer to https://github.com/jd-opensource/micro-app/issues/1147
      */
     const fullPath = `${origin}${pathname}${search}`
-    return /^https?:\/\//.test(fullPath) ? fullPath : ''
+    return /^\w+?:\/\//.test(fullPath) ? fullPath : ''
   } catch (e) {
     logError(e, appName)
     return ''
@@ -366,7 +366,7 @@ export function getEffectivePath(url: string): string {
 export function CompletionPath(path: string, baseURI: string): string {
   if (
     !path ||
-    /^((((ht|f)tps?)|file):)?\/\//.test(path) ||
+    /^((\w+):)?\/\//.test(path) ||
     /^(data|blob):/.test(path)
   ) return path
 
