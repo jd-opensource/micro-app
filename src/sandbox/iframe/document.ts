@@ -78,16 +78,36 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
   const rawMicroGetElementsByName = microRootDocument.prototype.getElementsByName
   const rawMicroElementFromPoint = microRootDocument.prototype.elementFromPoint
   const rawMicroCaretRangeFromPoint = microRootDocument.prototype.caretRangeFromPoint
+  const rawMicroCaretPositionFromPoint = microRootDocument.prototype.caretPositionFromPoint
 
-  microRootDocument.prototype.caretRangeFromPoint = function caretRangeFromPoint (
-    x: number,
-    y: number,
-  ): Range {
-    // 这里this指向document才可以获取到子应用的document实例，range才可以被成功生成
-    const element = rawMicroElementFromPoint.call(rawDocument, x, y)
-    const range = rawMicroCaretRangeFromPoint.call(rawDocument, x, y)
-    updateElementInfo(element, appName)
-    return range
+  /**
+   * Firefox does not support caretRangeFromPoint
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/caretRangeFromPoint
+   */
+  if (isFunction(rawMicroCaretRangeFromPoint)) {
+    microRootDocument.prototype.caretRangeFromPoint = function caretRangeFromPoint (
+      x: number,
+      y: number,
+    ): Range {
+      // 这里this指向document才可以获取到子应用的document实例，range才可以被成功生成
+      const element = rawMicroElementFromPoint.call(rawDocument, x, y)
+      const range = rawMicroCaretRangeFromPoint.call(rawDocument, x, y)
+      updateElementInfo(element, appName)
+      return range
+    }
+  }
+
+  if (isFunction(rawMicroCaretPositionFromPoint)) {
+    microRootDocument.prototype.caretPositionFromPoint = function caretPositionFromPoint (
+      x: number,
+      y: number,
+    ): CaretPosition {
+      // 这里this指向document才可以获取到子应用的document实例，range才可以被成功生成
+      const element = rawMicroElementFromPoint.call(rawDocument, x, y)
+      const range = rawMicroCaretPositionFromPoint.call(rawDocument, x, y)
+      updateElementInfo(element, appName)
+      return range
+    }
   }
 
   microRootDocument.prototype.createElement = function createElement (
