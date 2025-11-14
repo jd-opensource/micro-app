@@ -157,7 +157,9 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
     if (isAnchorElement(node)) {
       // a 标签
       const microApp = AppManager.getInstance().get(appName)
-      if (microApp) {
+      const hrefDescriptor = Object.getOwnPropertyDescriptor(node, 'href')
+      const hrefConfigurable = hrefDescriptor?.configurable || !hrefDescriptor
+      if (microApp && hrefConfigurable) {
         props.href = {
           get() {
             return this.getAttribute('href')
