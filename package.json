@@ -1,6 +1,6 @@
 {
-  "name": "@micro-zoe/micro-app",
-  "version": "1.0.0-rc.27",
+  "name": "bl-micro-app",
+  "version": "1.0.1",
   "description": "A lightweight, efficient and powerful micro front-end framework",
   "private": false,
   "main": "lib/index.min.js",
@@ -52,7 +52,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jd-opensource/micro-app.git"
+    "url": "https://github.com/kuaijing-bailing/micro-app.git"
   },
   "publishConfig": {
     "access": "public"
