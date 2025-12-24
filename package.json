@@ -1,6 +1,6 @@
 {
   "name": "bl-micro-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A lightweight, efficient and powerful micro front-end framework",
   "private": false,
   "main": "lib/index.min.js",
