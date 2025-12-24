@@ -48,7 +48,8 @@
     "test:coverage": "jest --coverage",
     "test:unit": "jest src/__tests__/unit",
     "test:unit:coverage": "npm run test:unit -- --coverage",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "publish": "npm publish --access public"
   },
   "repository": {
     "type": "git",
