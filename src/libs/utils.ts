@@ -313,12 +313,23 @@ export function formatAppURL(url: string | null, appName: string | null = null):
   if (!isString(url) || !url) return ''
 
   try {
-    const { origin, pathname, search } = createURL(addProtocol(url), (window.rawWindow || window).location.href)
+    const { origin, pathname, search, port, host, protocol} = createURL(addProtocol(url), (window.rawWindow || window).location.href)
+
+    // 自定义协议时， origin 返回字符串 null
+    let newOrigin = origin;
+    if (origin == 'null') {
+      if (port) {
+        newOrigin = protocol + '//' + host + ':' + port
+      } else {
+        newOrigin = protocol + '//' + host
+      }
+    }
+
     /**
      * keep the original url unchanged, such as .html .node .php .net .etc, search, except hash
      * BUG FIX: Never using '/' to complete url, refer to https://github.com/jd-opensource/micro-app/issues/1147
      */
-    const fullPath = `${origin}${pathname}${search}`
+    const fullPath = `${newOrigin}${pathname}${search}`
     return /^\w+?:\/\//.test(fullPath) ? fullPath : ''
   } catch (e) {
     logError(e, appName)
