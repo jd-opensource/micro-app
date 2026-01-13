@@ -28,7 +28,7 @@ import globalEnv from '../libs/global_env'
  * @param appName app.name
  * @param linkInfo linkInfo of current address
  */
-function getExistParseCode(
+function getExistParseCode (
   appName: string,
   prefix: string,
   linkInfo: LinkSourceInfo,
@@ -45,7 +45,7 @@ function getExistParseCode(
 }
 
 // transfer the attributes on the link to convertStyle
-function setConvertStyleAttr(convertStyle: HTMLStyleElement, attrs: AttrsType): void {
+function setConvertStyleAttr (convertStyle: HTMLStyleElement, attrs: AttrsType): void {
   attrs.forEach((value, key) => {
     if (key === 'rel') return
     if (key === 'href') key = 'data-origin-href'
@@ -61,7 +61,7 @@ function setConvertStyleAttr(convertStyle: HTMLStyleElement, attrs: AttrsType): 
  * @param microAppHead micro-app-head element
  * @param isDynamic dynamic insert
  */
-export function extractLinkFromHtml(
+export function extractLinkFromHtml (
   link: HTMLLinkElement,
   parent: Node | null,
   app: AppInterface,
@@ -121,7 +121,7 @@ export function extractLinkFromHtml(
  * @param app app
  * @param microAppHead micro-app-head
  */
-export function fetchLinksFromHtml(
+export function fetchLinksFromHtml (
   wrapElement: HTMLElement,
   app: AppInterface,
   microAppHead: Element,
@@ -134,7 +134,7 @@ export function fetchLinksFromHtml(
   })
 
   const fiberLinkTasks: fiberTasks = fiberStyleResult ? [] : null
-  
+
   //Keep the execution order of link code consistent with their order in the DOM document.
   const eachCallBacks: Array<CallableFunction> = []
 
@@ -145,7 +145,7 @@ export function fetchLinksFromHtml(
       microAppHead,
       app,
     ))
-  }, (err: { error: Error, index: number }) => {
+  }, (err: {error: Error, index: number}) => {
     logError(err, app.name)
   }, () => {
     /**
@@ -154,7 +154,6 @@ export function fetchLinksFromHtml(
      * 3. Process style first, and then process link
      */
     eachCallBacks.forEach((callback) => callback())
-
     if (fiberStyleResult) {
       fiberStyleResult.then(() => {
         fiberLinkTasks!.push(() => Promise.resolve(app.onLoad({ html: wrapElement })))
@@ -179,7 +178,7 @@ export function fetchLinksFromHtml(
  * @param microAppHead micro-app-head
  * @param app app instance
  */
-export function fetchLinkSuccess(
+export function fetchLinkSuccess (
   address: string,
   code: string,
   microAppHead: Element,
@@ -234,7 +233,7 @@ export function fetchLinkSuccess(
  * @param linkInfo linkInfo in sourceCenter
  * @param attrs attrs of link
  */
-export function handleConvertStyle(
+export function handleConvertStyle (
   app: AppInterface,
   address: string,
   convertStyle: HTMLStyleElement,
@@ -270,7 +269,7 @@ export function handleConvertStyle(
  * @param linkInfo linkInfo
  * @param originLink origin link element
  */
-export function formatDynamicLink(
+export function formatDynamicLink (
   address: string,
   app: AppInterface,
   linkInfo: LinkSourceInfo,
