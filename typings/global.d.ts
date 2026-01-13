@@ -369,7 +369,10 @@ declare module '@micro-app/types' {
     getRootElementParentNode?: (node: Node, appName: AppName) => void
     customProxyDocumentProps?: Map<string | number | symbol, (value: unknown) => void>
     aHrefResolver?: (hrefValue: string, appName: string, appUrl: string) => string
-    inheritBaseBody?:boolean
+    inheritBaseBody?:boolean,
+    escapeIframeWindowEvents? : Array<string>,
+    disableIframeRootDocument?: boolean,
+    excludeRewriteIframeConstructor?: string[]
   }
 
   // MicroApp config

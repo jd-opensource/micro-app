@@ -72,23 +72,42 @@ microApp.start({
 })
 ```
 
-// 配置所有子应用 a 标签的 href 自动补齐方式
-  aHrefResolver: (hrefValue: string, appName: string, appUrl: string) => {
-    return 'https://www.abc.com/'+ hrefValue
-  }
-
-
-
 ## 4、aHrefResolver: 自定义处理所有子应用 a 标签的 href 拼接方式
-
 ```js
 import microApp from '@micro-zoe/micro-app'
 
 microApp.start({
+  // 配置所有子应用 a 标签的 href 自动补齐方式
   aHrefResolver: (hrefValue: string, appName: string, appUrl: string) => {
     return 'https://www.abc.com/'+ hrefValue
   }
 })
 ```
 
+## 5、escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件
+```js
+import microApp from '@micro-zoe/micro-app'
 
+microApp.start({
+  // 配置所有iframe子应用 逃逸沙盒的window事件
+  escapeIframeWindowEvents: ['message']
+})
+```
+## 6、disableIframeRootDocument : iframe模式禁用沙箱Document 默认为false
+```js
+import microApp from '@micro-zoe/micro-app'
+
+microApp.start({
+  // iframe模式禁用沙箱Document，避免一些ui组件库Modal 或tooltip 偏移
+  disableIframeRootDocument: true
+})
+```
+## 7、excludeRewriteIframeConstructor : iframe模式下排除对指定构造函数的Symbol.hasInstance属性重写
+```js
+import microApp from '@micro-zoe/micro-app'
+
+microApp.start({
+  // iframe模式下，不对事件对象的原型判断进行代理
+  excludeRewriteIframeConstructor: ['EventTarget']
+})
+```

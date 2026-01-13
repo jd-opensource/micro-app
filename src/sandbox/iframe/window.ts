@@ -25,6 +25,7 @@ import {
   escape2RawWindowRegExpKeys,
 } from './special_key'
 import WorkerProxy from '../../proxies/worker'
+import microApp from '../../micro_app'
 
 /**
  * patch window of child app
@@ -93,7 +94,12 @@ function patchWindowProperty (
        *  4. native url instanceof iframe window.URL
        *  ...
        */
-      if (isConstructor(microAppWindow[key]) && key in rawWindow && !UN_PROXY_INSTANCEOF_KEYS.includes(key)) {
+      if (
+        isConstructor(microAppWindow[key]) &&
+        key in rawWindow &&
+        !UN_PROXY_INSTANCEOF_KEYS.includes(key) &&
+        !microApp.options.excludeRewriteIframeConstructor?.includes(key)
+      ) {
         rawDefineProperty(microAppWindow[key], Symbol.hasInstance, {
           configurable: true,
           enumerable: false,
@@ -234,7 +240,12 @@ function patchWindowEffect (microAppWindow: microAppWindowType): CommonEffectHoo
      * TODO: SCOPE_WINDOW_EVENT_OF_IFRAME的事件非常少，有可能导致问题
      *  1、一些未知的需要绑定到iframe的事件被错误的绑定到原生window上
      */
-    return SCOPE_WINDOW_EVENT_OF_IFRAME.includes(type) ? microAppWindow : rawWindow
+    let escapeSandboxEvent: Array<string> = []
+    if (Array.isArray(microApp?.options?.escapeIframeWindowEvents)) {
+      escapeSandboxEvent = microApp.options.escapeIframeWindowEvents
+    }
+    const scopeWindowEvent = SCOPE_WINDOW_EVENT_OF_IFRAME.filter(item => !escapeSandboxEvent.includes(item))
+    return scopeWindowEvent.includes(type) ? microAppWindow : rawWindow
   }
 
   // TODO: listener 是否需要绑定microAppWindow，否则函数中的this指向原生window

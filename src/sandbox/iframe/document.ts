@@ -54,6 +54,12 @@ export function patchDocument (
 
   return patchDocumentEffect(appName, microAppWindow)
 }
+function getElementDocument(microDocument: Document, rawDocument: Document): Document {
+  if (microApp?.options?.disableIframeRootDocument) {
+    return rawDocument
+  }
+  return microDocument
+}
 
 function patchDocumentPrototype (appName: string, microAppWindow: microAppWindowType): void {
   const rawDocument = globalEnv.rawDocument
@@ -72,23 +78,43 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
   const rawMicroGetElementsByName = microRootDocument.prototype.getElementsByName
   const rawMicroElementFromPoint = microRootDocument.prototype.elementFromPoint
   const rawMicroCaretRangeFromPoint = microRootDocument.prototype.caretRangeFromPoint
+  const rawMicroCaretPositionFromPoint = microRootDocument.prototype.caretPositionFromPoint
 
-  microRootDocument.prototype.caretRangeFromPoint = function caretRangeFromPoint (
-    x: number,
-    y: number,
-  ): Range {
-    // 这里this指向document才可以获取到子应用的document实例，range才可以被成功生成
-    const element = rawMicroElementFromPoint.call(rawDocument, x, y)
-    const range = rawMicroCaretRangeFromPoint.call(rawDocument, x, y)
-    updateElementInfo(element, appName)
-    return range
+  /**
+   * Firefox does not support caretRangeFromPoint
+   * @see https://developer.mozilla.org/zh-CN/docs/Web/API/Document/caretRangeFromPoint
+   */
+  if (isFunction(rawMicroCaretRangeFromPoint)) {
+    microRootDocument.prototype.caretRangeFromPoint = function caretRangeFromPoint (
+      x: number,
+      y: number,
+    ): Range {
+      // 这里this指向document才可以获取到子应用的document实例，range才可以被成功生成
+      const element = rawMicroElementFromPoint.call(rawDocument, x, y)
+      const range = rawMicroCaretRangeFromPoint.call(rawDocument, x, y)
+      updateElementInfo(element, appName)
+      return range
+    }
+  }
+
+  if (isFunction(rawMicroCaretPositionFromPoint)) {
+    microRootDocument.prototype.caretPositionFromPoint = function caretPositionFromPoint (
+      x: number,
+      y: number,
+    ): CaretPosition {
+      // 这里this指向document才可以获取到子应用的document实例，range才可以被成功生成
+      const element = rawMicroElementFromPoint.call(rawDocument, x, y)
+      const range = rawMicroCaretPositionFromPoint.call(rawDocument, x, y)
+      updateElementInfo(element, appName)
+      return range
+    }
   }
 
   microRootDocument.prototype.createElement = function createElement (
     tagName: string,
     options?: ElementCreationOptions,
   ): HTMLElement {
-    let element = rawMicroCreateElement.call(this, tagName, options)
+    let element = rawMicroCreateElement.call(getElementDocument(this, rawDocument), tagName, options)
     if (isWebComponentElement(element)) {
       element = rawMicroCreateElement.call(rawDocument, tagName, options)
     }
@@ -100,22 +126,22 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     name: string,
     options?: string | ElementCreationOptions,
   ): HTMLElement {
-    const element = rawMicroCreateElementNS.call(this, namespaceURI, name, options)
+    const element = rawMicroCreateElementNS.call(getElementDocument(this, rawDocument), namespaceURI, name, options)
     return updateElementInfo(element, appName)
   }
 
   microRootDocument.prototype.createTextNode = function createTextNode (data: string): Text {
-    const element = rawMicroCreateTextNode.call(this, data)
+    const element = rawMicroCreateTextNode.call(getElementDocument(this, rawDocument), data)
     return updateElementInfo<Text>(element, appName)
   }
 
   microRootDocument.prototype.createDocumentFragment = function createDocumentFragment (): DocumentFragment {
-    const element = rawMicroCreateDocumentFragment.call(this)
+    const element = rawMicroCreateDocumentFragment.call(getElementDocument(this, rawDocument))
     return updateElementInfo(element, appName)
   }
 
   microRootDocument.prototype.createComment = function createComment (data: string): Comment {
-    const element = rawMicroCreateComment.call(this, data)
+    const element = rawMicroCreateComment.call(getElementDocument(this, rawDocument), data)
     return updateElementInfo<Comment>(element, appName)
   }
 
@@ -184,7 +210,7 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     }
 
     try {
-      return querySelector.call(this, `#${key}`)
+      return querySelector.call(getElementDocument(this, rawDocument), `#${key}`)
     } catch {
       return rawMicroGetElementById.call(_this, key)
     }
@@ -197,14 +223,14 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     }
 
     try {
-      return querySelectorAll.call(this, `.${key}`)
+      return querySelectorAll.call(getElementDocument(this, rawDocument), `.${key}`)
     } catch {
       return rawMicroGetElementsByClassName.call(_this, key)
     }
   }
 
   microRootDocument.prototype.getElementsByTagName = function getElementsByTagName (key: string): HTMLCollectionOf<Element> {
-    const _this = getBindTarget(this)
+    const _this = getBindTarget(getElementDocument(this, rawDocument))
     if (
       isUniqueElement(key) ||
       isInvalidQuerySelectorKey(key)
@@ -216,20 +242,20 @@ function patchDocumentPrototype (appName: string, microAppWindow: microAppWindow
     }
 
     try {
-      return querySelectorAll.call(this, key)
+      return querySelectorAll.call(getElementDocument(this, rawDocument), key)
     } catch {
       return rawMicroGetElementsByTagName.call(_this, key)
     }
   }
 
   microRootDocument.prototype.getElementsByName = function getElementsByName (key: string): NodeListOf<HTMLElement> {
-    const _this = getBindTarget(this)
+    const _this = getBindTarget(getElementDocument(this, rawDocument))
     if (isInvalidQuerySelectorKey(key)) {
       return rawMicroGetElementsByName.call(_this, key)
     }
 
     try {
-      return querySelectorAll.call(this, `[name=${key}]`)
+      return querySelectorAll.call(getElementDocument(this, rawDocument), `[name=${key}]`)
     } catch {
       return rawMicroGetElementsByName.call(_this, key)
     }

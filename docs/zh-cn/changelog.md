@@ -7,8 +7,33 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.28
 
+`2025-12-04`
+- **Bug Fix**
+  - 🐞 Firefox不支持caretRangeFromPoint，需要兼容修复，[相关PR](https://github.com/jd-opensource/micro-app/pull/1653/files)
+  
+### 1.0.0-rc.27
 
+`2025-08-29`
+- **Feature**
+  - 支持 excludeRewriteIframeConstructor : iframe模式下排除对指定构造函数的Symbol.hasInstance属性重写，默认为空会进行重写。
+- **Bug Fix**
+  - 🐞 修复 当`with`沙箱自动补全生效时，实例化`XMLHttpRequest`后的`open`属性无法调用的问题
+
+### 1.0.0-rc.26
+
+`2025-05-25`
+- **Feature**
+  - 支持 disableIframeRootDocument : iframe模式禁用沙箱Document，默认为false。
+### 1.0.0-rc.25
+
+`2025-05-23`
+- **Feature**
+  - 支持escapeIframeWindowEvents : iframe 模式 逃逸沙盒的window事件， Array<string>。
+- **Bug Fix**
+  - 🐞 修复 子应用样式加载异常，[issue 1553](https://github.com/jd-opensource/micro-app/issues/1553)。
+  - 🐞 修复 当开启样式隔离时子应用属性选择器样式错误，[issue 1573](https://github.com/jd-opensource/micro-app/issues/1573)。
 ### 1.0.0-rc.24
 
 `2025-03-19`
