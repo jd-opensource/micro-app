@@ -135,8 +135,11 @@ export function fetchLinksFromHtml (
 
   const fiberLinkTasks: fiberTasks = fiberStyleResult ? [] : null
 
+  //Keep the execution order of link code consistent with their order in the DOM document.
+  const eachCallBacks: Array<CallableFunction> = []
+
   promiseStream<string>(fetchLinkPromise, (res: { data: string, index: number }) => {
-    injectFiberTask(fiberLinkTasks, () => fetchLinkSuccess(
+    eachCallBacks[res.index] = () => injectFiberTask(fiberLinkTasks, () => fetchLinkSuccess(
       styleList[res.index],
       res.data,
       microAppHead,
@@ -150,6 +153,7 @@ export function fetchLinksFromHtml (
      * 2. Download link source while processing style
      * 3. Process style first, and then process link
      */
+    eachCallBacks.forEach((callback) => callback())
     if (fiberStyleResult) {
       fiberStyleResult.then(() => {
         fiberLinkTasks!.push(() => Promise.resolve(app.onLoad({ html: wrapElement })))
