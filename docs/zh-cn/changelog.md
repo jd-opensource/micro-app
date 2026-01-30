@@ -7,6 +7,12 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.29
+
+`2026-01-30`
+- **Bug Fix**
+  - 🐞 GlobalThis was formally incorporated into the ECMAScript standard in ES2020.Need to be compatible with this.，[相关PR](https://github.com/jd-opensource/micro-app/pull/1669)
+  
 ### 1.0.0-rc.28
 
 `2025-12-04`
