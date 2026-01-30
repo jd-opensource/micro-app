@@ -16,15 +16,16 @@ export const version = '__MICRO_APP_VERSION__'
 export const isBrowser = typeof window !== 'undefined'
 
 // do not use isUndefined
-export const globalThis = (typeof global !== 'undefined')
-  ? global
-  : (
-    (typeof window !== 'undefined')
-      ? window
-      : (
-        (typeof self !== 'undefined') ? self : Function('return this')()
-      )
-  )
+export const globalObj =
+  typeof globalThis !== 'undefined'
+    ? globalThis
+    : typeof global !== 'undefined'
+      ? global
+      : typeof window !== 'undefined'
+        ? window
+        : typeof self !== 'undefined'
+          ? self
+          : Function('return this')()
 
 export const noop = () => { }
 export const noopFalse = () => false
@@ -300,7 +301,7 @@ export const createURL = (function (): (path: string | URL, base?: string) => Mi
  * @param url address
  */
 export function addProtocol(url: string): string {
-  return url.startsWith('//') ? `${globalThis.location.protocol}${url}` : url
+  return url.startsWith('//') ? `${globalObj.location.protocol}${url}` : url
 }
 
 /**
@@ -438,7 +439,7 @@ export function unique(array: any[]): any[] {
 }
 
 // requestIdleCallback polyfill
-export const requestIdleCallback = globalThis.requestIdleCallback ||
+export const requestIdleCallback = globalObj.requestIdleCallback ||
   function (fn: CallableFunction) {
     const lastTime = Date.now()
     return setTimeout(function () {
