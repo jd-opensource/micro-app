@@ -320,6 +320,9 @@ export function formatAppURL(url: string | null, appName: string | null = null):
      * BUG FIX: Never using '/' to complete url, refer to https://github.com/jd-opensource/micro-app/issues/1147
      */
     const fullPath = `${origin}${pathname}${search}`
+    if (/^file:\/\//.test(fullPath)) {
+      return fullPath
+    }
     return /^https?:\/\//.test(fullPath) ? fullPath : ''
   } catch (e) {
     logError(e, appName)
