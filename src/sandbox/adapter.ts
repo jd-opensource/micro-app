@@ -145,7 +145,7 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
      * TODO:
      *  1. 测试baseURI和ownerDocument在with沙箱中是否正确
      *    经过验证with沙箱不能重写ownerDocument，否则react点击事件会触发两次
-    */
+     */
     const props: {[kye:string]:any} = {
       __MICRO_APP_NAME__: {
         configurable: true,
@@ -191,6 +191,8 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
      */
     if (isIframeSandbox(appName)) {
       const proxyWindow = appInstanceMap.get(appName)?.sandBox?.proxyWindow
+      const rawGetBoundingClientRect = (node as any).getBoundingClientRect
+
       if (proxyWindow) {
         rawDefineProperties(node, {
           baseURI: {
@@ -214,6 +216,17 @@ export function updateElementInfo <T> (node: T, appName: string | null): T {
             value: function getRootNode (): Node {
               return proxyWindow.document
             }
+          },
+          getBoundingClientRect: {
+            configurable: true,
+            enumerable: true,
+            value: function(this: Element) {
+              if (isMicroAppBody(this)) {
+                const mainAppBody = globalEnv.rawDocument.body
+                return mainAppBody.getBoundingClientRect()
+              }
+              return rawGetBoundingClientRect.call(this)
+            },
           },
         })
       }
