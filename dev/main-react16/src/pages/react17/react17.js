@@ -6,6 +6,7 @@ import microApp from '@micro-zoe/micro-app'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import config from '../../config'
+import './react17.less'
 
 const antIcon = <LoadingOutlined style={{ fontSize: 30 }} spin />
 
