@@ -96,7 +96,7 @@ export function isBoundFunction(target: unknown): boolean {
 // is constructor function
 export function isConstructor(target: unknown): boolean {
   if (isFunction(target)) {
-    const targetStr = target.toString()
+    const targetStr = Function.prototype.toString.call(target)
     return (
       target.prototype?.constructor === target &&
       Object.getOwnPropertyNames(target.prototype).length > 1
