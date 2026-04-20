@@ -45,6 +45,7 @@ class CSSParser {
     this.prefix = prefix
     this.baseURI = baseURI
     this.linkPath = linkPath || ''
+
     this.matchRules()
     return isFireFox() ? decodeURIComponent(this.result) : this.result
   }
@@ -302,7 +303,14 @@ class CSSParser {
   private layerRule (): boolean | void {
     if (!this.commonMatch(/^@layer\s*([^{;]+)/)) return false
 
-    if (!this.matchOpenBrace()) return !!this.commonMatch(/^[;]+/)
+    // @layer theme, base, components, utilities; — statement form (no braces)
+    if (this.cssText.charAt(0) === ';') {
+      this.commonMatch(/^;/) // delete ;
+      this.matchLeadingSpaces()
+      return true
+    }
+
+    if (!this.matchOpenBrace()) return false
 
     this.matchComments()
 
