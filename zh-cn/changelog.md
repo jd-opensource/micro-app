@@ -7,6 +7,12 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.30
+
+`2026-04-20`
+- **Bug Fix**
+  - 🐞 修复 Int16Array()，Int32Array()，Int8Array(),Float16Array()方法不支持，[issue 1589](https://github.com/jd-opensource/micro-app/issues/1589)
+  - 🐞 修复 子应用使用 tailwindcss 4 无法正常工作，[issue 1550](https://github.com/jd-opensource/micro-app/issues/1550)
 ### 1.0.0-rc.29
 
 `2026-01-30`
