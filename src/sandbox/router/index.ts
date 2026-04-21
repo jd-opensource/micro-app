@@ -42,6 +42,7 @@ export {
 export {
   patchHistory,
   releasePatchHistory,
+  clearPureHistory
 } from './history'
 
 /**
