@@ -115,7 +115,7 @@ class CSSParser {
       return match.replace(p2, mock)
     })
 
-    return matchRes.replace(/(^|,[\n\s]*)([^,]+)/g, (_, separator, selector) => {
+    const scopeSelector = (separator: string, selector: string): string => {
       selector = trim(selector)
       selector = selector.replace(/\[[^\]=]+(?:=([^\]]+))?\]/g, (match:string, p1: string) => {
         if (attributeValues[p1]) {
@@ -141,7 +141,42 @@ class CSSParser {
       }
 
       return separator + selector
-    })
+    }
+
+    const selectors: Array<string> = []
+    let selectorStart = 0
+    let selectorSeparator = ''
+    let bracketDepth = 0
+    let parenDepth = 0
+
+    for (let i = 0; i < matchRes.length; i++) {
+      const char = matchRes[i]
+      if (char === '\\') {
+        i++
+        continue
+      }
+
+      if (char === '[') {
+        bracketDepth++
+      } else if (char === ']') {
+        bracketDepth = Math.max(0, bracketDepth - 1)
+      } else if (char === '(') {
+        parenDepth++
+      } else if (char === ')') {
+        parenDepth = Math.max(0, parenDepth - 1)
+      } else if (char === ',' && bracketDepth === 0 && parenDepth === 0) {
+        selectors.push(scopeSelector(selectorSeparator, matchRes.slice(selectorStart, i)))
+
+        const separatorMatch = /^,[\n\s]*/.exec(matchRes.slice(i))
+        selectorSeparator = separatorMatch ? separatorMatch[0] : ','
+        i += selectorSeparator.length - 1
+        selectorStart = i + 1
+      }
+    }
+
+    selectors.push(scopeSelector(selectorSeparator, matchRes.slice(selectorStart)))
+
+    return selectors.join('')
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration
@@ -220,6 +255,7 @@ class CSSParser {
       this.pageRule() ||
       this.hostRule() ||
       this.fontFaceRule() ||
+      this.propertyRule() ||
       this.layerRule()
   }
 
@@ -297,6 +333,13 @@ class CSSParser {
     if (!this.commonMatch(/^@font-face\s*/)) return false
 
     return this.commonHandlerForAtRuleWithSelfRule('font-face')
+  }
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/@property
+  private propertyRule (): boolean | void {
+    if (!this.commonMatch(/^@property\s+([^{]+)/)) return false
+
+    return this.commonHandlerForAtRuleWithSelfRule('property')
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/CSS/@layer
