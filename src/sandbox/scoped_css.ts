@@ -3,8 +3,8 @@ import type { AppInterface } from '@micro-app/types'
 import { CompletionPath, getLinkFileDir, logError, trim, isFireFox } from '../libs/utils'
 import microApp from '../micro_app'
 
-// common reg
-const rootSelectorREG = /(^|\s+)(html|:root)(?=[\s>~[.#:]+|$)/
+// common regular expression
+// const rootSelectorREG = /(^|\s+)(html|:root)(?=[\s>~[.#:]+|$)/
 const bodySelectorREG = /(^|\s+)((html[\s>~]+body)|body)(?=[\s>~[.#:]+|$)/
 
 type parseErrorType = Error & { reason: string, filename?: string }
@@ -34,6 +34,7 @@ class CSSParser {
   private scopecssDisable = false // use block comments /* scopecss-disable */ to disable scopecss in your file, and use /* scopecss-enable */ to enable scopecss
   private scopecssDisableSelectors: Array<string> = [] // disable or enable scopecss for specific selectors
   private scopecssDisableNextLine = false // use block comments /* scopecss-disable-next-line */ to disable scopecss on a specific line
+  private optionCssSelectors: Array<string> = [] // use this option to include specific selectors, so that they will be affected by scopecss ,like microApp.options.optionCss
 
   public exec (
     cssText: string,
@@ -45,6 +46,8 @@ class CSSParser {
     this.prefix = prefix
     this.baseURI = baseURI
     this.linkPath = linkPath || ''
+    // fetch optionCss configure
+    this.optionCssSelectors = microApp.options.optionCss || []
 
     this.matchRules()
     return isFireFox() ? decodeURIComponent(this.result) : this.result
@@ -54,6 +57,7 @@ class CSSParser {
     this.cssText = this.prefix = this.baseURI = this.linkPath = this.result = ''
     this.scopecssDisable = this.scopecssDisableNextLine = false
     this.scopecssDisableSelectors = []
+    this.optionCssSelectors = []
   }
 
   // core action for match rules
@@ -123,6 +127,15 @@ class CSSParser {
         }
         return match
       })
+
+      // Check if it is in the optionCss list
+      const isIsolationRoot = this.optionCssSelectors.some(includeSelector => {
+        // isolation-root is used to isolation the :root styles between base-app and sub-app
+        if (includeSelector === 'isolation-root') return true
+        return false
+      })
+      const rootSelectorREG = isIsolationRoot ? /(^|\s+)(html)(?=[\s>~[.#:]+|$)/ : /(^|\s+)(html|:root)(?=[\s>~[.#:]+|$)/ // without root
+
       if (selector && !(
         this.scopecssDisableNextLine ||
         (

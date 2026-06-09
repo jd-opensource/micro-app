@@ -1,3 +1,9 @@
+
+:root {
+  /* 主题色 */
+  --text-color: blue; 
+}
+
 .App {
   text-align: center;
 }
@@ -23,6 +29,9 @@
   color: #333;
   /* test about @container */
   container-type: inline-size; 
+  p {
+      color: var(--text-color);  
+  }
 }
 
 @container (max-width: 1000px) {
