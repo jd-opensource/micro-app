@@ -111,3 +111,13 @@ microApp.start({
   excludeRewriteIframeConstructor: ['EventTarget']
 })
 ```
+
+## 8、optionCss : css属性隔离配置项
+```js
+import microApp from '@micro-zoe/micro-app'
+
+microApp.start({
+  // 有isolation-root（子应用:root 中定义的变量失效，默认用基座的）
+  optionCss: ['isolation-root']
+})
+```
