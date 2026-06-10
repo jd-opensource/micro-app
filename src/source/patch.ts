@@ -478,12 +478,15 @@ export function patchElementAndDocument(): void {
    */
   function getElementQueryTarget(targetNode: Node): Node | null {
     const currentAppName = getIframeCurrentAppName() || getCurrentAppName()
-    if ((targetNode === document.body || targetNode === document.head) && currentAppName) {
+    // 使用 rawDocument 避免触发被代理的 document.body/head getter，防止循环引用
+    const rawBody = globalEnv.rawDocument.body
+    const rawHead = globalEnv.rawDocument.head
+    if ((targetNode === rawBody || targetNode === rawHead) && currentAppName) {
       const app = appInstanceMap.get(currentAppName)
       if (app?.container) {
-        if (targetNode === document.body) {
+        if (targetNode === rawBody) {
           return app.querySelector<HTMLElement>('micro-app-body')
-        } else if (targetNode === document.head) {
+        } else if (targetNode === rawHead) {
           return app.querySelector<HTMLElement>('micro-app-head')
         }
       }
