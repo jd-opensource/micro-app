@@ -314,13 +314,14 @@ export function formatAppURL(url: string | null, appName: string | null = null):
   if (!isString(url) || !url) return ''
 
   try {
-    const { origin, pathname, search } = createURL(addProtocol(url), (window.rawWindow || window).location.href)
+    const { protocol, origin: rawOrigin, host, pathname, search } = createURL(addProtocol(url), (window.rawWindow || window).location.href)
     /**
      * keep the original url unchanged, such as .html .node .php .net .etc, search, except hash
      * BUG FIX: Never using '/' to complete url, refer to https://github.com/jd-opensource/micro-app/issues/1147
      */
+    const origin = protocol === 'file:' ? `${protocol}//${host}` : rawOrigin
     const fullPath = `${origin}${pathname}${search}`
-    return /^https?:\/\//.test(fullPath) ? fullPath : ''
+    return /^(https?|file):\/\//.test(fullPath) ? fullPath : ''
   } catch (e) {
     logError(e, appName)
     return ''
