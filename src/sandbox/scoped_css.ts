@@ -177,7 +177,7 @@ class CSSParser {
         (!this.scopecssDisable || this.scopecssDisableSelectors.length)
       ) {
         cssValue = cssValue.replace(/url\((["']?)(.*?)\1\)/gm, (all, _, $1) => {
-          if (/^((data|blob):|#|%23)/.test($1) || /^(https?:)?\/\//.test($1)) {
+          if (/^((data|blob):|#|%23)/.test($1) || /^((https?|file):)?\/\//.test($1)) {
             return all
           }
 
