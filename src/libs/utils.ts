@@ -350,7 +350,9 @@ export function formatAppName(name: string | null): string {
  * @param url app.url
  */
 export function getEffectivePath(url: string): string {
-  const { origin, pathname } = createURL(url)
+  const { protocol, origin: rawOrigin, host, pathname } = createURL(url)
+  const origin = protocol === 'file:' ? `${protocol}//${host}` : rawOrigin
+
   if (/\.(\w+)$/.test(pathname)) {
     const pathArr = `${origin}${pathname}`.split('/')
     pathArr.pop()
