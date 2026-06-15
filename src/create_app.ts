@@ -39,6 +39,7 @@ import sourceCenter from './source/source_center'
 
 // micro app instances
 export const appInstanceMap = new Map<string, AppInterface>()
+export const appCurrentScriptMap = new Map<string, HTMLScriptElement>()
 
 // params of CreateApp
 export interface CreateAppParam {
