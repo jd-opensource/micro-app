@@ -318,6 +318,7 @@ export function formatAppURL(url: string | null, appName: string | null = null):
     /**
      * keep the original url unchanged, such as .html .node .php .net .etc, search, except hash
      * BUG FIX: Never using '/' to complete url, refer to https://github.com/jd-opensource/micro-app/issues/1147
+     * FEATURE: URL.origin is browser-dependent for file protocol url, refer to https://github.com/jd-opensource/micro-app/pull/1695
      */
     const origin = protocol === 'file:' ? `${protocol}//${host}` : rawOrigin
     const fullPath = `${origin}${pathname}${search}`
@@ -351,6 +352,9 @@ export function formatAppName(name: string | null): string {
  */
 export function getEffectivePath(url: string): string {
   const { protocol, origin: rawOrigin, host, pathname } = createURL(url)
+  /*
+   * FEATURE: URL.origin is browser-dependent for file protocol url, refer to https://github.com/jd-opensource/micro-app/pull/1695
+  */
   const origin = protocol === 'file:' ? `${protocol}//${host}` : rawOrigin
 
   if (/\.(\w+)$/.test(pathname)) {
