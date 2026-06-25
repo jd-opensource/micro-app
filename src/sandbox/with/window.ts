@@ -97,6 +97,7 @@ function createProxyWindow (
   const proxyWindow = new Proxy(microAppWindow, {
     get: (target: microAppWindowType, key: PropertyKey): unknown => {
       throttleDeferForSetAppName(appName)
+      // return WorkerProxy if child app accesses window.Worker
       if (key === 'Worker') {
         return WorkerProxy
       }

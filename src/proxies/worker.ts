@@ -23,8 +23,10 @@ interface Worker {
 // 重写 Worker 构造函数的类型
 const originalWorker = window.Worker
 
+// create a proxy for the Worker constructor to intercept the creation of new Worker instances
 const workerInstanceMap = new Map<string, Set<WorkerInstance>>()
 
+// release all workers of the app after sandboxes destoried.
 export function releaseWorkersByApp(appName: string): void {
   workerInstanceMap.get(appName)?.forEach(w => w.terminate())
   workerInstanceMap.delete(appName)
@@ -88,6 +90,8 @@ const WorkerProxy = new Proxy<Worker>(originalWorker, {
     if (url && !isSameOrigin(url)) {
       // 如果 scriptURL 是跨域的，使用 Blob URL 加载并执行 worker
       const workerScriptURL = JSON.stringify(String(url))
+
+      // check if the type of worker is module or classic
       const script = options.type === 'module'
         ? `import ${workerScriptURL};`
         : `importScripts(${workerScriptURL});`
@@ -98,6 +102,7 @@ const WorkerProxy = new Proxy<Worker>(originalWorker, {
       instance = new Target(scriptURL, options) as WorkerInstance
     }
 
+    // register worker instance to app
     if (appName) {
       if (!workerInstanceMap.has(appName)) {
         workerInstanceMap.set(appName, new Set())
