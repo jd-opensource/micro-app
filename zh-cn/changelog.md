@@ -7,6 +7,14 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.32
+`2026-06-25`
+- **Feature**
+  - 增加with沙箱对worker代理的支持以及沙箱中的回收。
+  - 增加对 file:// 协议的支持，以兼容 Electron 等离线本地应用场景，[issue 1590](https://github.com/jd-opensource/micro-app/issues/1590)，[issue 1601](https://github.com/jd-opensource/micro-app/issues/1601)。
+- **Bug Fix**
+  - 🐞 修复 worker代理对classic版本不支持[issue 1619](https://github.com/jd-opensource/micro-app/issues/1619)。
+
 ### 1.0.0-rc.31
 
 `2026-06-09`
