@@ -23,6 +23,13 @@ interface Worker {
 // 重写 Worker 构造函数的类型
 const originalWorker = window.Worker
 
+const workerInstanceMap = new Map<string, Set<WorkerInstance>>()
+
+export function releaseWorkersByApp(appName: string): void {
+  workerInstanceMap.get(appName)?.forEach(w => w.terminate())
+  workerInstanceMap.delete(appName)
+}
+
 function isSameOrigin(url: string | URL): boolean {
   try {
     // 检查 URL 是否与当前页面在同一个源
@@ -77,6 +84,7 @@ const WorkerProxy = new Proxy<Worker>(originalWorker, {
       url = CompletionPath(scriptURL, app!.url)
     }
 
+    let instance: WorkerInstance
     if (url && !isSameOrigin(url)) {
       // 如果 scriptURL 是跨域的，使用 Blob URL 加载并执行 worker
       const workerScriptURL = JSON.stringify(String(url))
@@ -84,11 +92,20 @@ const WorkerProxy = new Proxy<Worker>(originalWorker, {
         ? `import ${workerScriptURL};`
         : `importScripts(${workerScriptURL});`
       const workerPath = urlFromScript(script)
-      return new Target(workerPath, options) as WorkerInstance
+      instance = new Target(workerPath, options) as WorkerInstance
     } else {
       // 如果 scriptURL 是同源的，直接使用原生的 Worker 构造函数
-      return new Target(scriptURL, options) as WorkerInstance
+      instance = new Target(scriptURL, options) as WorkerInstance
     }
+
+    if (appName) {
+      if (!workerInstanceMap.has(appName)) {
+        workerInstanceMap.set(appName, new Set())
+      }
+      workerInstanceMap.get(appName)!.add(instance)
+    }
+
+    return instance
   },
 })
 

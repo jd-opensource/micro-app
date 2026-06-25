@@ -59,6 +59,7 @@ import {
 import {
   patchElementTree
 } from '../adapter'
+import { releaseWorkersByApp } from '../../proxies/worker'
 
 interface IOption {
   container: HTMLElement | ShadowRoot | null,
@@ -235,8 +236,8 @@ export default class IframeSandbox {
 
     if (!umdMode || destroy) {
       this.deleteIframeElement()
-
       this.clearHijackUmdHooks()
+      releaseWorkersByApp(this.microAppWindow.__MICRO_APP_NAME__)
     }
 
     if (--globalEnv.activeSandbox === 0) {
