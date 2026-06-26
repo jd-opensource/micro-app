@@ -13,7 +13,6 @@ const md5 = (content: string) => {
   return createHash('md5').update(content).digest('hex')
 }
 
-
 describe('source scoped_css', () => {
   let appCon: Element
   beforeAll(() => {
@@ -101,12 +100,12 @@ describe('source scoped_css', () => {
         setAppName('test-app3')
         // 动态创建style
         const dynamicStyle = document.createElement('style')
-        dynamicStyle.textContent = '@font-face {font-family: test-font;} @media screen and (max-width: 300px) {body {background:lightblue;}} @supports (display: grid) {div {display: grid;}} @unknown {}'
+        dynamicStyle.textContent = '@font-face {font-family: test-font;} @property --tw-translate-x { syntax: "*"; inherits: false; initial-value: 0; } @media screen and (max-width: 300px) {body {background:lightblue;}} @supports (display: grid) {div {display: grid;}} @unknown {}'
 
         document.head.appendChild(dynamicStyle)
 
         defer(() => {
-          expect(dynamicStyle.textContent).toBe('@font-face {font-family: test-font;} @media screen and (max-width: 300px) {micro-app[name=test-app3] micro-app-body{background:lightblue;}} @supports (display: grid) {micro-app[name=test-app3] div{display: grid;}} micro-app[name=test-app3] @unknown{}')
+          expect(dynamicStyle.textContent).toBe('@font-face {font-family: test-font;} @property --tw-translate-x { syntax: "*"; inherits: false; initial-value: 0; } @media screen and (max-width: 300px) {micro-app[name=test-app3] micro-app-body{background:lightblue;}} @supports (display: grid) {micro-app[name=test-app3] div{display: grid;}} micro-app[name=test-app3] @unknown{}')
           resolve(true)
         })
       }, false)
@@ -404,6 +403,12 @@ describe('source scoped_css', () => {
         dynamicStyle7.textContent = '.test1,   .test2 {color: red}'
         document.head.appendChild(dynamicStyle7)
         expect(dynamicStyle7.textContent).toBe('micro-app[name=test-app11] .test1,   micro-app[name=test-app11] .test2{color: red}')
+
+        // keep commas inside pseudo-class arguments and escaped arbitrary values
+        const dynamicStyle8 = document.createElement('style')
+        dynamicStyle8.textContent = ':is(.a, .b):has(+ .c, + .d){} .grid-cols-\\[minmax\\(0\\,_1fr\\)\\]{grid-template-columns:minmax(0, 1fr)}'
+        document.head.appendChild(dynamicStyle8)
+        expect(dynamicStyle8.textContent).toBe('micro-app[name=test-app11] :is(.a, .b):has(+ .c, + .d){} micro-app[name=test-app11] .grid-cols-\\[minmax\\(0\\,_1fr\\)\\]{grid-template-columns:minmax(0, 1fr)}')
 
         resolve(true)
       }, false)
