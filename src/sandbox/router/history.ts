@@ -32,6 +32,7 @@ import {
 } from './core'
 import {
   dispatchNativeEvent,
+  dispatchPopStateEventToMicroApp,
 } from './event'
 import {
   updateMicroLocation,
@@ -44,15 +45,68 @@ import {
   isIframeSandbox,
 } from '../../create_app'
 
+interface HistoryStack {
+  [appName: string]: {
+    stack: Array<{ path: string, state: any }>,
+    currentIndex: number
+  }
+}
+const pureHistoryStack: HistoryStack = {}
+
+function initPureHistory(appName: string): void {
+  if (!pureHistoryStack[appName]) {
+    pureHistoryStack[appName] = {
+      stack: [],
+      currentIndex: -1
+    }
+  }
+}
+
+function addToPureHistory(appName: string, path: string, state: any): void {
+  if (!pureHistoryStack[appName]) {
+    pureHistoryStack[appName] = {
+      stack: [],
+      currentIndex: -1
+    }
+  }
+  const history = pureHistoryStack[appName]
+  // 处理路径，移除基础路径
+  const basePath = `/${appName}/`
+  const cleanPath = path.startsWith(basePath) ? path.slice(basePath.length - 1) : path
+
+  // 检查是否与当前路径相同
+  const currentEntry = history.stack[history.currentIndex]
+  if (currentEntry && currentEntry.path === cleanPath) {
+    // 如果路径相同，只更新状态
+    currentEntry.state = state
+    return
+  }
+
+  if (history.currentIndex < history.stack.length - 1) {
+    history.stack = history.stack.slice(0, history.currentIndex + 1)
+  }
+
+  history.stack.push({
+    path: cleanPath,
+    state
+  })
+  history.currentIndex++
+}
+
+export function clearPureHistory(appName: string): void {
+  delete pureHistoryStack[appName]
+}
+
 /**
  * create proxyHistory for microApp
  * MDN https://developer.mozilla.org/en-US/docs/Web/API/History
  * @param appName app name
  * @param microLocation microApp location(with: proxyLocation iframe: iframeWindow.location)
  */
-export function createMicroHistory (appName: string, microLocation: MicroLocation): MicroHistory {
+export function createMicroHistory(appName: string, microLocation: MicroLocation): MicroHistory {
   const rawHistory = globalEnv.rawWindow.history
-  function getMicroHistoryMethod (methodName: string): CallableFunction {
+  initPureHistory(appName)
+  function getMicroHistoryMethod(methodName: string): CallableFunction {
     return function (...rests: any[]): void {
       // TODO: 测试iframe的URL兼容isURL的情况
       rests[2] = isUndefined(rests[2]) || isNull(rests[2]) || ('' + rests[2] === '') ? microLocation.href : '' + rests[2]
@@ -67,6 +121,8 @@ export function createMicroHistory (appName: string, microLocation: MicroLocatio
           setMicroState(appName, rests[0], targetLocation),
           rests[1],
         )
+      } else {
+        addToPureHistory(appName, targetFullPath, rests[0])
       }
       if (targetFullPath !== microLocation.fullPath) {
         updateMicroLocation(appName, targetFullPath, microLocation)
@@ -82,14 +138,44 @@ export function createMicroHistory (appName: string, microLocation: MicroLocatio
 
   if (isIframeSandbox(appName)) {
     return assign({
-      go (delta?: number) {
-        return rawHistory.go(delta)
-      }
+      go(delta?: number) {
+        if (!isRouterModePure(appName)) {
+          return rawHistory.go(delta)
+        }
+        const history = pureHistoryStack[appName]
+        const targetIndex = history.currentIndex + (delta || 0)
+        if (targetIndex === history.currentIndex) {
+          return
+        }
+        const target = history.stack[targetIndex]
+        history.currentIndex = targetIndex
+        updateMicroLocation(
+          appName,
+          target.path,
+          microLocation,
+          'pure-history'
+        )
+        const app = appInstanceMap.get(appName)
+        if (app?.sandBox) {
+          // 最后触发事件
+          dispatchPopStateEventToMicroApp(
+            appName,
+            app.sandBox.proxyWindow,
+            app.sandBox.microAppWindow
+          )
+        }
+      },
+      back() {
+        this.go(-1)
+      },
+      forward() {
+        this.go(1)
+      },
     }, originalHistory) as MicroHistory
   }
 
   return new Proxy(rawHistory, {
-    get (target: History, key: PropertyKey): HistoryProxyValue {
+    get(target: History, key: PropertyKey): HistoryProxyValue {
       if (key === 'pushState' || key === 'replaceState') {
         return originalHistory[key]
       } else if (key === 'state') {
@@ -97,7 +183,7 @@ export function createMicroHistory (appName: string, microLocation: MicroLocatio
       }
       return bindFunctionToRawTarget<History, HistoryProxyValue>(Reflect.get(target, key), target, 'HISTORY')
     },
-    set (target: History, key: PropertyKey, value: unknown): boolean {
+    set(target: History, key: PropertyKey, value: unknown): boolean {
       if (key === 'pushState' || key === 'replaceState') {
         originalHistory[key] = value as CallableFunction
       } else {
@@ -121,7 +207,7 @@ export function createMicroHistory (appName: string, microLocation: MicroLocatio
  * @param state history.state, default is null
  * @param title history.title, default is ''
  */
-export function nativeHistoryNavigate (
+export function nativeHistoryNavigate(
   appName: string,
   methodName: string,
   fullPath: string,
@@ -150,7 +236,7 @@ export function nativeHistoryNavigate (
  * @param state history.state, not required
  * @param title history.title, not required
  */
-export function navigateWithNativeEvent (
+export function navigateWithNativeEvent(
   appName: string,
   methodName: string,
   result: HandleMicroPathResult,
@@ -179,7 +265,7 @@ export function navigateWithNativeEvent (
  * @param result result of add/remove microApp path on browser url
  * @param state history.state
  */
-export function attachRouteToBrowserURL (
+export function attachRouteToBrowserURL(
   appName: string,
   result: HandleMicroPathResult,
   state: MicroState,
@@ -192,7 +278,7 @@ export function attachRouteToBrowserURL (
  * Fix bug of missing __MICRO_APP_STATE__ when base app is next.js or angular
  * @param method history.pushState/replaceState
  */
-function reWriteHistoryMethod (method: History['pushState' | 'replaceState']): CallableFunction {
+function reWriteHistoryMethod(method: History['pushState' | 'replaceState']): CallableFunction {
   const rawWindow = globalEnv.rawWindow
   return function (...rests: [data: any, unused: string, url?: string]): void {
     if (
@@ -213,9 +299,9 @@ function reWriteHistoryMethod (method: History['pushState' | 'replaceState']): C
     /**
      * Attach child router info to browser url when base app navigate with pushState/replaceState
      * NOTE:
-     * 1. Exec after apply pushState/replaceState
-     * 2. Unable to catch when base app navigate with location
-     * 3. When in nest app, rawPushState/rawReplaceState has been modified by parent
+     *  1. Exec after apply pushState/replaceState
+     *  2. Unable to catch when base app navigate with location
+     *  3. When in nest app, rawPushState/rawReplaceState has been modified by parent
      */
     getActiveApps({
       excludeHiddenApp: true,
@@ -262,7 +348,7 @@ function reWriteHistoryMethod (method: History['pushState' | 'replaceState']): C
  * used to fix the problem that the __MICRO_APP_STATE__ maybe missing when mainApp navigate to same path
  * e.g: when nextjs, angular receive popstate event, they will use history.replaceState to update browser url with a new state object
  */
-export function patchHistory (): void {
+export function patchHistory(): void {
   const rawWindow = globalEnv.rawWindow
   rawWindow.history.pushState = reWriteHistoryMethod(
     globalEnv.rawPushState,
@@ -272,7 +358,7 @@ export function patchHistory (): void {
   )
 }
 
-export function releasePatchHistory (): void {
+export function releasePatchHistory(): void {
   const rawWindow = globalEnv.rawWindow
   rawWindow.history.pushState = globalEnv.rawPushState
   rawWindow.history.replaceState = globalEnv.rawReplaceState
