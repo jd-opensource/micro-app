@@ -40,9 +40,10 @@ export function patchWindow (
   microAppWindow: microAppWindowType,
   sandbox: WithSandBoxInterface,
 ): CommonEffectHook {
+  const descriptorTargetMap = new Map<PropertyKey, 'target' | 'rawWindow'>()
   patchWindowProperty(microAppWindow)
-  createProxyWindow(appName, microAppWindow, sandbox)
-  return patchWindowEffect(microAppWindow, appName)
+  createProxyWindow(appName, microAppWindow, sandbox, descriptorTargetMap)
+  return patchWindowEffect(microAppWindow, appName, descriptorTargetMap)
 }
 
 /**
@@ -84,9 +85,9 @@ function createProxyWindow (
   appName: string,
   microAppWindow: microAppWindowType,
   sandbox: WithSandBoxInterface,
+  descriptorTargetMap: Map<PropertyKey, 'target' | 'rawWindow'>,
 ): void {
   const rawWindow = globalEnv.rawWindow
-  const descriptorTargetMap = new Map<PropertyKey, 'target' | 'rawWindow'>()
 
   rawDefineProperty(microAppWindow, 'Worker', {
     value: WorkerProxy,
@@ -219,7 +220,11 @@ function createProxyWindow (
  * Rewrite side-effect events
  * @param microAppWindow micro window
  */
-function patchWindowEffect (microAppWindow: microAppWindowType, appName: string): CommonEffectHook {
+function patchWindowEffect (
+  microAppWindow: microAppWindowType,
+  appName: string,
+  descriptorTargetMap: Map<PropertyKey, 'target' | 'rawWindow'>,
+): CommonEffectHook {
   const eventListenerMap = new Map<string, Set<MicroEventListener>>()
   const sstEventListenerMap = new Map<string, Set<MicroEventListener>>()
   const intervalIdMap = new Map<number, timeInfo>()
@@ -387,6 +392,9 @@ function patchWindowEffect (microAppWindow: microAppWindowType, appName: string)
       intervalIdMap.clear()
       timeoutIdMap.clear()
     }
+
+    // clear descriptor target cache to avoid unbounded growth on repeated mount/unmount
+    descriptorTargetMap.clear()
   }
 
   return {
