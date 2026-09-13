@@ -186,7 +186,7 @@ function createProxyDocument (
     if (eventListenerMap.size) {
       eventListenerMap.forEach((listenerList, type) => {
         for (const listener of listenerList) {
-          rawRemoveEventListener.call(rawDocument, type, listener)
+          rawRemoveEventListener.call(rawDocument, type, listener, listener?.__MICRO_APP_MARK_OPTIONS__)
         }
       })
       eventListenerMap.clear()

@@ -368,7 +368,7 @@ function patchWindowEffect (microAppWindow: microAppWindowType, appName: string)
     if (eventListenerMap.size) {
       eventListenerMap.forEach((listenerList, type) => {
         for (const listener of listenerList) {
-          rawRemoveEventListener.call(getEventTarget(type), type, listener)
+          rawRemoveEventListener.call(getEventTarget(type), type, listener, listener?.__MICRO_APP_MARK_OPTIONS__)
         }
       })
       eventListenerMap.clear()
