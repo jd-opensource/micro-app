@@ -493,6 +493,7 @@ function patchDocumentEffect (appName: string, microAppWindow: microAppWindowTyp
             getEventTarget(type, microDocument),
             type,
             listener?.__MICRO_APP_BOUND_FUNCTION__ || listener,
+            listener?.__MICRO_APP_MARK_OPTIONS__,
           )
         }
       })
