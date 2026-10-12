@@ -426,7 +426,9 @@ export function patchElementAndDocument(): void {
         this,
         markElement(node as Node),
         null,
-        isDocumentFragment(this) ? globalEnv.rawFragmentAppend : globalEnv.rawAppend,
+        isDocumentFragment(this) || isDocumentShadowRoot(this)
+          ? globalEnv.rawFragmentAppend
+          : globalEnv.rawAppend
       )
       i++
     }
