@@ -336,6 +336,7 @@ export default class CreateApp implements AppInterface {
                   }
                 } catch (e) {
                   logError('An error occurred when mount \n', this.name, e)
+                  this.onerror(e)
                 }
               }
             }
@@ -353,6 +354,7 @@ export default class CreateApp implements AppInterface {
             this.handleMounted(this.umdHookMount!(microApp.getData(this.name, true)))
           } catch (e) {
             logError('An error occurred when mount \n', this.name, e)
+            this.onerror(e)
           }
         }
       }
@@ -383,6 +385,8 @@ export default class CreateApp implements AppInterface {
           .then(nextAction)
           .catch((e) => {
             logError('An error occurred in window.mount \n', this.name, e)
+            this.onerror(e)
+            // TODO: 为什么 error 还要继续 nextAction?
             nextAction()
           })
       } else {
