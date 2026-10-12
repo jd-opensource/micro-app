@@ -35,6 +35,7 @@ class CSSParser {
   private scopecssDisableSelectors: Array<string> = [] // disable or enable scopecss for specific selectors
   private scopecssDisableNextLine = false // use block comments /* scopecss-disable-next-line */ to disable scopecss on a specific line
   private optionCssSelectors: Array<string> = [] // use this option to include specific selectors, so that they will be affected by scopecss ,like microApp.options.optionCss
+  private isFF = false // cache isFireFox() result per exec, avoid repeated UA scan in recordResult
 
   public exec (
     cssText: string,
@@ -46,11 +47,13 @@ class CSSParser {
     this.prefix = prefix
     this.baseURI = baseURI
     this.linkPath = linkPath || ''
+    // cache isFireFox() once per exec, recordResult runs for every fragment
+    this.isFF = isFireFox()
     // fetch optionCss configure
     this.optionCssSelectors = microApp.options.optionCss || []
 
     this.matchRules()
-    return isFireFox() ? decodeURIComponent(this.result) : this.result
+    return this.isFF ? decodeURIComponent(this.result) : this.result
   }
 
   public reset (): void {
@@ -58,6 +61,7 @@ class CSSParser {
     this.scopecssDisable = this.scopecssDisableNextLine = false
     this.scopecssDisableSelectors = []
     this.optionCssSelectors = []
+    this.isFF = false
   }
 
   // core action for match rules
@@ -471,7 +475,7 @@ class CSSParser {
   // splice string
   private recordResult (strFragment: string): void {
     // Firefox performance degradation when string contain special characters, see https://github.com/jd-opensource/micro-app/issues/256
-    if (isFireFox()) {
+    if (this.isFF) {
       this.result += encodeURIComponent(strFragment)
     } else {
       this.result += strFragment
