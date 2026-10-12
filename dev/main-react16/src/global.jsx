@@ -93,6 +93,7 @@ microApp.start({
   //   return node.parentElement
   // },
   // iframeSrc: 'http://localhost:3000/',
+  optionCss: ['isolation-root'],//有isolation-root（子应用:root 中定义的变量不起作用，默认用基座的）
   lifeCycles: {
     created (e, appName) {
       console.log(`子应用${appName}被创建 -- 全局监听`)

@@ -373,6 +373,7 @@ declare module '@micro-app/types' {
     escapeIframeWindowEvents? : Array<string>,
     disableIframeRootDocument?: boolean,
     excludeRewriteIframeConstructor?: string[]
+    optionCss?: string[] // some configurations of CSS
   }
 
   // MicroApp config

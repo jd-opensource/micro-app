@@ -7,6 +7,38 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.32
+`2026-06-25`
+- **Feature**
+  - 增加with沙箱对worker代理的支持以及沙箱中的回收。
+  - 增加对 file:// 协议的支持，以兼容 Electron 等离线本地应用场景，[issue 1590](https://github.com/jd-opensource/micro-app/issues/1590)，[issue 1601](https://github.com/jd-opensource/micro-app/issues/1601)。
+- **Bug Fix**
+  - 🐞 修复 worker代理对classic版本不支持[issue 1619](https://github.com/jd-opensource/micro-app/issues/1619)。
+
+### 1.0.0-rc.31
+
+`2026-06-09`
+- **Feature**
+  - 新增Css隔离选项：支持子应用:root 中定义的变量失效，用基座的。可设置成optionCss: ['isolation-root']
+
+### 1.0.0-rc.30
+`2026-04-20`
+- **Bug Fix**
+  - 🐞 修复 Int16Array()，Int32Array()，Int8Array(),Float16Array()方法不支持，[issue 1589](https://github.com/jd-opensource/micro-app/issues/1589)
+  - 🐞 修复 子应用使用 tailwindcss 4 无法正常工作，[issue 1550](https://github.com/jd-opensource/micro-app/issues/1550)
+
+### 1.0.0-rc.29
+
+`2026-01-30`
+- **Bug Fix**
+  - 🐞 GlobalThis was formally incorporated into the ECMAScript standard in ES2020.Need to be compatible with this.，[相关PR](https://github.com/jd-opensource/micro-app/pull/1669)
+  
+### 1.0.0-rc.28
+
+`2025-12-04`
+- **Bug Fix**
+  - 🐞 Firefox不支持caretRangeFromPoint，需要兼容修复，[相关PR](https://github.com/jd-opensource/micro-app/pull/1653/files)
+  
 ### 1.0.0-rc.27
 
 `2025-08-29`

@@ -69,6 +69,7 @@ import {
   useMicroEventSource,
   createMicroXMLHttpRequest,
 } from '../request'
+import { releaseWorkersByApp } from '../../proxies/worker'
 
 // TODO: 放到global.d.ts
 export type MicroAppWindowDataType = {
@@ -211,6 +212,7 @@ export default class WithSandBox extends BaseSandbox implements WithSandBoxInter
      */
     if (!umdMode || destroy) {
       clearMicroEventSource(this.microAppWindow.__MICRO_APP_NAME__)
+      releaseWorkersByApp(this.microAppWindow.__MICRO_APP_NAME__)
 
       this.injectedKeys.forEach((key: PropertyKey) => {
         Reflect.deleteProperty(this.microAppWindow, key)

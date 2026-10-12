@@ -16,15 +16,16 @@ export const version = '__MICRO_APP_VERSION__'
 export const isBrowser = typeof window !== 'undefined'
 
 // do not use isUndefined
-export const globalThis = (typeof global !== 'undefined')
-  ? global
-  : (
-    (typeof window !== 'undefined')
-      ? window
-      : (
-        (typeof self !== 'undefined') ? self : Function('return this')()
-      )
-  )
+export const globalObj =
+  typeof globalThis !== 'undefined'
+    ? globalThis
+    : typeof global !== 'undefined'
+      ? global
+      : typeof window !== 'undefined'
+        ? window
+        : typeof self !== 'undefined'
+          ? self
+          : Function('return this')()
 
 export const noop = () => { }
 export const noopFalse = () => false
@@ -95,7 +96,7 @@ export function isBoundFunction(target: unknown): boolean {
 // is constructor function
 export function isConstructor(target: unknown): boolean {
   if (isFunction(target)) {
-    const targetStr = target.toString()
+    const targetStr = Function.prototype.toString.call(target)
     return (
       target.prototype?.constructor === target &&
       Object.getOwnPropertyNames(target.prototype).length > 1
@@ -300,7 +301,7 @@ export const createURL = (function (): (path: string | URL, base?: string) => Mi
  * @param url address
  */
 export function addProtocol(url: string): string {
-  return url.startsWith('//') ? `${globalThis.location.protocol}${url}` : url
+  return url.startsWith('//') ? `${globalObj.location.protocol}${url}` : url
 }
 
 /**
@@ -313,13 +314,15 @@ export function formatAppURL(url: string | null, appName: string | null = null):
   if (!isString(url) || !url) return ''
 
   try {
-    const { origin, pathname, search } = createURL(addProtocol(url), (window.rawWindow || window).location.href)
+    const { protocol, origin: rawOrigin, host, pathname, search } = createURL(addProtocol(url), (window.rawWindow || window).location.href)
     /**
      * keep the original url unchanged, such as .html .node .php .net .etc, search, except hash
      * BUG FIX: Never using '/' to complete url, refer to https://github.com/jd-opensource/micro-app/issues/1147
+     * FEATURE: URL.origin is browser-dependent for file protocol url, refer to https://github.com/jd-opensource/micro-app/pull/1695
      */
+    const origin = protocol === 'file:' ? `${protocol}//${host}` : rawOrigin
     const fullPath = `${origin}${pathname}${search}`
-    return /^https?:\/\//.test(fullPath) ? fullPath : ''
+    return /^(https?|file):\/\//.test(fullPath) ? fullPath : ''
   } catch (e) {
     logError(e, appName)
     return ''
@@ -348,7 +351,12 @@ export function formatAppName(name: string | null): string {
  * @param url app.url
  */
 export function getEffectivePath(url: string): string {
-  const { origin, pathname } = createURL(url)
+  const { protocol, origin: rawOrigin, host, pathname } = createURL(url)
+  /*
+   * FEATURE: URL.origin is browser-dependent for file protocol url, refer to https://github.com/jd-opensource/micro-app/pull/1695
+  */
+  const origin = protocol === 'file:' ? `${protocol}//${host}` : rawOrigin
+
   if (/\.(\w+)$/.test(pathname)) {
     const pathArr = `${origin}${pathname}`.split('/')
     pathArr.pop()
@@ -438,7 +446,7 @@ export function unique(array: any[]): any[] {
 }
 
 // requestIdleCallback polyfill
-export const requestIdleCallback = globalThis.requestIdleCallback ||
+export const requestIdleCallback = globalObj.requestIdleCallback ||
   function (fn: CallableFunction) {
     const lastTime = Date.now()
     return setTimeout(function () {
