@@ -12,7 +12,7 @@ import { extractSourceDom } from './source/index'
 import { execScripts } from './source/scripts'
 import WithSandBox from './sandbox/with'
 import IframeSandbox from './sandbox/iframe'
-import { router, isRouterModeSearch } from './sandbox/router'
+import { router, isRouterModeSearch, clearPureHistory } from './sandbox/router'
 import {
   appStates,
   lifeCycles,
@@ -565,7 +565,7 @@ export default class CreateApp implements AppInterface {
       this.name,
       lifeCycles.UNMOUNT,
     )
-
+    clearPureHistory(this.name)
     this.clearOptions(destroy)
 
     unmountcb?.()
