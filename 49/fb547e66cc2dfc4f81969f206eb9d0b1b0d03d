@@ -1,0 +1,14 @@
+.gitignore
+  h_925775a3adde3a 25-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "49fb547e66cc2dfc4f81969f206eb9d0b1b0d03d",
+  "prompts": {},
+  "humans": {
+    "h_925775a3adde3a": {
+      "author": "raoenhui <raoenhui@jd.com>"
+    }
+  }
+}
