@@ -1,7 +1,0 @@
-node_modules
-.DS_Store
-dist
-vite2
-dist-ssr
-*.local
-/vite

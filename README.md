@@ -1,156 +1,28 @@
-<p align="center">
-  <a href="https://jd-opensource.github.io/micro-app/">
-    <img src="https://jd-opensource.github.io/micro-app/home/assets/logo.png" alt="logo" width="200"/>
-  </a>
-</p>
+### 微前端
+微前端的概念是由ThoughtWorks在2016年提出的，它借鉴了微服务的架构理念，核心在于将一个庞大的前端应用拆分成多个独立灵活的小型应用，每个应用都可以独立开发、独立运行、独立部署，再将这些小型应用融合为一个完整的应用，或者将原本运行已久、没有关联的几个应用融合为一个应用。微前端既可以将多个项目融合为一，又可以减少项目之间的耦合，提升项目扩展性，相比一整块的前端仓库，微前端架构下的前端仓库倾向于更小更灵活。
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/@micro-zoe/micro-app">
-    <img src="https://img.shields.io/npm/v/@micro-zoe/micro-app.svg" alt="version"/>
-  </a>
-  <a href="https://www.npmjs.com/package/@micro-zoe/micro-app">
-    <img src="https://img.shields.io/npm/dt/@micro-zoe/micro-app.svg" alt="downloads"/>
-  </a>
-  <a href="https://github.com/jd-opensource/micro-app/blob/master/LICENSE">
-    <img src="https://img.shields.io/npm/l/@micro-zoe/micro-app.svg" alt="license"/>
-  </a>
-  <a href="https://github.com/jd-opensource/micro-app/blob/dev/Contact.md">
-    <img src="https://img.shields.io/badge/chat-wechat-blue" alt="WeChat">
-  </a>
-  <a href="https://travis-ci.com/github/jd-opensource/micro-app">
-    <img src="https://api.travis-ci.com/jd-opensource/micro-app.svg?branch=master" alt="travis"/>
-  </a>
-  <a href="https://coveralls.io/github/jd-opensource/micro-app?branch=master">
-    <img src="https://coveralls.io/repos/github/jd-opensource/micro-app/badge.svg?branch=master" alt="coveralls"/>
-  </a>
-</p>
+它主要解决了两个问题：
 
-English｜[简体中文](./README.zh-cn.md)｜[Documentation](https://jd-opensource.github.io/micro-app/)｜[Discussions](https://github.com/jd-opensource/micro-app/discussions)｜[WeChat](./Contact.md)
+- 1、随着项目迭代应用越来越庞大，难以维护。
+- 2、跨团队或跨部门协作开发项目导致效率低下的问题。
 
-# 📖Introduction
-micro-app is a micro front-end framework launched by JD Retail. It renders based on webcomponent-like and realizes the micro front-end from component thinking, it aiming to reduce the difficulty of getting started and improve work efficiency. 
+![microfroentend](https://img12.360buyimg.com/imagetools/jfs/t1/16487/16/31677/95933/6523ce90F10951212/78b3cee6ce36845b.png ':size=800')
 
-It is the lowest cost framework for accessing micro front-end, and provides a series of perfect functions such as JS sandbox, style isolation, element isolation, preloading, resource address completion, plugin system, data communication and so on.
+### 关于micro-app
+  `micro-app`是由京东前端团队推出的一款微前端框架，它借鉴了WebComponent的思想，通过`js沙箱`、`样式隔离`、`元素隔离`、`路由隔离`模拟实现了ShadowDom的隔离特性，并结合CustomElement将微前端封装成一个类WebComponent组件，从而实现微前端的组件化渲染，旨在降低上手难度、提升工作效率。
 
-micro-app has no restrictions on the front-end framework, and any framework can be used as a base application to embed any type of micro application of the framework.
+  `micro-app`和技术栈无关，也不和业务绑定，可以用于任何前端框架。
 
-# How to use
-## Base application
-**1、Install**
-```bash
-yarn add @micro-zoe/micro-app
-```
+  ##### 概念图
+  ![image](https://img10.360buyimg.com/imagetools/jfs/t1/168885/23/20790/54203/6084d445E0c9ec00e/d879637b4bb34253.png ':size=750')
 
-**2、import at the entrance**
-```js
-// main.js
-import microApp from '@micro-zoe/micro-app'
 
-microApp.start()
-```
+### micro-app的优势
+  #### 1、使用简单
+  我们将所有功能都封装到一个类WebComponent组件中，从而实现在基座应用中嵌入一行代码即可渲染一个微前端应用。
 
-**3、Use components in page**
-```html
-<!-- my-page.vue -->
-<template>
-  <!-- 👇 name is the app name, url is the app address -->
-  <micro-app name='my-app' url='http://localhost:3000/'></micro-app>
-</template>
-```
+  #### 2、功能强大
+  `micro-app`提供了`js沙箱`、`样式隔离`、`元素隔离`、`路由隔离`、`预加载`、`数据通信`等一系列完善的功能。
 
-## Sub application
-**Set cross-domain support in the headers of webpack-dev-server**
-```js
-devServer: {
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-  },
-},
-```
-
-The above micro front-end rendering is completed, and the effect is as follows:
-
-![image](https://img10.360buyimg.com/imagetools/jfs/t1/188373/14/17696/41854/6111f4a0E532736ba/4b86f4f8e2044519.png)
-
-More detailed configuration can be viewed [Documentation](https://jd-opensource.github.io/micro-app/docs.html#/zh-cn/start).
-
-# 🤝 Contribution
-If you're interested in this project, you're welcome to mention pull request, and also welcome your "Star" ^_^
-
-### development
-1、Clone
-```
-git clone https://github.com/jd-opensource/micro-app.git
-```
-
-2、Install dependencies
-```
-yarn bootstrap
-```
-
-3、Run project
-```
-yarn start
-```
-
-For more commands, see [DEVELOP](https://github.com/jd-opensource/micro-app/blob/master/DEVELOP.md)
-
-# FAQ
-<details>
-
-  <summary>What are the advantages of micro-app?</summary>
-  It is easy to use and low invasive. It only needs to change a small amount of code to access the micro front-end, and provides rich functions at the same time.
-
-</details>
-<details>
-  <summary>How compatible?</summary>
-  The micro-app relies on two newer APIs, CustomElements and Proxy.
-
-  For browsers that do not support CustomElements, they can be compatible by introducing polyfills. For details, please refer to: [webcomponents/polyfills](https://github.com/webcomponents/polyfills/tree/master/packages/custom-elements)。
-
-  However, Proxy is not compatible for the time being, so the micro-app cannot be run on browsers that do not support Proxy.
-
-  Browser compatibility can be viewed: [Can I Use](https://caniuse.com/?search=Proxy)
-
-  The general is as follows:
-  - desktop: Except IE browser, other browsers are basically compatible.
-  - mobile: ios10+、android5+
-</details>
-
-<details>
-  <summary>Must micro applications support cross-domain?</summary>
-  yes!
-
-  If it is a development environment, you can set headers in webpack-dev-server to support cross-domain.
-
-  ```js
-  devServer: {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-  }
-  ```
-
-  If it is a production environment, you can support cross-domain through [Configuration nginx](https://segmentfault.com/a/1190000012550346).
-
-</details>
-
-<details>
-  <summary>Does it support vite?</summary>
-  
-  Yes, please see [adapt vite](https://jd-opensource.github.io/micro-app/docs.html#/zh-cn/framework/vite) for details.
-</details>
-
-<details>
-  <summary>Does it support ssr?</summary>
-  
-  Yes, please see [nextjs](https://jd-opensource.github.io/micro-app/docs.html#/zh-cn/framework/nextjs), [nuxtjs](https://jd-opensource.github.io/micro-app/docs.html#/zh-cn/framework/nuxtjs) for details.
-</details>
-
-# Contributors
-<a href="https://github.com/jd-opensource/micro-app/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=jd-opensource/micro-app" />
-</a>
-
-# License
-[MIT License](https://github.com/jd-opensource/micro-app/blob/master/LICENSE)
+  #### 3、兼容所有框架
+  为了保证各个业务之间独立开发、独立部署的能力，`micro-app`做了诸多兼容，在任何前端框架中都可以正常运行。
