@@ -426,7 +426,9 @@ export function patchElementAndDocument(): void {
         this,
         markElement(node as Node),
         null,
-        isDocumentFragment(this) ? globalEnv.rawFragmentAppend : globalEnv.rawAppend,
+        // ShadowRoot 的 append 继承自 DocumentFragment.prototype，需用 rawFragmentAppend；
+        // 若用 rawAppend(Element.prototype.append) 调用会抛 Illegal invocation
+        isDocumentFragment(this) || isDocumentShadowRoot(this) ? globalEnv.rawFragmentAppend : globalEnv.rawAppend,
       )
       i++
     }

@@ -405,6 +405,38 @@ describe('source scoped_css', () => {
         document.head.appendChild(dynamicStyle7)
         expect(dynamicStyle7.textContent).toBe('micro-app[name=test-app11] .test1,   micro-app[name=test-app11] .test2{color: red}')
 
+        // commas nested in functional pseudo-classes / attribute values must NOT be split
+        const dynamicStyle8 = document.createElement('style')
+        dynamicStyle8.textContent = ':is(h1, h2){color: red}'
+        document.head.appendChild(dynamicStyle8)
+        expect(dynamicStyle8.textContent).toBe('micro-app[name=test-app11] :is(h1, h2){color: red}')
+
+        const dynamicStyle9 = document.createElement('style')
+        dynamicStyle9.textContent = 'body :not(div, .fancy){color: red}'
+        document.head.appendChild(dynamicStyle9)
+        expect(dynamicStyle9.textContent).toBe('micro-app[name=test-app11] micro-app-body :not(div, .fancy){color: red}')
+
+        const dynamicStyle10 = document.createElement('style')
+        dynamicStyle10.textContent = ':where(.a, .b, .c) a{color: red}'
+        document.head.appendChild(dynamicStyle10)
+        expect(dynamicStyle10.textContent).toBe('micro-app[name=test-app11] :where(.a, .b, .c) a{color: red}')
+
+        const dynamicStyle11 = document.createElement('style')
+        dynamicStyle11.textContent = 'li:nth-child(2n of .foo, .bar){color: red}'
+        document.head.appendChild(dynamicStyle11)
+        expect(dynamicStyle11.textContent).toBe('micro-app[name=test-app11] li:nth-child(2n of .foo, .bar){color: red}')
+
+        const dynamicStyle12 = document.createElement('style')
+        dynamicStyle12.textContent = '[data-x="a,b"], .c{color: red}'
+        document.head.appendChild(dynamicStyle12)
+        expect(dynamicStyle12.textContent).toBe('micro-app[name=test-app11] [data-x="a,b"], micro-app[name=test-app11] .c{color: red}')
+
+        // top-level commas still split, and pseudo-class internal commas coexist
+        const dynamicStyle13 = document.createElement('style')
+        dynamicStyle13.textContent = '.a, .b, li:nth-child(3){color: red}'
+        document.head.appendChild(dynamicStyle13)
+        expect(dynamicStyle13.textContent).toBe('micro-app[name=test-app11] .a, micro-app[name=test-app11] .b, micro-app[name=test-app11] li:nth-child(3){color: red}')
+
         resolve(true)
       }, false)
     })

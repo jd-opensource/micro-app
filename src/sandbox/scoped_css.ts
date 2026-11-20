@@ -19,6 +19,37 @@ function parseError (msg: string, linkPath?: string): void {
   throw err
 }
 
+// 仅在顶层(不在 () 或 [] 内)的逗号处分割选择器列表。
+// () / [] 内的逗号属于 :is()/:not()/:where()/:has()/:nth-child(of) 或属性值，不是分隔符。
+// 每段保留原分隔符(逗号+其后空白)，无括号的选择器重组后与原输出逐字节一致。
+function splitTopLevelSelectors (text: string): Array<{ separator: string, body: string }> {
+  const segments: Array<{ separator: string, body: string }> = []
+  let depth = 0
+  let bodyStart = 0
+  let separator = ''
+  let i = 0
+  const len = text.length
+  while (i < len) {
+    const ch = text.charAt(i)
+    if (ch === '(' || ch === '[') {
+      depth++
+    } else if (ch === ')' || ch === ']') {
+      if (depth > 0) depth--
+    } else if (ch === ',' && depth === 0) {
+      segments.push({ separator, body: text.slice(bodyStart, i) })
+      let j = i + 1
+      while (j < len && /\s/.test(text.charAt(j))) j++
+      separator = text.slice(i, j)
+      bodyStart = j
+      i = j
+      continue
+    }
+    i++
+  }
+  segments.push({ separator, body: text.slice(bodyStart) })
+  return segments
+}
+
 /**
  * Reference https://github.com/reworkcss/css
  * CSSParser mainly deals with 3 scenes: styleRule, @, and comment
@@ -111,22 +142,13 @@ class CSSParser {
      *    should be ==> micro-app[name=xxx] :is(.a, .b, .c) a {}
      *  6. :where(.a, .b, .c) a {}
      *    should be ==> micro-app[name=xxx] :where(.a, .b, .c) a {}
+     *
+     * 仅在顶层逗号处分割(括号深度感知)，再逐段加前缀。
+     * 旧的 `/(^|,[\n\s]*)([^,]+)/g` 会在每个逗号处分割，把嵌套在
+     * :is()/:not()/:where()/:has()/[attr] 内的逗号拆成非法 CSS。
      */
-    const attributeValues: {[key: string]: any} = {}
-    const matchRes = m[0].replace(/\[([^\]=]+)(?:=([^\]]+))?\]/g, (match, p1, p2, offset) => {
-      const mock = `__mock_${p1}_${offset}Value__`
-      attributeValues[mock] = p2
-      return match.replace(p2, mock)
-    })
-
-    return matchRes.replace(/(^|,[\n\s]*)([^,]+)/g, (_, separator, selector) => {
-      selector = trim(selector)
-      selector = selector.replace(/\[[^\]=]+(?:=([^\]]+))?\]/g, (match:string, p1: string) => {
-        if (attributeValues[p1]) {
-          return match.replace(p1, attributeValues[p1])
-        }
-        return match
-      })
+    return splitTopLevelSelectors(m[0]).map(({ separator, body }) => {
+      let selector = trim(body)
 
       // Check if it is in the optionCss list
       const isIsolationRoot = this.optionCssSelectors.some(includeSelector => {
@@ -154,7 +176,7 @@ class CSSParser {
       }
 
       return separator + selector
-    })
+    }).join('')
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration

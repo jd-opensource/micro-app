@@ -1,6 +1,7 @@
 /* eslint-disable promise/param-names, no-extend-native */
 import { commonStartEffect, releaseAllEffect, ports, setAppName, clearAppName } from '../common/initial'
 import { appInstanceMap } from '../../create_app'
+import globalEnv from '../../libs/global_env'
 import microApp from '../..'
 
 describe('source patch', () => {
@@ -376,6 +377,42 @@ describe('source patch', () => {
         document.getElementsByTagName('sd$fs')
         document.getElementsByName('sd$fs')
 
+        resolve(true)
+      })
+    })
+  })
+
+  // https://github.com/jd-opensource/micro-app/issues/1703
+  // ShadowRoot.append 继承自 DocumentFragment.prototype，patch 后若用 rawAppend(Element 版)
+  // 调用会抛 Illegal invocation。此用例保证 append 与 prepend 判据一致、跨 ShadowRoot 安全
+  test('shadowRoot append & prepend should not throw Illegal invocation', async () => {
+    const microAppElement4 = document.createElement('micro-app')
+    microAppElement4.setAttribute('name', 'test-app4')
+    microAppElement4.setAttribute('url', `http://127.0.0.1:${ports.source_patch}/ssr-render/`)
+
+    appCon.appendChild(microAppElement4)
+
+    await new Promise((resolve) => {
+      microAppElement4.addEventListener('mounted', () => {
+        // 前提断言：确认全局 patch 已生效（append 已被重写、不再等于原生），否则用例无意义
+        expect(Element.prototype.append).not.toBe(globalEnv.rawAppend)
+
+        const host = document.createElement('div')
+        document.body.appendChild(host)
+        const shadowRoot = host.attachShadow({ mode: 'open' })
+
+        expect(() => {
+          shadowRoot.append(document.createElement('span'))
+        }).not.toThrow()
+
+        expect(() => {
+          shadowRoot.prepend(document.createElement('i'))
+        }).not.toThrow()
+
+        // 节点确实被插入
+        expect(shadowRoot.childNodes.length).toBe(2)
+
+        document.body.removeChild(host)
         resolve(true)
       })
     })
