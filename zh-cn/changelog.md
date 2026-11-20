@@ -7,6 +7,13 @@
 - 修订版本号：每周末会进行日常 bugfix 更新。（如果有紧急的 bugfix，则任何时候都可发布）
 
 ---
+### 1.0.0-rc.33
+`2026-11-20`
+- **Bug Fix**
+  - 🐞 放宽 isConstructor 判断，识别原型继承自非 Object.prototype 的构造器，[PR #1712](https://github.com/jd-opensource/micro-app/pull/1712)
+  - 🐞 修复样式隔离与 ShadowRoot 插入异常，[PR #1722](https://github.com/jd-opensource/micro-app/pull/1722)
+  - 🐞 修复 github-actions[bot] 账号注入文件问题，[PR #1717](https://github.com/jd-opensource/micro-app/pull/1717)
+
 ### 1.0.0-rc.32
 `2026-06-25`
 - **Feature**
