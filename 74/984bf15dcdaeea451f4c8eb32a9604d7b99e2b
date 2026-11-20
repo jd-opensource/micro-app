@@ -1,0 +1,14 @@
+zh-cn/changelog.md
+  h_925775a3adde3a 10-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "74984bf15dcdaeea451f4c8eb32a9604d7b99e2b",
+  "prompts": {},
+  "humans": {
+    "h_925775a3adde3a": {
+      "author": "raoenhui <raoenhui@jd.com>"
+    }
+  }
+}
