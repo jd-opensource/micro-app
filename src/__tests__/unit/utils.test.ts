@@ -203,4 +203,41 @@ describe('utils', () => {
     // @ts-ignore
     expect(Utils.trim()).toBe('')
   })
+
+  // https://github.com/jd-opensource/micro-app —— 风控 js 重写 XMLHttpRequest 场景
+  describe('utils ==> isConstructor', () => {
+    class NativeXHR {
+      open (): void {}
+      send (): void {}
+    }
+
+    test('识别常规构造器', () => {
+      expect(Utils.isConstructor(NativeXHR)).toBe(true)
+      expect(Utils.isConstructor(URL)).toBe(true)
+      function Bar (): void {}
+      Bar.prototype.hello = (): void => {}
+      expect(Utils.isConstructor(Bar)).toBe(true)
+    })
+
+    // 风控 js 常见写法：匿名 function + prototype = Object.create(父原型)，
+    // 实例方法挂在原型链上游，自身原型只有 constructor。旧实现漏判为 false，
+    // 导致被 bindFunctionToRawTarget 当普通函数 bind，破坏 new 语义使 open 丢失。
+    test('识别匿名 function + Object.create(父原型) 的代理构造器', () => {
+      const RiskXHR: any = function (this: any) { return this }
+      RiskXHR.prototype = Object.create(NativeXHR.prototype)
+      RiskXHR.prototype.constructor = RiskXHR
+      expect(Object.getOwnPropertyNames(RiskXHR.prototype)).toEqual(['constructor'])
+      expect(Utils.isConstructor(RiskXHR)).toBe(true)
+    })
+
+    test('普通函数不应被误判为构造器', () => {
+      expect(Utils.isConstructor(() => {})).toBe(false)
+      expect(Utils.isConstructor(function () {})).toBe(false)
+      expect(Utils.isConstructor(function add (a: number, b: number) { return a + b })).toBe(false)
+      expect(Utils.isConstructor(Math.max)).toBe(false)
+      expect(Utils.isConstructor((function () {}).bind(null))).toBe(false)
+      // @ts-ignore
+      expect(Utils.isConstructor(undefined)).toBe(false)
+    })
+  })
 })

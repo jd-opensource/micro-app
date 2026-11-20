@@ -97,12 +97,24 @@ export function isBoundFunction(target: unknown): boolean {
 export function isConstructor(target: unknown): boolean {
   if (isFunction(target)) {
     const targetStr = Function.prototype.toString.call(target)
-    return (
-      target.prototype?.constructor === target &&
-      Object.getOwnPropertyNames(target.prototype).length > 1
-    ) ||
-      /^function\s+[A-Z]/.test(targetStr) ||
-      /^class\s+/.test(targetStr)
+    if (/^class\s+/.test(targetStr) || /^function\s+[A-Z]/.test(targetStr)) {
+      return true
+    }
+    const proto = (target as CallableFunction).prototype
+    if (proto?.constructor === target) {
+      /**
+       * timestamp: 2026/09/16
+       * 1. own members on prototype (besides constructor) -> constructor
+       * 2. prototype inherits from a non-Object prototype (e.g. prototype = Object.create(ParentProto)),
+       *    means members live upstream on the prototype chain -> still a constructor.
+       *    Anonymous proxy constructors like risk-control's `win.XMLHttpRequest = function () {...}`
+       *    with `prototype = Object.create(realXHRProto)` fall into this case; misjudging them as
+       *    plain functions makes bindFunctionToRawTarget bind them and breaks `new` (open becomes undefined).
+       */
+      return Object.getOwnPropertyNames(proto).length > 1 ||
+        Object.getPrototypeOf(proto) !== Object.prototype
+    }
+    return false
   }
   return false
 }
